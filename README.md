@@ -6,8 +6,7 @@ serveur : pas de Worker, pas de base de données, pas d'authentification.
 
 Le dossier [`../signal-nocturne-v27`](../signal-nocturne-v27) — la version de
 travail sur socle Next.js/vinext/Cloudflare — n'a pas été modifié. Ce dossier
-`v1.0` est une reconstruction indépendante, portant le même moteur de jeu, la
-même UI et le même contenu (niveaux, textes, audio, documentation), sur un
+`v1.0` est une reconstruction indépendante, portant le même moteur de jeu, la même UI et le même contenu (niveaux, textes, audio, documentation), sur un
 socle Vite + React classique sans rendu serveur.
 
 ## Ce qui a été repris à l'identique (aucun changement de comportement)
