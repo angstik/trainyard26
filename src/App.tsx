@@ -45,7 +45,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = 27;
+const APP_VERSION = "1.10";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -408,7 +408,8 @@ function ToolIcon({ tool }: { tool: EditorTool }) {
   if (tool === "splitter") return <span className="tool-preview"><SplitterPiece object={{ id: "tool-splitter", type: "splitter", x: 0, y: 0, orientation: "H" }} /></span>;
   if (tool === "obstacle") return <span className="tool-preview rock-preview" />;
   if (tool === "select") return <span className="tool-glyph">✥</span>;
-  return <span className="tool-glyph">{tool === "erase" ? "⌫" : "×"}</span>;
+  if (tool === "delete") return <span className="tool-preview eraser-preview"><span className="eraser-body" /><span className="eraser-band" /></span>;
+  return <span className="tool-glyph">⌫</span>;
 }
 
 export default function App() {
@@ -440,6 +441,8 @@ export default function App() {
   const [status, setStatus] = useState("TRACEZ LES VOIES");
   const [selectedObject, setSelectedObject] = useState<string | null>(null);
   const [editorDialog, setEditorDialog] = useState<EditorDialog>(null);
+  const objectSnapshotRef = useRef<LevelObject | null>(null);
+  const levelSnapshotRef = useRef<{ level: LevelDefinition; family: string; railLimit: number } | null>(null);
   const [sequenceSlot, setSequenceSlot] = useState(0);
   const [newFamilyName, setNewFamilyName] = useState("");
   const [saveStatus, setSaveStatus] = useState("");
@@ -534,12 +537,43 @@ export default function App() {
   }
 
   useEffect(() => {
+    if (editorDialog === "object" && selectedObject) {
+      objectSnapshotRef.current = objects.find((item) => item.id === selectedObject) ?? null;
+    } else {
+      objectSnapshotRef.current = null;
+    }
+    if (editorDialog === "level") {
+      levelSnapshotRef.current = { level: activeLevel, family, railLimit };
+    } else {
+      levelSnapshotRef.current = null;
+    }
+    // On ne capture l'instantané qu'au moment où le dialogue s'ouvre pour cet
+    // objet/niveau — ne pas re-capturer à chaque modification faite dedans.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editorDialog, selectedObject]);
+
+  function cancelDialog() {
+    if (editorDialog === "object" && objectSnapshotRef.current) {
+      const snapshot = objectSnapshotRef.current;
+      setObjects((items) => items.map((item) => item.id === snapshot.id ? snapshot : item));
+    }
+    if (editorDialog === "level" && levelSnapshotRef.current) {
+      const snapshot = levelSnapshotRef.current;
+      setActiveLevel(snapshot.level);
+      setFamily(snapshot.family);
+      setRailLimit(snapshot.railLimit);
+    }
+    setEditorDialog(null);
+  }
+
+  useEffect(() => {
     function closeDialog(event: KeyboardEvent) {
-      if (event.key === "Escape") setEditorDialog(null);
+      if (event.key === "Escape") cancelDialog();
     }
     window.addEventListener("keydown", closeDialog);
     return () => window.removeEventListener("keydown", closeDialog);
-  }, []);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [editorDialog]);
 
   useEffect(() => {
     if ("serviceWorker" in navigator) {
@@ -648,11 +682,12 @@ export default function App() {
   }
 
   function handleExportLevel() {
-    const puzzleString = encodeLevelToPuzzleString(objects, activeLevel.width, activeLevel.height);
-    if (!puzzleString) {
-      setExportFeedback("Export impossible : le format puzzleString ne prend en charge que la grille 7×7.");
+    const result = encodeLevelToPuzzleString(objects, activeLevel.width, activeLevel.height);
+    if (!result.ok) {
+      setExportFeedback(`Export impossible : ${result.reason}`);
       return;
     }
+    const puzzleString = result.value;
     if (navigator.clipboard?.writeText) {
       navigator.clipboard.writeText(puzzleString).then(
         () => setExportFeedback(`Copié dans le presse-papiers (${puzzleString.length} caractères).`),
@@ -1310,6 +1345,16 @@ export default function App() {
       handleSelectPointerDown(cell, event);
       return;
     }
+    if (mode === "editor" && editorTool === "station") {
+      const existing = objects.find((item) => item.x === cell[0] && item.y === cell[1] && item.type === "station");
+      if (existing) {
+        setEditorTool("select");
+        setSelectedObject(existing.id);
+        setSequenceSlot(0);
+        setEditorDialog("object");
+        return;
+      }
+    }
     if (mode === "editor" && !["rail", "erase"].includes(editorTool)) {
       placeObject(cell);
       return;
@@ -1506,7 +1551,7 @@ export default function App() {
   return (
     <main className={`app-shell mode-${mode}`}>
       <header>
-        <div className="brand"><span className="sigil">✣</span><div><b>SIGNAL NOCTURNE <em className="version-badge">V{APP_VERSION}</em></b><small>NIVEAU {activeLevel.number.toString().padStart(2, "0")} · {activeLevel.title.toUpperCase()}</small></div></div>
+        <div className="brand"><span className="sigil">✣</span><div><b>SIGNAL NOCTURNE</b><small>v{APP_VERSION} · NIVEAU {activeLevel.number.toString().padStart(2, "0")} · {activeLevel.title.toUpperCase()}</small></div></div>
         <div className="status-strip">
           <span><small>ÉTAT</small><b className={result}>{paused ? "PAUSE" : status}</b></span>
           <span><small>RAILS</small><b style={{ color: railMetricColor }}>{railCount} / {railLimit}</b></span>
@@ -1636,14 +1681,14 @@ export default function App() {
         </div>
 
         {editorDialog && (
-          <div className="dialog-backdrop" role="presentation" onPointerDown={(event) => { if (event.target === event.currentTarget) setEditorDialog(null); }}>
+          <div className="dialog-backdrop" role="presentation" onPointerDown={(event) => { if (event.target === event.currentTarget) cancelDialog(); }}>
             <section className="editor-dialog" role="dialog" aria-modal="true" aria-labelledby="editor-dialog-title">
               <div className="dialog-heading">
                 <div>
                   <small>{editorDialog === "library" ? "BIBLIOTHÈQUE FERROVIAIRE" : editorDialog === "level" ? "PARAMÈTRES DU TABLEAU" : editorDialog === "io" ? "ÉCHANGE DE NIVEAUX" : "CONFIGURATION D’UN ÉLÉMENT"}</small>
                   <h2 id="editor-dialog-title">{editorDialog === "library" ? (libraryFamily?.title.toUpperCase() ?? "FAMILLES") : editorDialog === "level" ? "NIVEAU & DÉPÔT" : editorDialog === "io" ? "IMPORT / EXPORT" : selected?.type === "outlet" ? "REMISE" : selected?.type === "station" ? "GARE" : selected?.type === "painter" ? "PEINTURE" : selected?.type === "splitter" ? "SPLITTER" : "OBSTACLE"}</h2>
                 </div>
-                <button className="dialog-close" aria-label="Fermer" onClick={() => setEditorDialog(null)}>×</button>
+                <button className="dialog-close" aria-label="Annuler et fermer" title="Annuler les modifications de cette fenêtre" onClick={cancelDialog}>×</button>
               </div>
               <div className="dialog-body" ref={dialogBodyRef} onScroll={(event) => {
                 if (editorDialog !== "library") return;

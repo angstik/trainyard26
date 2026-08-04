@@ -58,9 +58,10 @@ for (const dir of Object.keys(OUTLET_LETTERS) as Direction[]) {
 }
 
 // --- Color-pair table (7x7 -> 49 letters) ----------------------------------
-function colorPairLetter(first: TrainColor, second: TrainColor): string {
+function colorPairLetter(first: TrainColor, second: TrainColor): string | null {
   const row = COLORS7.indexOf(first);
   const col = COLORS7.indexOf(second);
+  if (row === -1 || col === -1) return null;
   return ALPHABET_49[row * 7 + col];
 }
 const COLOR_PAIR_REVERSE = new Map<string, [TrainColor, TrainColor]>();
@@ -126,10 +127,12 @@ function decodeColorRun(letters: string, count: number, warnings: string[]): Tra
   return colors.slice(0, count);
 }
 
-function encodeColorRun(colors: TrainColor[]): string {
+function encodeColorRun(colors: TrainColor[]): string | null {
   let out = "";
   for (let i = 0; i < colors.length; i += 2) {
-    out += colorPairLetter(colors[i], colors[i + 1] ?? "red");
+    const letter = colorPairLetter(colors[i], colors[i + 1] ?? "red");
+    if (letter === null) return null;
+    out += letter;
   }
   return out;
 }
@@ -228,9 +231,19 @@ export function decodePuzzleString(input: string): PuzzleDecodeResult {
   return { objects, warnings };
 }
 
-/** Encode des objets de niveau 7x7 vers une puzzleString "hh...". Retourne null si hors grille 7x7. */
-export function encodeLevelToPuzzleString(objects: LevelObject[], width: number, height: number): string | null {
-  if (width !== GRID_SIZE || height !== GRID_SIZE) return null;
+export type PuzzleEncodeResult = { ok: true; value: string } | { ok: false; reason: string };
+
+/**
+ * Encode des objets de niveau 7x7 vers une puzzleString "hh...".
+ * Échoue proprement (au lieu de produire une chaîne corrompue) si la grille
+ * n'est pas 7x7, ou si un objet utilise une couleur hors des 7 couleurs
+ * d'origine du format (rose/cyan/blanc, qui n'existent que dans cette
+ * application via les mélanges/décompositions étendus).
+ */
+export function encodeLevelToPuzzleString(objects: LevelObject[], width: number, height: number): PuzzleEncodeResult {
+  if (width !== GRID_SIZE || height !== GRID_SIZE) {
+    return { ok: false, reason: "Le format puzzleString ne prend en charge que la grille 7×7." };
+  }
 
   const cellMap = new Map<number, LevelObject>();
   for (const obj of objects) {
@@ -240,6 +253,7 @@ export function encodeLevelToPuzzleString(objects: LevelObject[], width: number,
 
   let result = "hh";
   let blankRun = 0;
+  let failure: string | null = null;
 
   const flushBlank = (trailing: boolean) => {
     if (blankRun === 0) return;
@@ -254,21 +268,28 @@ export function encodeLevelToPuzzleString(objects: LevelObject[], width: number,
     blankRun = 0;
   };
 
-  const encodeObject = (obj: LevelObject): string => {
+  const encodeObject = (obj: LevelObject): string | null => {
     switch (obj.type) {
       case "obstacle":
         return "R";
       case "outlet": {
         const count = Math.min(9, obj.trains.length);
-        return "O" + OUTLET_LETTERS[obj.facing][count - 1] + encodeColorRun(obj.trains.slice(0, count));
+        const run = encodeColorRun(obj.trains.slice(0, count));
+        if (run === null) return null;
+        return "O" + OUTLET_LETTERS[obj.facing][count - 1] + run;
       }
       case "station": {
         const count = Math.min(9, obj.expects.length);
+        const run = encodeColorRun(obj.expects.slice(0, count));
+        if (run === null) return null;
         const letter = GOAL_DIRSET_LETTER.get(directionSetKey(obj.facings)) ?? GOAL_SINGLE_DIRECTION_LETTER.N;
-        return "G" + letter + countLetter(count) + encodeColorRun(obj.expects.slice(0, count));
+        return "G" + letter + countLetter(count) + run;
       }
-      case "painter":
-        return "P" + PAINTER_COLOR_LETTER[obj.color] + (PAINTER_SIDES_LETTER.get(directionSetKey(obj.sides)) ?? "c");
+      case "painter": {
+        const colorLetter = PAINTER_COLOR_LETTER[obj.color];
+        if (!colorLetter) return null;
+        return "P" + colorLetter + (PAINTER_SIDES_LETTER.get(directionSetKey(obj.sides)) ?? "c");
+      }
       case "splitter":
         return "S" + (obj.orientation === "V" ? "a" : "b");
       default:
@@ -276,13 +297,19 @@ export function encodeLevelToPuzzleString(objects: LevelObject[], width: number,
     }
   };
 
-  for (let idx = 0; idx < CELL_COUNT; idx++) {
+  for (let idx = 0; idx < CELL_COUNT && !failure; idx++) {
     const obj = cellMap.get(idx);
     if (!obj) { blankRun++; continue; }
+    const encoded = encodeObject(obj);
+    if (encoded === null) {
+      failure = `${obj.type === "outlet" ? "Remise" : obj.type === "station" ? "Gare" : "Painter"} ${obj.id} : utilise une couleur (rose, cyan ou blanc) que le format hh… d'origine ne sait pas encoder — seules les 7 couleurs de base (rouge, bleu, jaune, orange, vert, violet, marron) sont supportées.`;
+      break;
+    }
     flushBlank(false);
-    result += encodeObject(obj);
+    result += encoded;
   }
+  if (failure) return { ok: false, reason: failure };
   flushBlank(true);
 
-  return result;
+  return { ok: true, value: result };
 }

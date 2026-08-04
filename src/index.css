@@ -175,8 +175,10 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 }
 .cell::before, .cell::after { content:""; position:absolute; width:3px; height:3px; border-radius:50%; background:#65717a; opacity:.4; }
 .cell::before { left:5px; top:5px; }.cell::after { right:5px; bottom:5px; }
+.board.tool-delete .cell::before, .board.tool-delete .cell::after { background:#ff5a4d; opacity:.6; }
 .cell.gesture-cell { background: linear-gradient(135deg, #17303a, #101b20); }
 .track { position: absolute; inset: 0; z-index: 2; }
+.workspace.editor .track, .workspace.editor .track-svg { opacity: .5; }
 .track::before, .track::after { content:""; position:absolute; background: var(--rail); box-shadow: 0 0 0 2px #383a38, 0 0 8px #000; }
 .track.vertical::before { width:4px; top:-1px; bottom:-1px; left:36%; }
 .track.vertical::after { width:4px; top:-1px; bottom:-1px; right:36%; }
@@ -401,12 +403,15 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .status-strip b.over, .budget.over b { color:#ff6d60; }
 .status-strip b.success { color:#53d98c; }.status-strip b.failed { color:#ff6d60; }
 .palette-grid > button.selected { color:var(--cyan); border-color:#278fa0; background:#10242b; box-shadow:inset 3px 0 var(--cyan); }
-.tool-icon { position:relative; width:34px; height:34px; display:grid; place-items:center; border:1px solid #52636c; color:#b6c5cc; font-size:20px; overflow:hidden; }
+.tool-icon { position:relative; width:34px; height:34px; display:grid; place-items:center; color:#b6c5cc; font-size:20px; overflow:hidden; }
 .tool-preview { position:relative; display:block; width:100%; height:100%; }
 .tool-preview .track-svg { inset:0; width:100%; height:100%; }
 .tool-preview.terminal-preview { transform:scale(.92); }
 .tool-preview .terminal-dots { display:none; }
 .tool-preview.rock-preview { width:72%; height:72%; background:linear-gradient(135deg,#606a70,#171d21); clip-path:polygon(21% 2%,78% 8%,98% 49%,72% 96%,17% 84%,2% 32%); }
+.tool-preview.eraser-preview { position:relative; width:70%; height:52%; transform:rotate(-18deg); }
+.eraser-body { position:absolute; inset:0; background:linear-gradient(180deg,#e8798f,#c2495f); border:1px solid #7a2836; border-radius:5px 5px 8px 8px; box-shadow:inset 0 -6px 0 #a8384c; }
+.eraser-band { position:absolute; left:0; right:0; top:0; height:38%; background:#d7d9da; border:1px solid #8d9194; border-bottom:none; border-radius:5px 5px 0 0; }
 .tool-glyph { font-size:22px; }
 .editor-validation {
   min-width:0; max-height:96px; overflow:auto; padding:8px 10px; border:1px solid #6b4337;
