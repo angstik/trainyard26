@@ -7,7 +7,7 @@ import type { Direction, LevelDefinition, LevelFamily, LevelObject, TrainColor }
 import { sampleRailCenterline } from "./rail-motion";
 
 type Point = [number, number];
-type EditorTool = "rail" | "erase" | "outlet" | "station" | "painter" | "splitter" | "obstacle" | "delete";
+type EditorTool = "rail" | "erase" | "select" | "outlet" | "station" | "painter" | "splitter" | "obstacle" | "delete";
 type EditorDialog = "level" | "object" | "library" | "io" | null;
 type JunctionMode = "cross" | "curves-ne-sw" | "curves-nw-se";
 type MovingTrain = {
@@ -154,6 +154,35 @@ function colorMark(color: TrainColor) {
   return color === "red" || color === "blue" || color === "yellow" ? ""
     : color === "orange" ? "⬡" : color === "green" ? "□" : color === "purple" ? "✦"
       : color === "brown" ? "⬟" : color === "pink" ? "♥" : color === "cyan" ? "✧" : "●";
+}
+
+/**
+ * Résout un lot de trains arrivant au même tick sur une gare (potentiellement
+ * multi-entrées). Algorithme : on déroule le motif attendu de la gare à
+ * partir de `startIndex` ; à chaque étape on cherche, parmi les trains
+ * restants du lot, celui dont la couleur correspond à la couleur
+ * actuellement attendue, et on le retire. Tant qu'il reste des trains, on
+ * continue. Si la couleur attendue est introuvable dans les trains
+ * restants, ou s'il n'y a plus de couleur attendue alors qu'il reste des
+ * trains, c'est un échec (KO). Si le lot se vide entièrement, c'est un
+ * succès pour ce lot (acceptedCount trains ont été reçus).
+ */
+function resolveStationArrivalBatch(
+  arrivals: TrainColor[],
+  expects: TrainColor[],
+  startIndex: number,
+): { acceptedCount: number; ok: boolean } {
+  const remaining = [...arrivals];
+  let index = startIndex;
+  while (remaining.length > 0) {
+    const expectedColor = expects[index];
+    if (expectedColor === undefined) return { acceptedCount: index - startIndex, ok: false };
+    const matchPos = remaining.indexOf(expectedColor);
+    if (matchPos === -1) return { acceptedCount: index - startIndex, ok: false };
+    remaining.splice(matchPos, 1);
+    index += 1;
+  }
+  return { acceptedCount: index - startIndex, ok: true };
 }
 
 function mixColors(one: TrainColor, two: TrainColor): TrainColor | null {
@@ -349,6 +378,9 @@ function TerminalBuilding({ object, done = 0 }: { object: Extract<LevelObject, {
 function PainterPiece({ object }: { object: Extract<LevelObject, { type: "painter" }> }) {
   return (
     <div className="painter-piece" style={{ "--paint-color": COLOR_HEX[object.color] } as React.CSSProperties}>
+      {object.sides.map((side) => (
+        <span key={side} className="painter-connector" style={{ transform: `rotate(${DIR_ANGLE[side]}deg)` }} />
+      ))}
       <span className="paint-vat" /><span className="paint-nozzle" /><i>{colorMark(object.color)}</i>
     </div>
   );
@@ -372,9 +404,10 @@ function ToolIcon({ tool }: { tool: EditorTool }) {
       : { id: "tool-station", type: "station" as const, x: 0, y: 0, facings: ["E" as Direction], expects: ["red" as TrainColor] };
     return <span className="tool-preview terminal-preview"><TerminalBuilding object={object} /></span>;
   }
-  if (tool === "painter") return <span className="tool-preview"><PainterPiece object={{ id: "tool-painter", type: "painter", x: 0, y: 0, color: "red" }} /></span>;
+  if (tool === "painter") return <span className="tool-preview"><PainterPiece object={{ id: "tool-painter", type: "painter", x: 0, y: 0, color: "red", sides: ["N", "S"] }} /></span>;
   if (tool === "splitter") return <span className="tool-preview"><SplitterPiece object={{ id: "tool-splitter", type: "splitter", x: 0, y: 0, orientation: "H" }} /></span>;
   if (tool === "obstacle") return <span className="tool-preview rock-preview" />;
+  if (tool === "select") return <span className="tool-glyph">✥</span>;
   return <span className="tool-glyph">{tool === "erase" ? "⌫" : "×"}</span>;
 }
 
@@ -422,6 +455,10 @@ export default function App() {
   const drawingRef = useRef(false);
   const gestureRef = useRef<Point[]>([]);
   const gestureStartEdges = useRef<Set<string>>(new Set());
+  const selectGestureRef = useRef<{ objectId: string; startCell: Point; moving: boolean } | null>(null);
+  const longPressTimerRef = useRef<number | null>(null);
+  const [movingObjectId, setMovingObjectId] = useState<string | null>(null);
+  const [moveGhostCell, setMoveGhostCell] = useState<Point | null>(null);
   const simRef = useRef<SimData>(createEmptySim(DEFAULT_LEVEL.objects));
   const mutedRef = useRef(true);
   const activeAudioRef = useRef<Set<HTMLAudioElement>>(new Set());
@@ -670,17 +707,33 @@ export default function App() {
     gestureRef.current = [];
     drawingRef.current = false;
     if (nextMode === "play" && mode === "editor") {
-      // Au retour en mode jeu : ne conserver les rails existants que là où
-      // aucun élément de niveau (remise, gare, peintre, splitter, obstacle)
-      // n'a été posé entre-temps dans l'éditeur.
-      const occupied = new Set(objects.map((object) => pointKey([object.x, object.y])));
+      // Au retour en mode jeu : on ne touche jamais aux rails connectés à une
+      // remise ou une gare (les "bouts de connexion" doivent rester
+      // connectés), ni à un splitter (ses 4 côtés sont potentiellement
+      // valides, en entrée comme en sortie selon son orientation — le moteur
+      // de simulation gère déjà les entrées invalides comme un accident). On
+      // retire uniquement : tout rail touchant un obstacle, et les rails
+      // d'un painter qui n'empruntent pas l'un de ses 2 côtés configurés.
+      const obstacleCells = new Set(objects.filter((object) => object.type === "obstacle").map((object) => pointKey([object.x, object.y])));
+      const painterSides = new Map<string, Set<Direction>>();
+      objects.filter((object) => object.type === "painter").forEach((object) => {
+        painterSides.set(pointKey([object.x, object.y]), new Set(object.sides));
+      });
       setEdges((current) => new Set([...current].filter((edge) => {
-        const [a, b] = edge.split("|");
-        return !occupied.has(a) && !occupied.has(b);
+        const [aKey, bKey] = edge.split("|");
+        if (obstacleCells.has(aKey) || obstacleCells.has(bKey)) return false;
+        for (const [selfKey, otherKey] of [[aKey, bKey], [bKey, aKey]] as const) {
+          const allowed = painterSides.get(selfKey);
+          if (!allowed) continue;
+          const [sx, sy] = selfKey.split(",").map(Number) as [number, number];
+          const [ox, oy] = otherKey.split(",").map(Number) as [number, number];
+          if (!allowed.has(directionBetween([sx, sy], [ox, oy]))) return false;
+        }
+        return true;
       })));
     }
     setMode(nextMode);
-    setEditorTool(nextMode === "editor" ? "outlet" : "rail");
+    setEditorTool(nextMode === "editor" ? "select" : "rail");
   }
 
   function changeLevel(offset: -1 | 1) {
@@ -822,37 +875,50 @@ export default function App() {
 
         const cellDirections = directionsForCell(current[0], current[1]);
         const entry = directionBetween(current, from);
-        if (object?.type === "painter" && moved.color !== object.color) {
-          moved = { ...moved, color: object.color };
-          addColorBurst(current[0], current[1], object.color, "paint");
-          playEffect("paint");
+        if (object?.type === "painter") {
+          if (!object.sides.includes(entry)) {
+            explode(current[0], current[1], "Entrée par un côté non connecté du painter");
+            break;
+          }
+          if (moved.color !== object.color) {
+            moved = { ...moved, color: object.color };
+            addColorBurst(current[0], current[1], object.color, "paint");
+            playEffect("paint");
+          }
+          const exitSide = object.sides.find((side) => side !== entry)!;
+          const next = add(current, exitSide);
+          const nextAngle = DIR_ANGLE[exitSide];
+          advanced.push({ ...moved, previous: from, cell: current, next, progress: moved.progress - 1, fromAngle: moved.angle, angle: nextAngle });
+          continue;
         }
         if (object?.type === "splitter") {
           const validEntry = object.orientation === "H" ? entry === "E" || entry === "W" : entry === "N" || entry === "S";
-          if (validEntry) {
-            const splitOutputs = routedSplitterOutputs(moved.color, object.orientation);
-            if (!splitOutputs) {
-              explode(current[0], current[1], "Décomposition de cette couleur non définie");
-              break;
-            }
-            splitOutputs.forEach((splitOutput, index) => {
-              const next = add(current, splitOutput.direction);
-              advanced.push({
-                ...moved,
-                id: `${moved.id}-split-${index}-${Date.now()}`,
-                color: splitOutput.color,
-                previous: from,
-                cell: current,
-                next,
-                progress: moved.progress - 1,
-                angle: DIR_ANGLE[splitOutput.direction],
-                fromAngle: moved.angle,
-              });
-            });
-            addColorBurst(current[0], current[1], moved.color, "split");
-            playEffect("split");
-            continue;
+          if (!validEntry) {
+            explode(current[0], current[1], "Entrée par le côté coloré (sortie) du splitter — accident");
+            break;
           }
+          const splitOutputs = routedSplitterOutputs(moved.color, object.orientation);
+          if (!splitOutputs) {
+            explode(current[0], current[1], "Décomposition de cette couleur non définie");
+            break;
+          }
+          splitOutputs.forEach((splitOutput, index) => {
+            const next = add(current, splitOutput.direction);
+            advanced.push({
+              ...moved,
+              id: `${moved.id}-split-${index}-${Date.now()}`,
+              color: splitOutput.color,
+              previous: from,
+              cell: current,
+              next,
+              progress: moved.progress - 1,
+              angle: DIR_ANGLE[splitOutput.direction],
+              fromAngle: moved.angle,
+            });
+          });
+          addColorBurst(current[0], current[1], moved.color, "split");
+          playEffect("split");
+          continue;
         }
         let exit: Direction | undefined;
 
@@ -886,26 +952,20 @@ export default function App() {
             | Extract<LevelObject, { type: "station" }>
             | undefined;
           if (!station) continue;
-          const remaining = [...arrivals];
-          while (remaining.length > 0) {
-            const receivedCount = sim.received[stationId] ?? 0;
-            const expectedColor = station.expects[receivedCount];
-            const matchIndex = remaining.findIndex((candidate) => candidate.color === expectedColor);
-            if (matchIndex === -1) {
-              explode(
-                station.x,
-                station.y,
-                remaining.length > 1
-                  ? "Conflit d’arrivée simultanée en gare : aucune couleur attendue parmi les entrées"
-                  : "Train non attendu dans cette gare",
-              );
-              break;
-            }
-            remaining.splice(matchIndex, 1);
-            sim.received[stationId] = receivedCount + 1;
-            playEffect("station");
+          const startIndex = sim.received[stationId] ?? 0;
+          const { acceptedCount, ok } = resolveStationArrivalBatch(arrivals.map((train) => train.color), station.expects, startIndex);
+          sim.received[stationId] = startIndex + acceptedCount;
+          for (let i = 0; i < acceptedCount; i++) playEffect("station");
+          if (!ok) {
+            explode(
+              station.x,
+              station.y,
+              arrivals.length > 1
+                ? "Conflit d’arrivée simultanée en gare : aucune couleur attendue parmi les entrées"
+                : "Train non attendu dans cette gare",
+            );
+            break;
           }
-          if (sim.failed) break;
         }
       }
 
@@ -930,7 +990,14 @@ export default function App() {
             const bVector: Point = [b.next[0] - b.cell[0], b.next[1] - b.cell[1]];
             const perpendicular = aVector[0] * bVector[0] + aVector[1] * bVector[1] === 0;
             const sharedCellCrossing = samePoint(a.cell, b.cell) && !samePoint(a.next, b.next);
-            const crossing = near && !areSplitterSiblings(a, b) && (perpendicular || sharedCellCrossing);
+            // Sur une jonction à 4 sorties en mode "virages" (N-E / S-W ou N-W / S-E), les deux
+            // routes sont deux arcs indépendants qui ne se touchent jamais géométriquement,
+            // contrairement au mode "cross" (deux droites qui se croisent au centre). Dans ce
+            // cas, deux trains présents dans la même case ne doivent pas mélanger leurs couleurs.
+            const sharedCellDirections = sharedCellCrossing ? directionsForCell(a.cell[0], a.cell[1]) : [];
+            const sharedCellMode = sharedCellDirections.length === 4 ? (junctionModes[pointKey(a.cell)] ?? "cross") : null;
+            const independentTracks = sharedCellCrossing && sharedCellMode !== null && sharedCellMode !== "cross";
+            const crossing = near && !areSplitterSiblings(a, b) && !independentTracks && (perpendicular || sharedCellCrossing);
             if (frontal && near) {
               const interactionKey = `${[a.id, b.id].sort().join("~")}@${edgeKey(a.cell, a.next)}`;
               if (!sim.interactions.has(interactionKey)) {
@@ -1016,11 +1083,75 @@ export default function App() {
     let object: LevelObject;
     if (editorTool === "outlet") object = { id, type: "outlet", x, y, facing: "N", trains: ["red"] };
     else if (editorTool === "station") object = { id, type: "station", x, y, facings: ["S"], expects: ["red"] };
-    else if (editorTool === "painter") object = { id, type: "painter", x, y, color: "red" };
+    else if (editorTool === "painter") object = { id, type: "painter", x, y, color: "red", sides: ["N", "S"] };
     else if (editorTool === "splitter") object = { id, type: "splitter", x, y, orientation: "H" };
     else object = { id, type: "obstacle", x, y };
     setObjects((items) => [...items.filter((o) => o.x !== x || o.y !== y), object]);
     setSelectedObject(id);
+    setSequenceSlot(0);
+    setEditorDialog("object");
+  }
+
+  const LONG_PRESS_MS = 450;
+
+  function handleSelectPointerDown(cell: Point, event: React.PointerEvent<HTMLDivElement>) {
+    const object = objects.find((item) => item.x === cell[0] && item.y === cell[1]);
+    if (!object) return;
+    event.currentTarget.setPointerCapture(event.pointerId);
+    selectGestureRef.current = { objectId: object.id, startCell: cell, moving: false };
+    if (longPressTimerRef.current) window.clearTimeout(longPressTimerRef.current);
+    longPressTimerRef.current = window.setTimeout(() => {
+      const gesture = selectGestureRef.current;
+      if (!gesture || gesture.objectId !== object.id) return;
+      gesture.moving = true;
+      setMovingObjectId(object.id);
+      setMoveGhostCell(cell);
+      playEffect("switch");
+      setStatus("DÉPLACEMENT — RELÂCHEZ SUR LA CASE CIBLE");
+    }, LONG_PRESS_MS);
+  }
+
+  function handleSelectPointerMove(clientX: number, clientY: number) {
+    const gesture = selectGestureRef.current;
+    if (!gesture?.moving) return;
+    const cell = cellFromPointer(clientX, clientY);
+    if (cell) setMoveGhostCell(cell);
+  }
+
+  function finishSelectGesture() {
+    const gesture = selectGestureRef.current;
+    if (longPressTimerRef.current) {
+      window.clearTimeout(longPressTimerRef.current);
+      longPressTimerRef.current = null;
+    }
+    if (!gesture) return;
+    selectGestureRef.current = null;
+    if (gesture.moving) {
+      const target = moveGhostCell ?? gesture.startCell;
+      const objectId = gesture.objectId;
+      setObjects((items) => {
+        const occupied = items.some((item) => item.id !== objectId && item.x === target[0] && item.y === target[1]);
+        if (occupied) {
+          setStatus("CASE OCCUPÉE — DÉPLACEMENT ANNULÉ");
+          return items;
+        }
+        setStatus("ÉLÉMENT DÉPLACÉ");
+        return items.map((item) => item.id === objectId ? { ...item, x: target[0], y: target[1] } : item);
+      });
+      setMovingObjectId(null);
+      setMoveGhostCell(null);
+      return;
+    }
+    // Appui court : édite l'objet (le splitter pivote directement, comme au clic classique).
+    const object = objects.find((item) => item.id === gesture.objectId);
+    if (!object) return;
+    if (object.type === "splitter") {
+      setObjects((items) => items.map((item) => item.id === object.id && item.type === "splitter" ? { ...item, orientation: item.orientation === "H" ? "V" : "H" } : item));
+      playEffect("switch");
+      setStatus("SPLITTER PIVOTÉ");
+      return;
+    }
+    setSelectedObject(object.id);
     setSequenceSlot(0);
     setEditorDialog("object");
   }
@@ -1175,6 +1306,10 @@ export default function App() {
     if (running || result !== "idle") return;
     const cell = cellFromPointer(event.clientX, event.clientY);
     if (!cell) return;
+    if (mode === "editor" && editorTool === "select") {
+      handleSelectPointerDown(cell, event);
+      return;
+    }
     if (mode === "editor" && !["rail", "erase"].includes(editorTool)) {
       placeObject(cell);
       return;
@@ -1244,6 +1379,16 @@ export default function App() {
   function updateSelectedObject(update: Partial<{ facing: Direction; facings: Direction[]; trains: TrainColor[]; expects: TrainColor[]; color: TrainColor; orientation: "H" | "V" }>) {
     if (!selectedObject) return;
     setObjects((items) => items.map((object) => object.id === selectedObject ? { ...object, ...update } as LevelObject : object));
+  }
+
+  function togglePainterSide(direction: Direction) {
+    if (!selectedObject) return;
+    setObjects((items) => items.map((object) => {
+      if (object.id !== selectedObject || object.type !== "painter") return object;
+      if (object.sides.includes(direction)) return object; // toujours exactement 2 côtés actifs
+      const [, second] = object.sides;
+      return { ...object, sides: [second, direction] };
+    }));
   }
 
   function toggleStationFacing(direction: Direction) {
@@ -1382,6 +1527,7 @@ export default function App() {
             <h2>OUTILS</h2>
             <div className="palette-grid">
               {([
+                ["select", "Sélection"],
                 ["outlet", "Remise"],
                 ["station", "Gare"],
                 ["painter", "Peinture"],
@@ -1418,9 +1564,9 @@ export default function App() {
             className={`board tool-${editorTool}`}
             ref={boardRef}
             onPointerDown={startDrawing}
-            onPointerMove={(event) => drawingRef.current && applyPointer(event.clientX, event.clientY)}
-            onPointerUp={finishDrawing}
-            onPointerCancel={finishDrawing}
+            onPointerMove={(event) => { if (selectGestureRef.current) handleSelectPointerMove(event.clientX, event.clientY); else if (drawingRef.current) applyPointer(event.clientX, event.clientY); }}
+            onPointerUp={() => { if (selectGestureRef.current) finishSelectGesture(); else finishDrawing(); }}
+            onPointerCancel={() => { if (selectGestureRef.current) finishSelectGesture(); else finishDrawing(); }}
           >
             {Array.from({ length: GRID * GRID }, (_, index) => {
               const x = index % GRID, y = Math.floor(index / GRID);
@@ -1446,10 +1592,14 @@ export default function App() {
                 <TrackGraphic directions={renderedDirections} mode={junctionModes[key] ?? "cross"} switchToe={switchToes[key]} switchIndex={displaySwitchPositions[key] ?? 0} preview={inGesture} />
               </div>;
             })}
+            {moveGhostCell && (
+              <div className="move-ghost" style={{ left: `${moveGhostCell[0] * 100 / GRID}%`, top: `${moveGhostCell[1] * 100 / GRID}%` }} />
+            )}
             {objects.map((object) => {
               const objectClick = (event: React.MouseEvent<HTMLButtonElement>) => {
                 event.stopPropagation();
                 if (mode !== "editor" || running) return;
+                if (editorTool === "select") return;
                 if (object.type === "splitter") {
                   setObjects((items) => items.map((item) => item.id === object.id && item.type === "splitter" ? { ...item, orientation: item.orientation === "H" ? "V" : "H" } : item));
                   playEffect("switch");
@@ -1461,12 +1611,13 @@ export default function App() {
                 setEditorDialog("object");
               };
               const invalid = mode === "editor" && invalidObjectIds.has(object.id);
-              if (object.type === "obstacle") return <button key={object.id} aria-label="Obstacle" className={`obstacle ${selectedObject === object.id ? "selected-object" : ""} ${invalid ? "invalid-object" : ""}`} onClick={objectClick} style={{ left: `${object.x * 100 / GRID}%`, top: `${object.y * 100 / GRID}%` }} />;
-              if (object.type === "painter") return <button key={object.id} aria-label={`Peinture ${COLOR_LABELS[object.color]}`} className={`object fixed-piece ${selectedObject === object.id ? "selected-object" : ""} ${invalid ? "invalid-object" : ""}`} onClick={objectClick} style={{ left: `${object.x * 100 / GRID}%`, top: `${object.y * 100 / GRID}%` }}><PainterPiece object={object} /></button>;
-              if (object.type === "splitter") return <button key={object.id} aria-label={`Splitter ${object.orientation}`} className={`object fixed-piece ${invalid ? "invalid-object" : ""}`} onClick={objectClick} style={{ left: `${object.x * 100 / GRID}%`, top: `${object.y * 100 / GRID}%` }}><SplitterPiece object={object} /></button>;
+              const moving = movingObjectId === object.id ? "moving-object" : "";
+              if (object.type === "obstacle") return <button key={object.id} aria-label="Obstacle" className={`obstacle ${selectedObject === object.id ? "selected-object" : ""} ${invalid ? "invalid-object" : ""} ${moving}`} onClick={objectClick} style={{ left: `${object.x * 100 / GRID}%`, top: `${object.y * 100 / GRID}%` }} />;
+              if (object.type === "painter") return <button key={object.id} aria-label={`Peinture ${COLOR_LABELS[object.color]}`} className={`object fixed-piece ${selectedObject === object.id ? "selected-object" : ""} ${invalid ? "invalid-object" : ""} ${moving}`} onClick={objectClick} style={{ left: `${object.x * 100 / GRID}%`, top: `${object.y * 100 / GRID}%` }}><PainterPiece object={object} /></button>;
+              if (object.type === "splitter") return <button key={object.id} aria-label={`Splitter ${object.orientation}`} className={`object fixed-piece ${invalid ? "invalid-object" : ""} ${moving}`} onClick={objectClick} style={{ left: `${object.x * 100 / GRID}%`, top: `${object.y * 100 / GRID}%` }}><SplitterPiece object={object} /></button>;
               const done = object.type === "outlet" ? (emitted[object.id] ?? 0) : (received[object.id] ?? 0);
               return (
-                <button key={object.id} aria-label={object.type === "outlet" ? "Remise" : "Gare"} className={`object ${object.type}-object ${selectedObject === object.id ? "selected-object" : ""} ${invalid ? "invalid-object" : ""}`} onClick={objectClick} style={{ left: `${object.x * 100 / GRID}%`, top: `${object.y * 100 / GRID}%` }}>
+                <button key={object.id} aria-label={object.type === "outlet" ? "Remise" : "Gare"} className={`object ${object.type}-object ${selectedObject === object.id ? "selected-object" : ""} ${invalid ? "invalid-object" : ""} ${moving}`} onClick={objectClick} style={{ left: `${object.x * 100 / GRID}%`, top: `${object.y * 100 / GRID}%` }}>
                   <TerminalBuilding object={object} done={done} />
                 </button>
               );
@@ -1676,6 +1827,20 @@ export default function App() {
                 )}
                 {selected.type === "painter" && (
                   <>
+                    <p>Côtés connectés (exactement 2)</p>
+                    <div className="direction-picker" role="group" aria-label="Côtés du painter">
+                      {(["N", "E", "S", "W"] as Direction[]).map((direction) => (
+                        <button
+                          key={direction}
+                          className={selected.sides.includes(direction) ? "active" : ""}
+                          aria-pressed={selected.sides.includes(direction)}
+                          onClick={() => togglePainterSide(direction)}
+                        >
+                          <i>{direction === "N" ? "↑" : direction === "E" ? "→" : direction === "S" ? "↓" : "←"}</i>
+                          <span>{direction === "N" ? "Nord" : direction === "E" ? "Est" : direction === "S" ? "Sud" : "Ouest"}</span>
+                        </button>
+                      ))}
+                    </div>
                     <p>Couleur appliquée au passage</p>
                     <div className="color-picker painter-colors" role="group" aria-label="Couleur de peinture">
                       {COLORS.map((color) => (

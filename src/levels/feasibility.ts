@@ -93,14 +93,14 @@ export function isImplicitInfrastructureLink(objects: LevelObject[], from: GridP
   const travelDirection = directionBetween(from, current);
 
   if (fromObject?.type === "outlet" && samePoint(add(from[0], from[1], fromObject.facing), current)) {
-    if (currentObject?.type === "painter") return true;
+    if (currentObject?.type === "painter") return currentObject.sides.includes(OPPOSITE[travelDirection]);
     if (currentObject?.type === "splitter") {
       return splitterInputs(currentObject.orientation).includes(OPPOSITE[travelDirection]);
     }
   }
 
   if (currentObject?.type === "station" && currentObject.facings.some((facing) => samePoint(add(current[0], current[1], facing), from))) {
-    if (fromObject?.type === "painter") return true;
+    if (fromObject?.type === "painter") return fromObject.sides.includes(travelDirection);
     if (fromObject?.type === "splitter") {
       return splitterOutputs(fromObject.orientation).includes(travelDirection);
     }
@@ -142,7 +142,12 @@ function structuralChecks(objects: LevelObject[], width: number, height: number)
         const occupant = at(frontX, frontY);
         if (!occupant) continue;
         if (occupant.type === "painter") {
-          const [beyondX, beyondY] = add(frontX, frontY, facing);
+          if (!occupant.sides.includes(OPPOSITE[facing])) {
+            report(object, `${label} ${object.id} : mauvais côté du painter frontal (${facing})`);
+            continue;
+          }
+          const beyondSide = occupant.sides.find((side) => side !== OPPOSITE[facing])!;
+          const [beyondX, beyondY] = add(frontX, frontY, beyondSide);
           if (!inBounds(beyondX, beyondY, width, height) || at(beyondX, beyondY)?.type === "obstacle") {
             report(object, `${label} ${object.id} : painter frontal (${facing}) sans passage libre dans l’axe`);
           }
@@ -162,13 +167,15 @@ function structuralChecks(objects: LevelObject[], width: number, height: number)
     }
 
     if (object.type === "painter") {
-      if (object.x === 0 || object.y === 0 || object.x === width - 1 || object.y === height - 1) {
-        report(object, `Painter ${object.id} : ne doit pas être placé en bordure`);
+      for (const side of object.sides) {
+        const [nx, ny] = add(object.x, object.y, side);
+        if (!inBounds(nx, ny, width, height)) {
+          report(object, `Painter ${object.id} : le côté ${side} sort de la grille`);
+        }
       }
-      const horizontal = usableNeighbor(object.x, object.y, "E") && usableNeighbor(object.x, object.y, "W");
-      const vertical = usableNeighbor(object.x, object.y, "N") && usableNeighbor(object.x, object.y, "S");
-      if (!horizontal && !vertical) {
-        report(object, `Painter ${object.id} : aucun axe traversant utilisable`);
+      const usable = object.sides.every((side) => usableNeighbor(object.x, object.y, side));
+      if (!usable) {
+        report(object, `Painter ${object.id} : axe ${object.sides.join("-")} non utilisable`);
       }
     }
 

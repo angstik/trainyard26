@@ -13,11 +13,10 @@ import type { Direction, LevelObject, TrainColor } from "./types";
  *   (App.tsx) : priorité, de façon récurrente, à la couleur actuellement
  *   attendue si elle est présente parmi les arrivées simultanées ; sinon,
  *   échec du niveau.
- * - L'orientation du "Painter" (2 côtés d'entrée/sortie dans le format
- *   d'origine) n'est pas représentée dans cette application : le peintre y
- *   est omnidirectionnel (voir feasibility.ts). Cette information est donc
- *   ignorée au décodage et une valeur fixe est réémise à l'encodage — sans
- *   impact sur le gameplay, qui ne l'utilise déjà pas ici.
+ * - L'orientation du "Painter" (2 côtés d'entrée/sortie) est décodée et
+ *   encodée fidèlement depuis la v1.2 (`LevelObject` "painter" porte
+ *   `sides: [Direction, Direction]`), et le moteur en tient compte pendant
+ *   la simulation (seuls ces 2 côtés sont des entrées/sorties valides).
  * - Le "Splitter" d'origine n'accepte qu'une seule direction d'entrée
  *   (N, E, S ou W) ; cette application le simplifie en une orientation
  *   H (Est/Ouest) ou V (Nord/Sud) qui accepte les deux côtés de l'axe. La
@@ -93,8 +92,19 @@ for (const [letter, dirs] of Object.entries(GOAL_DIR_LETTERS)) {
 const PAINTER_COLOR_LETTER: Record<TrainColor, string> = Object.fromEntries(
   COLORS7.map((color, index) => [color, String.fromCharCode(97 + index)]),
 ) as Record<TrainColor, string>;
-// Orientation letter fixed/arbitrary at encode time: ignored by this engine (see header comment).
-const PAINTER_CANONICAL_ORIENTATION_LETTER = "c";
+const PAINTER_ORIENTATION_LETTERS: Record<string, [Direction, Direction]> = {
+  b: ["N", "E"], c: ["N", "S"], d: ["N", "W"],
+  h: ["E", "N"], j: ["E", "S"], k: ["E", "W"],
+  o: ["S", "N"], p: ["S", "E"], r: ["S", "W"],
+  v: ["W", "N"], w: ["W", "E"], x: ["W", "S"],
+};
+// Table inverse canonique : pour chaque paire non ordonnée, on retient la première
+// lettre rencontrée ci-dessus (ordre de déclaration = ordre du tableau de la spec).
+const PAINTER_SIDES_LETTER = new Map<string, string>();
+for (const [letter, sides] of Object.entries(PAINTER_ORIENTATION_LETTERS)) {
+  const key = directionSetKey(sides);
+  if (!PAINTER_SIDES_LETTER.has(key)) PAINTER_SIDES_LETTER.set(key, letter);
+}
 
 function countLetter(n: number): string {
   return String.fromCharCode(96 + Math.min(9, Math.max(1, n)));
@@ -196,7 +206,10 @@ export function decodePuzzleString(input: string): PuzzleDecodeResult {
       const idx = colorLetter ? colorLetter.charCodeAt(0) - 97 : -1;
       const color = COLORS7[idx];
       if (!color) { warnings.push(`Peintre illisible à la case ${cursor} (lettre « ${colorLetter ?? "?"} »).`); break; }
-      place({ type: "painter", x, y, color });
+      const orientationLetter = body[i + 2];
+      const sides = orientationLetter ? PAINTER_ORIENTATION_LETTERS[orientationLetter] : undefined;
+      if (!sides) { warnings.push(`Orientation de peintre illisible à la case ${cursor} (lettre « ${orientationLetter ?? "?"} »).`); break; }
+      place({ type: "painter", x, y, color, sides });
       cursor += 1; i += 3; continue;
     }
 
@@ -255,7 +268,7 @@ export function encodeLevelToPuzzleString(objects: LevelObject[], width: number,
         return "G" + letter + countLetter(count) + encodeColorRun(obj.expects.slice(0, count));
       }
       case "painter":
-        return "P" + PAINTER_COLOR_LETTER[obj.color] + PAINTER_CANONICAL_ORIENTATION_LETTER;
+        return "P" + PAINTER_COLOR_LETTER[obj.color] + (PAINTER_SIDES_LETTER.get(directionSetKey(obj.sides)) ?? "c");
       case "splitter":
         return "S" + (obj.orientation === "V" ? "a" : "b");
       default:

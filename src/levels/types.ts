@@ -7,7 +7,7 @@ export type LevelObject =
   | { id: string; type: "outlet"; x: number; y: number; facing: Direction; trains: TrainColor[] }
   | { id: string; type: "station"; x: number; y: number; facings: Direction[]; expects: TrainColor[] }
   | { id: string; type: "obstacle"; x: number; y: number }
-  | { id: string; type: "painter"; x: number; y: number; color: TrainColor }
+  | { id: string; type: "painter"; x: number; y: number; color: TrainColor; sides: [Direction, Direction] }
   | { id: string; type: "splitter"; x: number; y: number; orientation: "H" | "V" };
 
 export type LevelDefinition = {

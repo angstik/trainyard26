@@ -89,11 +89,20 @@ function normalizeInfrastructure(objects: LevelObject[]) {
     return inputs.some((direction) => sideUsable(object, direction))
       && outputs.every((direction) => sideUsable(object, direction));
   };
+  const axisUsable = (object: LevelObject, sides: [Direction, Direction]) => sides.every((direction) => sideUsable(object, direction));
 
   return terminalsNormalized.map((object): LevelObject => {
-    if (object.type !== "splitter" || splitterUsable(object, object.orientation)) return object;
-    const alternative = object.orientation === "H" ? "V" : "H";
-    return splitterUsable(object, alternative) ? { ...object, orientation: alternative } : object;
+    if (object.type === "splitter") {
+      if (splitterUsable(object, object.orientation)) return object;
+      const alternative = object.orientation === "H" ? "V" : "H";
+      return splitterUsable(object, alternative) ? { ...object, orientation: alternative } : object;
+    }
+    if (object.type === "painter") {
+      if (axisUsable(object, object.sides)) return object;
+      const alternative: [Direction, Direction] = object.sides[0] === "N" || object.sides[0] === "S" ? ["E", "W"] : ["N", "S"];
+      return axisUsable(object, alternative) ? { ...object, sides: alternative } : object;
+    }
+    return object;
   });
 }
 
@@ -102,7 +111,7 @@ function parseToken(token: string, x: number, y: number, levelId: string): Level
   if (token === ".") return null;
   if (token === "X") return { id, type: "obstacle", x, y };
   if (token === "SPH" || token === "SPV") return { id, type: "splitter", x, y, orientation: token[2] as "H" | "V" };
-  if (/^P(BR|PK|CY|R|B|Y|O|G|P|W)$/.test(token)) return { id, type: "painter", x, y, color: colorFromCode(token.slice(1)) };
+  if (/^P(BR|PK|CY|R|B|Y|O|G|P|W)$/.test(token)) return { id, type: "painter", x, y, color: colorFromCode(token.slice(1)), sides: ["N", "S"] };
 
   if (token.startsWith("G")) {
     const match = token.match(/^G([NESW])(?::)?(.+?)(\d+)?$/);
