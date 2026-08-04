@@ -1,6 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { DEFAULT_LEVEL, LEVEL_FAMILIES } from "./levels/catalog";
 import { analyzeObjects, isImplicitInfrastructureLink, TRAIN_COLORS } from "./levels/feasibility";
+import { decodePuzzleString, encodeLevelToPuzzleString } from "./levels/puzzleCodec";
+import { parseLevelImport, type LevelIdentity } from "./levels/importFormats";
 import type { Direction, LevelDefinition, LevelFamily, LevelObject, TrainColor } from "./levels/types";
 import { sampleRailCenterline } from "./rail-motion";
 
@@ -408,6 +410,10 @@ export default function App() {
   const [levelProgress, setLevelProgress] = useState<Record<string, LevelProgress>>({});
   const [editingElapsedMs, setEditingElapsedMs] = useState(0);
   const [libraryFamilyId, setLibraryFamilyId] = useState<string | null>(null);
+  const [importText, setImportText] = useState("");
+  const [importFeedback, setImportFeedback] = useState("");
+  const [importedIdentity, setImportedIdentity] = useState<LevelIdentity | null>(null);
+  const [exportFeedback, setExportFeedback] = useState("");
 
   const boardRef = useRef<HTMLDivElement>(null);
   const drawingRef = useRef(false);
@@ -563,6 +569,58 @@ export default function App() {
     simRef.current = empty;
     setEmitted(empty.emitted);
     setReceived(empty.received);
+  }
+
+  function handleImportLevel() {
+    const parsed = parseLevelImport(importText);
+    if (parsed.kind === "error") {
+      setImportFeedback(parsed.message);
+      setImportedIdentity(null);
+      return;
+    }
+    const decoded = decodePuzzleString(parsed.puzzleString);
+    if (decoded.objects.length === 0) {
+      setImportFeedback(`Échec du décodage : ${decoded.warnings[0] ?? "puzzleString vide ou illisible."}`);
+      setImportedIdentity(null);
+      return;
+    }
+    const identity = parsed.kind === "csv" ? parsed.identity : null;
+    const nextLevel: LevelDefinition = {
+      id: identity?.id ? `import-${identity.id}` : `import-${Date.now()}`,
+      title: identity?.name?.trim() || "Niveau importé",
+      number: activeLevel.number,
+      brief: identity?.description?.trim() || "",
+      family,
+      width: 7,
+      height: 7,
+      railLimit,
+      objects: decoded.objects,
+      examplePaths: [],
+    };
+    loadLevel(nextLevel);
+    setImportedIdentity(identity);
+    setImportFeedback(
+      decoded.warnings.length > 0
+        ? `Niveau importé avec ${decoded.warnings.length} avertissement${decoded.warnings.length > 1 ? "s" : ""} : ${decoded.warnings.join(" · ")}`
+        : "Niveau importé.",
+    );
+    setImportText("");
+  }
+
+  function handleExportLevel() {
+    const puzzleString = encodeLevelToPuzzleString(objects, activeLevel.width, activeLevel.height);
+    if (!puzzleString) {
+      setExportFeedback("Export impossible : le format puzzleString ne prend en charge que la grille 7×7.");
+      return;
+    }
+    if (navigator.clipboard?.writeText) {
+      navigator.clipboard.writeText(puzzleString).then(
+        () => setExportFeedback(`Copié dans le presse-papiers (${puzzleString.length} caractères).`),
+        () => setExportFeedback(`Copie automatique refusée par le navigateur. Chaîne : ${puzzleString}`),
+      );
+    } else {
+      setExportFeedback(`Presse-papiers indisponible. Chaîne : ${puzzleString}`);
+    }
   }
 
   function resumeLevel(level: LevelDefinition) {
@@ -1282,6 +1340,8 @@ export default function App() {
               <button key={tool} title={label} className={editorTool === tool ? "selected" : ""} onClick={() => { setEditorDialog(null); setEditorTool(tool); }}><span className="tool-icon"><ToolIcon tool={tool} /></span><span className="tool-label">{label}</span></button>
             ))}
             <button className="level-settings" onClick={() => setEditorDialog("level")}><span className="tool-icon">⚙</span><span className="tool-label">Niveau</span></button>
+            <button className="palette-action" title="Exporter la puzzleString" onClick={handleExportLevel}><span className="tool-icon"><span className="tool-glyph">⇪</span></span><span className="tool-label">Exporter</span></button>
+            {exportFeedback && <p className="export-feedback" role="status">{exportFeedback}</p>}
             <button className="palette-action" title="Annuler" disabled={!history.length} onClick={undoTrack}><span className="tool-icon"><span className="tool-glyph">↶</span></span><span className="tool-label">Annuler</span></button>
             <button className="palette-action danger" title="Vider les rails" onClick={clearTracks}><span className="tool-icon"><span className="tool-glyph">×</span></span><span className="tool-label">Vider</span></button>
             <div className={`editor-validation ${feasibility.feasible ? "ok" : "error"}`}>
@@ -1475,6 +1535,44 @@ export default function App() {
             </div>
             {saveStatus && <p className="save-status">{saveStatus}</p>}
             <button className="validate" onClick={() => changeMode("play")}>▶ TESTER SANS VALIDATION</button>
+            <div className="level-io">
+              <h3>IMPORTER UN NIVEAU</h3>
+              <p className="io-hint">Colle soit une ligne CSV à 20 colonnes (id,webID,creatorID,…,puzzleString,…), soit juste une puzzleString « hh… ». Remplace le niveau en cours.</p>
+              <textarea
+                rows={4}
+                placeholder="hh3Giav6Giav3Sb5R…  ou  1,1,1,1,,Nom,Description,hh…,…"
+                value={importText}
+                onChange={(event) => setImportText(event.target.value)}
+              />
+              <button className="import-level" disabled={!importText.trim()} onClick={handleImportLevel}>IMPORTER</button>
+              {importFeedback && <p className="import-feedback" role="status">{importFeedback}</p>}
+              {importedIdentity && (
+                <div className="identity-card">
+                  <h4>FICHE D’IDENTITÉ</h4>
+                  <div><span>ID</span><b>{importedIdentity.id || "—"}</b></div>
+                  <div><span>Web ID</span><b>{importedIdentity.webID || "—"}</b></div>
+                  <div><span>Créateur</span><b>{importedIdentity.creatorID || "—"}</b></div>
+                  <div><span>Section</span><b>{importedIdentity.section || "—"}</b></div>
+                  <div><span>Nom</span><b>{importedIdentity.name || "—"}</b></div>
+                  <div><span>Description</span><b>{importedIdentity.description || "—"}</b></div>
+                  <div><span>Pièces</span><b>{importedIdentity.pieceCounts || "—"}</b></div>
+                  <div><span>Clés (wrenches)</span><b>{importedIdentity.wrenches || "—"}</b></div>
+                  <div><span>Résoluble</span><b>{importedIdentity.isSolvable || "—"}</b></div>
+                  <div><span>Aimé</span><b>{importedIdentity.hasBeenLiked || "—"}</b></div>
+                  <div><span>Soumis le</span><b>{importedIdentity.submissionDate || "—"}</b></div>
+                  <div><span>Import local</span><b>{importedIdentity.localInsertionDate || "—"}</b></div>
+                  <div><span>Likes</span><b>{importedIdentity.likes || "—"}</b></div>
+                  <div><span>Vues</span><b>{importedIdentity.views || "—"}</b></div>
+                  <div><span>Ordinal utilisateur</span><b>{importedIdentity.userOrdinal || "—"}</b></div>
+                  <div><span>Ordinal téléchargement</span><b>{importedIdentity.downloadOrdinal || "—"}</b></div>
+                  <div><span>Mis en avant</span><b>{importedIdentity.isInFeatured || "—"}</b></div>
+                  <small className="identity-note">solutionString conservée telle quelle (non décodée, format non documenté) : {importedIdentity.solutionString ? `${importedIdentity.solutionString.slice(0, 24)}…` : "—"}</small>
+                </div>
+              )}
+              <h3>EXPORTER LE NIVEAU</h3>
+              <button className="export-level" onClick={handleExportLevel}>COPIER LA PUZZLESTRING</button>
+              {exportFeedback && <p className="export-feedback" role="status">{exportFeedback}</p>}
+            </div>
                 </>
               )}
             {editorDialog === "object" && selected && (

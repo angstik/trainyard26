@@ -436,6 +436,26 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .save-actions .save-level { color:var(--cyan); border-color:#278fa0; }
 .save-status { color:#71cddd; font-size:8px; letter-spacing:.08em; text-align:center; }
 
+.level-io { margin-top:20px; border-top:1px solid #263943; padding-top:16px; }
+.level-io h3 { font-size:10px; color:var(--muted); letter-spacing:.14em; margin:16px 0 6px; }
+.level-io h3:first-child { margin-top:0; }
+.io-hint { color:var(--muted); font-size:9px; line-height:1.5; margin:0 0 8px; }
+.level-io textarea {
+  width:100%; resize:vertical; min-height:64px; padding:8px; box-sizing:border-box;
+  background:#0a1318; border:1px solid #2a3d47; color:#dbe9ee; font-family:inherit; font-size:10px; line-height:1.4;
+}
+.level-io button { width:100%; margin-top:8px; padding:9px 5px; border:1px solid #38505b; background:#111d23; color:inherit; font-size:9px; letter-spacing:.08em; }
+.level-io button:disabled { opacity:.4; cursor:not-allowed; }
+.level-io .export-level { color:var(--cyan); border-color:#278fa0; }
+.import-feedback, .export-feedback { color:#71cddd; font-size:8px; letter-spacing:.04em; line-height:1.5; margin:8px 0 0; word-break:break-word; }
+.identity-card { margin-top:10px; border:1px solid #263943; padding:10px; display:grid; gap:5px; }
+.identity-card h4 { font-size:9px; color:var(--muted); letter-spacing:.14em; margin:0 0 4px; }
+.identity-card div { display:flex; justify-content:space-between; gap:10px; font-size:10px; border-bottom:1px solid #1d2a31; padding-bottom:3px; }
+.identity-card div span { color:var(--muted); }
+.identity-card div b { text-align:right; word-break:break-word; }
+.identity-note { display:block; margin-top:6px; color:var(--muted); font-size:8px; line-height:1.5; }
+.palette .export-feedback { font-size:7px; padding:0 4px; text-align:center; }
+
 .direction-picker { display:grid; grid-template-columns:repeat(4,1fr); gap:7px; margin:8px 0 20px; }
 .direction-picker button {
   min-width:0; padding:10px 4px; display:grid; place-items:center; gap:5px;
