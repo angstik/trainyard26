@@ -8,13 +8,3 @@ createRoot(document.getElementById("root") as HTMLElement).render(
     <App />
   </StrictMode>,
 );
-
-if ("serviceWorker" in navigator) {
-  window.addEventListener("load", () => {
-    navigator.serviceWorker
-      .register(`${import.meta.env.BASE_URL}sw.js`)
-      .catch(() => {
-        // Offline caching is a progressive enhancement; ignore registration failures.
-      });
-  });
-}

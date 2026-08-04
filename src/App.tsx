@@ -45,7 +45,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.10";
+const APP_VERSION = "1.11";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -407,13 +407,14 @@ function ToolIcon({ tool }: { tool: EditorTool }) {
   if (tool === "painter") return <span className="tool-preview"><PainterPiece object={{ id: "tool-painter", type: "painter", x: 0, y: 0, color: "red", sides: ["N", "S"] }} /></span>;
   if (tool === "splitter") return <span className="tool-preview"><SplitterPiece object={{ id: "tool-splitter", type: "splitter", x: 0, y: 0, orientation: "H" }} /></span>;
   if (tool === "obstacle") return <span className="tool-preview rock-preview" />;
-  if (tool === "select") return <span className="tool-glyph">✥</span>;
-  if (tool === "delete") return <span className="tool-preview eraser-preview"><span className="eraser-body" /><span className="eraser-band" /></span>;
-  return <span className="tool-glyph">⌫</span>;
+  if (tool === "select") return <span className="tool-preview select-preview"><span className="select-arrow n" /><span className="select-arrow e" /><span className="select-arrow s" /><span className="select-arrow w" /><span className="select-hub" /></span>;
+  if (tool === "delete" || tool === "erase") return <span className="tool-preview eraser-preview"><span className="eraser-body" /><span className="eraser-band" /></span>;
+  return <span className="tool-glyph">×</span>;
 }
 
 export default function App() {
   const [mode, setMode] = useState<"play" | "editor">("play");
+  const [installHint, setInstallHint] = useState(false);
   const [families, setFamilies] = useState<LevelFamily[]>(LEVEL_FAMILIES);
   const [activeLevel, setActiveLevel] = useState<LevelDefinition>(DEFAULT_LEVEL);
   const [speed, setSpeed] = useState(1);
@@ -448,6 +449,7 @@ export default function App() {
   const [saveStatus, setSaveStatus] = useState("");
   const [levelProgress, setLevelProgress] = useState<Record<string, LevelProgress>>({});
   const [editingElapsedMs, setEditingElapsedMs] = useState(0);
+  const [runElapsedMs, setRunElapsedMs] = useState(0);
   const [libraryFamilyId, setLibraryFamilyId] = useState<string | null>(null);
   const [importText, setImportText] = useState("");
   const [importFeedback, setImportFeedback] = useState("");
@@ -468,6 +470,23 @@ export default function App() {
   const explosionId = useRef(0);
   const burstId = useRef(0);
   const objectId = useRef(0);
+  const objectsHistoryRef = useRef<LevelObject[][]>([]);
+  const [objectsHistoryLength, setObjectsHistoryLength] = useState(0);
+
+  function pushObjectsHistory() {
+    objectsHistoryRef.current = [...objectsHistoryRef.current.slice(-19), objects];
+    setObjectsHistoryLength(objectsHistoryRef.current.length);
+  }
+
+  function undoObjects() {
+    const previous = objectsHistoryRef.current.pop();
+    setObjectsHistoryLength(objectsHistoryRef.current.length);
+    if (!previous) { setStatus("RIEN À ANNULER"); return; }
+    setObjects(previous);
+    setSelectedObject(null);
+    setEditorDialog(null);
+    setStatus("MODIFICATION ANNULÉE");
+  }
   const dialogBodyRef = useRef<HTMLDivElement>(null);
   const libraryScrollOffsets = useRef<Record<string, number>>({});
 
@@ -498,6 +517,17 @@ export default function App() {
     }, 1000);
     return () => window.clearInterval(timer);
   }, [running, result]);
+
+  useEffect(() => {
+    if (!running || paused) return;
+    let lastTick = Date.now();
+    const timer = window.setInterval(() => {
+      const now = Date.now();
+      setRunElapsedMs((value) => value + now - lastTick);
+      lastTick = now;
+    }, 200);
+    return () => window.clearInterval(timer);
+  }, [running, paused]);
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -576,6 +606,18 @@ export default function App() {
   }, [editorDialog]);
 
   useEffect(() => {
+    const nav = window.navigator as Navigator & { standalone?: boolean };
+    const isStandalone = window.matchMedia("(display-mode: standalone)").matches || nav.standalone === true;
+    const dismissed = window.localStorage.getItem("signal-nocturne-install-hint-dismissed") === "1";
+    if (!isStandalone && !dismissed) setInstallHint(true);
+  }, []);
+
+  function dismissInstallHint(persist: boolean) {
+    setInstallHint(false);
+    if (persist) window.localStorage.setItem("signal-nocturne-install-hint-dismissed", "1");
+  }
+
+  useEffect(() => {
     if ("serviceWorker" in navigator) {
       let refreshing = false;
       const reloadOnUpdate = () => {
@@ -584,7 +626,7 @@ export default function App() {
         window.location.reload();
       };
       navigator.serviceWorker.addEventListener("controllerchange", reloadOnUpdate);
-      navigator.serviceWorker.register("/sw.js", { updateViaCache: "none" })
+      navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`, { updateViaCache: "none" })
         .then((registration) => registration.update())
         .catch(() => {
           // The game remains fully usable online if registration is unavailable.
@@ -625,6 +667,8 @@ export default function App() {
     setSwitchPositions(level.switchPositions ?? {});
     setDisplaySwitchPositions(level.switchPositions ?? {});
     setHistory([]);
+    objectsHistoryRef.current = [];
+    setObjectsHistoryLength(0);
     setGesture([]);
     setObjects(level.objects);
     setRailLimit(level.railLimit);
@@ -835,6 +879,7 @@ export default function App() {
       return;
     }
     persistAttempt(false);
+    setRunElapsedMs(0);
     const clean = createEmptySim(objects, switchPositions);
     simRef.current = clean;
     setDisplaySwitchPositions({ ...switchPositions });
@@ -1109,6 +1154,7 @@ export default function App() {
 
   function placeObject(cell: Point) {
     const [x, y] = cell;
+    pushObjectsHistory();
     if (editorTool === "delete") {
       setObjects((items) => items.filter((o) => o.x !== x || o.y !== y));
       return;
@@ -1122,6 +1168,7 @@ export default function App() {
     else if (editorTool === "splitter") object = { id, type: "splitter", x, y, orientation: "H" };
     else object = { id, type: "obstacle", x, y };
     setObjects((items) => [...items.filter((o) => o.x !== x || o.y !== y), object]);
+    stripInvalidEdgesFor(object);
     setSelectedObject(id);
     setSequenceSlot(0);
     setEditorDialog("object");
@@ -1164,6 +1211,8 @@ export default function App() {
     if (gesture.moving) {
       const target = moveGhostCell ?? gesture.startCell;
       const objectId = gesture.objectId;
+      let moved: LevelObject | null = null;
+      pushObjectsHistory();
       setObjects((items) => {
         const occupied = items.some((item) => item.id !== objectId && item.x === target[0] && item.y === target[1]);
         if (occupied) {
@@ -1171,8 +1220,13 @@ export default function App() {
           return items;
         }
         setStatus("ÉLÉMENT DÉPLACÉ");
-        return items.map((item) => item.id === objectId ? { ...item, x: target[0], y: target[1] } : item);
+        return items.map((item) => {
+          if (item.id !== objectId) return item;
+          moved = { ...item, x: target[0], y: target[1] };
+          return moved;
+        });
       });
+      if (moved) stripInvalidEdgesFor(moved);
       setMovingObjectId(null);
       setMoveGhostCell(null);
       return;
@@ -1181,6 +1235,7 @@ export default function App() {
     const object = objects.find((item) => item.id === gesture.objectId);
     if (!object) return;
     if (object.type === "splitter") {
+      pushObjectsHistory();
       setObjects((items) => items.map((item) => item.id === object.id && item.type === "splitter" ? { ...item, orientation: item.orientation === "H" ? "V" : "H" } : item));
       playEffect("switch");
       setStatus("SPLITTER PIVOTÉ");
@@ -1189,6 +1244,42 @@ export default function App() {
     setSelectedObject(object.id);
     setSequenceSlot(0);
     setEditorDialog("object");
+  }
+
+  function edgeAllowedForPlacement(object: LevelObject, a: Point, b: Point): boolean {
+    const objectCell: Point = [object.x, object.y];
+    if (!samePoint(a, objectCell) && !samePoint(b, objectCell)) return true;
+    const other = samePoint(a, objectCell) ? b : a;
+    const direction = directionBetween(objectCell, other);
+    if (object.type === "obstacle") return false;
+    if (object.type === "outlet") return direction === object.facing;
+    if (object.type === "station") return object.facings.includes(direction);
+    if (object.type === "painter") return object.sides.includes(direction);
+    return true;
+  }
+
+  function stripInvalidEdgesFor(object: LevelObject) {
+    setEdges((current) => new Set([...current].filter((key) => {
+      const [aKey, bKey] = key.split("|");
+      const [ax, ay] = aKey.split(",").map(Number) as [number, number];
+      const [bx, by] = bKey.split(",").map(Number) as [number, number];
+      return edgeAllowedForPlacement(object, [ax, ay], [bx, by]);
+    })));
+  }
+
+  function isEdgeAllowed(a: Point, b: Point): boolean {
+    for (const [cell, neighbor] of [[a, b], [b, a]] as const) {
+      const object = objects.find((item) => item.x === cell[0] && item.y === cell[1]);
+      if (!object) continue;
+      const direction = directionBetween(cell, neighbor);
+      if (object.type === "obstacle") return false;
+      if (object.type === "outlet" && direction !== object.facing) return false;
+      if (object.type === "station" && !object.facings.includes(direction)) return false;
+      if (object.type === "painter" && !object.sides.includes(direction)) return false;
+      // Le splitter reste libre sur ses 4 côtés : l'entrée invalide (côté
+      // "coloré") est déjà traitée comme un accident par la simulation.
+    }
+    return true;
   }
 
   function resolveTrackGesture(path: Point[]) {
@@ -1307,7 +1398,13 @@ export default function App() {
       });
     }
 
-    setEdges(resolvedEdges);
+    const sanitizedEdges = new Set([...resolvedEdges].filter((key) => {
+      const [aKey, bKey] = key.split("|");
+      const [ax, ay] = aKey.split(",").map(Number) as [number, number];
+      const [bx, by] = bKey.split(",").map(Number) as [number, number];
+      return isEdgeAllowed([ax, ay], [bx, by]);
+    }));
+    setEdges(sanitizedEdges);
     setJunctionModes(nextModes);
     setSwitchToes(nextToes);
     setSwitchPositions(nextPositions);
@@ -1345,10 +1442,17 @@ export default function App() {
       handleSelectPointerDown(cell, event);
       return;
     }
-    if (mode === "editor" && editorTool === "station") {
-      const existing = objects.find((item) => item.x === cell[0] && item.y === cell[1] && item.type === "station");
+    if (mode === "editor" && ["outlet", "station", "painter", "splitter", "obstacle"].includes(editorTool)) {
+      const existing = objects.find((item) => item.x === cell[0] && item.y === cell[1] && item.type === editorTool);
       if (existing) {
         setEditorTool("select");
+        if (existing.type === "splitter") {
+          pushObjectsHistory();
+          setObjects((items) => items.map((item) => item.id === existing.id && item.type === "splitter" ? { ...item, orientation: item.orientation === "H" ? "V" : "H" } : item));
+          playEffect("switch");
+          setStatus("SPLITTER PIVOTÉ");
+          return;
+        }
         setSelectedObject(existing.id);
         setSequenceSlot(0);
         setEditorDialog("object");
@@ -1423,28 +1527,37 @@ export default function App() {
 
   function updateSelectedObject(update: Partial<{ facing: Direction; facings: Direction[]; trains: TrainColor[]; expects: TrainColor[]; color: TrainColor; orientation: "H" | "V" }>) {
     if (!selectedObject) return;
+    pushObjectsHistory();
     setObjects((items) => items.map((object) => object.id === selectedObject ? { ...object, ...update } as LevelObject : object));
   }
 
   function togglePainterSide(direction: Direction) {
     if (!selectedObject) return;
+    pushObjectsHistory();
+    let updated: LevelObject | null = null;
     setObjects((items) => items.map((object) => {
       if (object.id !== selectedObject || object.type !== "painter") return object;
       if (object.sides.includes(direction)) return object; // toujours exactement 2 côtés actifs
       const [, second] = object.sides;
-      return { ...object, sides: [second, direction] };
+      updated = { ...object, sides: [second, direction] };
+      return updated;
     }));
+    if (updated) stripInvalidEdgesFor(updated);
   }
 
   function toggleStationFacing(direction: Direction) {
     if (!selectedObject) return;
+    pushObjectsHistory();
+    let updated: LevelObject | null = null;
     setObjects((items) => items.map((object) => {
       if (object.id !== selectedObject || object.type !== "station") return object;
       const has = object.facings.includes(direction);
       if (has && object.facings.length === 1) return object; // une gare doit garder au moins une entrée
       const facings = has ? object.facings.filter((item) => item !== direction) : [...object.facings, direction];
-      return { ...object, facings };
+      updated = { ...object, facings };
+      return updated;
     }));
+    if (updated) stripInvalidEdgesFor(updated);
   }
 
   function updateSequence(index: number, value: TrainColor | "") {
@@ -1550,8 +1663,47 @@ export default function App() {
 
   return (
     <main className={`app-shell mode-${mode}`}>
-      <header>
-        <div className="brand"><span className="sigil">✣</span><div><b>SIGNAL NOCTURNE</b><small>v{APP_VERSION} · NIVEAU {activeLevel.number.toString().padStart(2, "0")} · {activeLevel.title.toUpperCase()}</small></div></div>
+      {installHint && (() => {
+        const ua = window.navigator.userAgent;
+        const isIOS = /iPad|iPhone|iPod/.test(ua) || (ua.includes("Macintosh") && "ontouchend" in document);
+        const isAndroid = /Android/.test(ua);
+        return (
+          <div className="install-hint-backdrop" role="presentation">
+            <section className="install-hint" role="dialog" aria-modal="true" aria-labelledby="install-hint-title">
+              <span className="sigil">✣</span>
+              <h2 id="install-hint-title">INSTALLER SIGNAL NOCTURNE</h2>
+              <p>Vous jouez dans le navigateur. Installez l'application sur votre écran d'accueil pour un plein écran sans barre d'adresse, un accès hors-ligne, et une icône dédiée.</p>
+              {isIOS && (
+                <ol>
+                  <li>Appuyez sur <b>Partager</b> <span className="ios-share-icon">⬆︎</span> dans la barre Safari</li>
+                  <li>Choisissez <b>« Sur l'écran d'accueil »</b></li>
+                  <li>Confirmez avec <b>Ajouter</b></li>
+                </ol>
+              )}
+              {isAndroid && !isIOS && (
+                <ol>
+                  <li>Ouvrez le menu <b>⋮</b> de Chrome</li>
+                  <li>Choisissez <b>« Installer l'application »</b> ou <b>« Ajouter à l'écran d'accueil »</b></li>
+                </ol>
+              )}
+              {!isIOS && !isAndroid && (
+                <ol>
+                  <li>Cliquez sur l'icône d'installation dans la barre d'adresse (⊕ ou écran avec flèche), ou ouvrez le menu du navigateur</li>
+                  <li>Choisissez <b>« Installer Signal Nocturne »</b></li>
+                </ol>
+              )}
+              <div className="install-hint-actions">
+                <button onClick={() => dismissInstallHint(false)}>CONTINUER DANS LE NAVIGATEUR</button>
+                <button className="install-hint-dismiss" onClick={() => dismissInstallHint(true)}>NE PLUS AFFICHER</button>
+              </div>
+            </section>
+          </div>
+        );
+      })()}      <header>
+        <div className="brand">
+          <span className="sigil">✣<small className="version-tag">v{APP_VERSION}</small></span>
+          <div><b>{activeLevel.title.toUpperCase()}</b><small>SIGNAL NOCTURNE · NIVEAU {activeLevel.number.toString().padStart(2, "0")}</small></div>
+        </div>
         <div className="status-strip">
           <span><small>ÉTAT</small><b className={result}>{paused ? "PAUSE" : status}</b></span>
           <span><small>RAILS</small><b style={{ color: railMetricColor }}>{railCount} / {railLimit}</b></span>
@@ -1572,16 +1724,17 @@ export default function App() {
             <h2>OUTILS</h2>
             <div className="palette-grid">
               {([
-                ["select", "Sélection"],
                 ["outlet", "Remise"],
                 ["station", "Gare"],
                 ["painter", "Peinture"],
                 ["splitter", "Splitter"],
                 ["obstacle", "Obstacle"],
-                ["delete", "Supprimer"],
               ] as [EditorTool, string][]).map(([tool, label]) => (
                 <button key={tool} title={label} className={editorTool === tool ? "selected" : ""} onClick={() => { setEditorDialog(null); setEditorTool(tool); }}><span className="tool-icon"><ToolIcon tool={tool} /></span><span className="tool-label">{label}</span></button>
               ))}
+              <button title="Sélection" className={editorTool === "select" ? "selected" : ""} onClick={() => { setEditorDialog(null); setEditorTool("select"); }}><span className="tool-icon"><ToolIcon tool="select" /></span><span className="tool-label">Sélection</span></button>
+              <button title="Supprimer" className={editorTool === "delete" ? "selected" : ""} onClick={() => { setEditorDialog(null); setEditorTool("delete"); }}><span className="tool-icon"><ToolIcon tool="delete" /></span><span className="tool-label">Supprimer</span></button>
+              <button className="palette-action" title="Annuler la dernière modification" disabled={!objectsHistoryLength} onClick={undoObjects}><span className="tool-icon"><span className="tool-glyph">↶</span></span><span className="tool-label">Annuler</span></button>
               <button className="level-settings" onClick={() => setEditorDialog("level")}><span className="tool-icon">⚙</span><span className="tool-label">Niveau</span></button>
               <button className="palette-action" title="Importer / exporter un niveau" onClick={() => setEditorDialog("io")}><span className="tool-icon"><span className="tool-glyph">⇄</span></span><span className="tool-label">Import/Export</span></button>
             </div>
@@ -1596,11 +1749,10 @@ export default function App() {
             <button className="board-level-arrow" aria-label="Niveau précédent" title="Niveau précédent" disabled={running || activeLevelIndex <= 0} onClick={() => changeLevel(-1)}>←</button>
             <div className="level-brief">
               <b>{activeLevel.title}</b>
-              {mode === "play" && <div className="game-hud" aria-label={`Version ${APP_VERSION}, ${railCount} rails sur ${railLimit}, ${trackCells} cases, temps ${formatTime(editingElapsedMs)}`}>
-                <span className="game-version">V{APP_VERSION}</span>
+              {mode === "play" && <div className="game-hud" aria-label={`Version ${APP_VERSION}, ${railCount} rails sur ${railLimit}, ${trackCells} cases, temps ${formatTime(runElapsedMs)}`}>
                 <span><small>RAILS</small><strong style={{ color: railMetricColor }}>{railCount}/{railLimit}</strong></span>
                 <span><small>CASES</small><strong>{trackCells}</strong></span>
-                <span><small>TEMPS</small><strong>{formatTime(editingElapsedMs)}</strong></span>
+                <span><small>TEMPS</small><strong>{formatTime(runElapsedMs)}</strong></span>
               </div>}
             </div>
             <button className="board-level-arrow" aria-label="Niveau suivant" title="Niveau suivant" disabled={running || activeLevelIndex < 0 || activeLevelIndex >= navigableLevels.length - 1} onClick={() => changeLevel(1)}>→</button>
@@ -1646,6 +1798,7 @@ export default function App() {
                 if (mode !== "editor" || running) return;
                 if (editorTool === "select") return;
                 if (object.type === "splitter") {
+                  pushObjectsHistory();
                   setObjects((items) => items.map((item) => item.id === object.id && item.type === "splitter" ? { ...item, orientation: item.orientation === "H" ? "V" : "H" } : item));
                   playEffect("switch");
                   setStatus("SPLITTER PIVOTÉ");
@@ -1765,9 +1918,13 @@ export default function App() {
             <div className={`feasibility ${feasibility.feasible ? "ok" : "mismatch"}`}>
               <h3>FAISABILITÉ DES COULEURS</h3>
               <div className="feasibility-total"><span>Total remise / attendu</span><b>{feasibility.producedTotal} / {feasibility.expectedTotal}</b></div>
-              {COLORS.map((color) => (
-                <div key={color}><i className={color} /><span>{COLOR_LABELS[color]}</span><b>{feasibility.produced[color]} / {feasibility.expected[color]}</b></div>
-              ))}
+              <div className="feasibility-swatches">
+                {COLORS.map((color) => (
+                  <div key={color} className={`feasibility-swatch ${color}`} title={COLOR_LABELS[color]}>
+                    <b>{feasibility.produced[color]}/{feasibility.expected[color]}</b>
+                  </div>
+                ))}
+              </div>
               {feasibility.feasible
                 ? <small>{`COMBINAISON ET STRUCTURE FAISABLES${feasibility.hasPainter ? " · PAINTER" : ""}${feasibility.hasSplitter ? " · SPLITTER" : ""}`}</small>
                 : <ul>{feasibility.issues.map((issue) => <li key={issue}>{issue}</li>)}</ul>}
@@ -1916,7 +2073,7 @@ export default function App() {
       </section>
 
       {mode === "play" && <footer>
-        <button className={editorTool === "erase" ? "tool-active" : ""} disabled={running} onClick={() => setEditorTool((tool) => tool === "erase" ? "rail" : "erase")}>⌫<span>EFFACER</span></button>
+        <button className={editorTool === "erase" ? "tool-active" : ""} disabled={running} onClick={() => setEditorTool((tool) => tool === "erase" ? "rail" : "erase")}><ToolIcon tool="erase" /><span>EFFACER</span></button>
         <button disabled={running || !history.length} onClick={undoTrack}>↶<span>ANNULER</span></button>
         <button onClick={clearTracks} disabled={running}>×<span>VIDER</span></button>
         <button className={running ? "tool-active" : ""} disabled={!running && result === "idle"} onClick={() => resetSimulation()}>■<span>MODIF</span></button>
