@@ -6,7 +6,8 @@ serveur : pas de Worker, pas de base de données, pas d'authentification.
 
 Le dossier [`../signal-nocturne-v27`](../signal-nocturne-v27) — la version de
 travail sur socle Next.js/vinext/Cloudflare — n'a pas été modifié. Ce dossier
-`v1.0` est une reconstruction indépendante, portant le même moteur de jeu, la même UI et le même contenu (niveaux, textes, audio, documentation), sur un
+`v1.0` est une reconstruction indépendante, portant le même moteur de jeu, la
+même UI et le même contenu (niveaux, textes, audio, documentation), sur un
 socle Vite + React classique sans rendu serveur.
 
 ## Ce qui a été repris à l'identique (aucun changement de comportement)
@@ -17,8 +18,12 @@ socle Vite + React classique sans rendu serveur.
 - `src/levels/*.ts`, `src/rail-motion.ts` — copies strictement identiques
   (contenu des niveaux non touché).
 - `src/index.css` — copie de `app/globals.css`.
-- `public/audio/`, `public/docs/`, `public/documentation.html`,
-  `public/favicon.svg`, `public/icon-*.svg` — copies identiques.
+- `public/audio/`, `public/favicon.svg`, `public/icon-*.svg` — copies
+  identiques.
+
+> La documentation (`public/docs/`, `public/documentation.html`) a été
+> retirée de cette version publique (elle reste disponible dans
+> `signal-nocturne-v27`, côté dépôt privé).
 
 ## Ce qui a été adapté (uniquement pour la portabilité statique)
 

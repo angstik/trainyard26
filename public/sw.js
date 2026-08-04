@@ -1,11 +1,7 @@
-const CACHE = "signal-nocturne-v1.0";
+const CACHE = "signal-nocturne-v1.1";
 const SCOPE = self.registration.scope;
 const CORE = [
-  "", "documentation.html", "manifest.webmanifest", "favicon.svg", "icon-192.svg", "icon-512.svg",
-  "docs/screens/play.svg", "docs/screens/editor.svg", "docs/screens/levels.svg", "docs/screens/validation.svg",
-  "docs/screens/play-mobile.svg", "docs/screens/editor-mobile.svg", "docs/screens/levels-mobile.svg", "docs/screens/validation-mobile.svg",
-  "docs/diagrams/architecture.svg", "docs/diagrams/simulation-tick.svg", "docs/diagrams/state-storage.svg",
-  "docs/signal-nocturne-documentation-v27.pdf",
+  "", "manifest.webmanifest", "favicon.svg", "icon-192.svg", "icon-512.svg",
   "audio/unmute.m4a", "audio/switch.m4a", "audio/brake.m4a", "audio/explosion.m4a",
   "audio/split.m4a", "audio/paint.m4a", "audio/station.m4a", "audio/pass.m4a",
 ].map((path) => new URL(path, SCOPE).href);

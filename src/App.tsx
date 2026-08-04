@@ -619,7 +619,7 @@ export default function App() {
 
   function playSample(kind: SoundKind, force = false) {
     if (mutedRef.current && !force) return;
-    const audio = new Audio(`/audio/${kind}.m4a`);
+    const audio = new Audio(`${import.meta.env.BASE_URL}audio/${kind}.m4a`);
     audio.preload = "auto";
     audio.volume = kind === "explosion" ? 1 : 0.82;
     activeAudioRef.current.add(audio);
@@ -636,7 +636,7 @@ export default function App() {
     if (!next) {
       playSample("unmute", true);
       for (const kind of ["switch", "brake", "explosion", "split", "paint", "station", "pass"] satisfies SoundKind[]) {
-        const preload = new Audio(`/audio/${kind}.m4a`);
+        const preload = new Audio(`${import.meta.env.BASE_URL}audio/${kind}.m4a`);
         preload.preload = "auto";
         preload.load();
       }
@@ -1259,7 +1259,6 @@ export default function App() {
         </div>
         <nav>
           <button className="library-trigger" disabled={running} onClick={() => setEditorDialog("library")}>NIVEAUX</button>
-          <a className="documentation-link" href="/documentation.html" target="_blank" rel="noreferrer" aria-label="Ouvrir la documentation">DOC</a>
           <button className={`sound-toggle ${muted ? "muted" : ""}`} aria-label={muted ? "Activer le son" : "Couper le son"} aria-pressed={!muted} onClick={() => void toggleMute()}>{muted ? "🔇" : "🔊"}<span>{muted ? "SON OFF" : "SON ON"}</span></button>
           <button className={mode === "play" ? "active" : ""} onClick={() => changeMode("play")}>JOUER</button>
           <button className={mode === "editor" ? "active" : ""} onClick={() => changeMode("editor")}>ÉDITEUR</button>

@@ -37,16 +37,16 @@ button { color: inherit; }
     repeating-linear-gradient(90deg, transparent 0 90px, rgba(255,255,255,.012) 91px),
     #05090d;
   display: grid;
-  grid-template-rows: 78px 1fr 84px;
+  grid-template-rows: calc(78px + env(safe-area-inset-top, 0px)) 1fr calc(84px + env(safe-area-inset-bottom, 0px));
 }
-.app-shell.mode-editor { grid-template-rows:78px 1fr; }
+.app-shell.mode-editor { grid-template-rows: calc(78px + env(safe-area-inset-top, 0px)) 1fr; }
 
 header {
   display: grid;
   grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);
   min-width:0;
   align-items: center;
-  padding: 0 28px;
+  padding: env(safe-area-inset-top, 0px) 28px 0;
   border-bottom: 1px solid #26343d;
   background: rgba(5,10,14,.94);
 }
@@ -564,7 +564,7 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .editor-dialog .family-repo { max-height:180px; overflow:auto; padding-right:6px; }
 .empty-dialog { min-height:120px; display:grid; place-items:center; color:var(--muted); }
 
-footer { display:flex; justify-content:center; gap:10px; align-items:center; border-top:1px solid #26343d; background:#070c10; }
+footer { display:flex; justify-content:center; gap:10px; align-items:center; padding-bottom: env(safe-area-inset-bottom, 0px); border-top:1px solid #26343d; background:#070c10; }
 footer button { min-width:112px; height:58px; background:linear-gradient(#172127,#0b1115); border:1px solid #394851; font-size:24px; cursor:pointer; }
 footer button span { display:block; color:var(--muted); font-size:9px; letter-spacing:.13em; margin-top:3px; }
 footer button.launch { min-width:170px; color:var(--cyan); border-color:#2793a5; box-shadow:inset 0 0 0 3px #0a161a,0 0 18px #0d5260; }
@@ -572,9 +572,9 @@ footer button.tool-active { color:#ff8d68; border-color:#a34e37; box-shadow:inse
 footer button:disabled { opacity:.35; cursor:not-allowed; }
 
 @media (max-width: 900px) {
-  .app-shell { grid-template-rows: 64px 1fr 74px; }
-  .app-shell.mode-editor { grid-template-rows:64px 1fr; }
-  header { grid-template-columns:minmax(0,1fr) auto; padding:0 10px; }
+  .app-shell { grid-template-rows: calc(64px + env(safe-area-inset-top, 0px)) 1fr calc(74px + env(safe-area-inset-bottom, 0px)); }
+  .app-shell.mode-editor { grid-template-rows: calc(64px + env(safe-area-inset-top, 0px)) 1fr; }
+  header { grid-template-columns:minmax(0,1fr) auto; padding: env(safe-area-inset-top, 0px) 10px 0; }
   .brand small, .status-strip { display:none; }
   .workspace { padding:12px; }
   .workspace.editor { grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(0,1fr) auto; gap:5px; padding:8px; }
