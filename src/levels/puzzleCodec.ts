@@ -6,12 +6,13 @@ import type { Direction, LevelObject, TrainColor } from "./types";
  * Trainyard original par elfakyn.com).
  *
  * Fidélité au format d'origine — limites connues et assumées :
- * - Les "Goal" (gares) multi-directionnelles (une gare qui accepte des
- *   trains depuis plusieurs côtés à la fois) ne sont PAS supportées par le
- *   moteur de cette application (`LevelObject` "station" n'a qu'un seul
- *   `facing`). Au décodage, seule la première direction acceptée (ordre
- *   N, E, S, W) est conservée ; un avertissement est renvoyé. C'est une
- *   perte réelle de fidélité pour les niveaux qui utilisent cette mécanique.
+ * - Les "Goal" (gares) multi-directionnelles sont supportées depuis la v1.2
+ *   (`LevelObject` "station" porte `facings: Direction[]`). La règle
+ *   d'arbitrage entre plusieurs trains arrivant au même instant sur des
+ *   entrées différentes est implémentée dans la boucle de simulation
+ *   (App.tsx) : priorité, de façon récurrente, à la couleur actuellement
+ *   attendue si elle est présente parmi les arrivées simultanées ; sinon,
+ *   échec du niveau.
  * - L'orientation du "Painter" (2 côtés d'entrée/sortie dans le format
  *   d'origine) n'est pas représentée dans cette application : le peintre y
  *   est omnidirectionnel (voir feasibility.ts). Cette information est donc
@@ -78,6 +79,15 @@ const GOAL_DIR_LETTERS: Record<string, Direction[]> = {
   m: ["S", "W"], n: ["S", "W", "N"], o: ["S", "W", "E"], p: ["S", "W", "N", "E"],
 };
 const GOAL_SINGLE_DIRECTION_LETTER: Record<Direction, string> = { N: "b", E: "c", S: "e", W: "i" };
+
+/** Clé canonique indépendante de l'ordre, pour retrouver la lettre goal à partir d'un ensemble de directions quelconque. */
+function directionSetKey(directions: Direction[]): string {
+  return [...new Set(directions)].sort().join("");
+}
+const GOAL_DIRSET_LETTER = new Map<string, string>();
+for (const [letter, dirs] of Object.entries(GOAL_DIR_LETTERS)) {
+  GOAL_DIRSET_LETTER.set(directionSetKey(dirs), letter);
+}
 
 // --- Painter -----------------------------------------------------------------
 const PAINTER_COLOR_LETTER: Record<TrainColor, string> = Object.fromEntries(
@@ -177,10 +187,7 @@ export function decodePuzzleString(input: string): PuzzleDecodeResult {
       const pairCount = Math.ceil(count / 2);
       const pairLetters = body.slice(i + 3, i + 3 + pairCount);
       const expects = decodeColorRun(pairLetters, count, warnings);
-      if (dirs.length > 1) {
-        warnings.push(`Gare multi-entrées (${dirs.join("/")}) à la case ${cursor} simplifiée en entrée unique ${dirs[0]} — non supporté par ce moteur.`);
-      }
-      place({ type: "station", x, y, facing: dirs[0], expects });
+      place({ type: "station", x, y, facings: dirs, expects });
       cursor += 1; i += 3 + pairCount; continue;
     }
 
@@ -244,7 +251,8 @@ export function encodeLevelToPuzzleString(objects: LevelObject[], width: number,
       }
       case "station": {
         const count = Math.min(9, obj.expects.length);
-        return "G" + GOAL_SINGLE_DIRECTION_LETTER[obj.facing] + countLetter(count) + encodeColorRun(obj.expects.slice(0, count));
+        const letter = GOAL_DIRSET_LETTER.get(directionSetKey(obj.facings)) ?? GOAL_SINGLE_DIRECTION_LETTER.N;
+        return "G" + letter + countLetter(count) + encodeColorRun(obj.expects.slice(0, count));
       }
       case "painter":
         return "P" + PAINTER_COLOR_LETTER[obj.color] + PAINTER_CANONICAL_ORIENTATION_LETTER;

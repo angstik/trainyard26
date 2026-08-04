@@ -8,7 +8,7 @@ import { sampleRailCenterline } from "./rail-motion";
 
 type Point = [number, number];
 type EditorTool = "rail" | "erase" | "outlet" | "station" | "painter" | "splitter" | "obstacle" | "delete";
-type EditorDialog = "level" | "object" | "library" | null;
+type EditorDialog = "level" | "object" | "library" | "io" | null;
 type JunctionMode = "cross" | "curves-ne-sw" | "curves-nw-se";
 type MovingTrain = {
   id: string;
@@ -328,9 +328,12 @@ function SteamLoco({ train, future }: { train: MovingTrain; future?: Point }) {
 
 function TerminalBuilding({ object, done = 0 }: { object: Extract<LevelObject, { type: "outlet" | "station" }>; done?: number }) {
   const colors = object.type === "outlet" ? object.trains : object.expects;
+  const facings = object.type === "outlet" ? [object.facing] : object.facings;
   return (
     <div className={`terminal ${object.type}`}>
-      <span className="terminal-connector" style={{ transform: `rotate(${DIR_ANGLE[object.facing]}deg)` }} />
+      {facings.map((facing) => (
+        <span key={facing} className="terminal-connector" style={{ transform: `rotate(${DIR_ANGLE[facing]}deg)` }} />
+      ))}
       <div className="roof"><span /><i /><i /></div>
       <div className={`terminal-dots ${object.type}-dots ${object.type === "station" && colors.length > 4 ? "scrolling" : ""}`}>
         <Dots colors={colors} done={done} slots={object.type === "outlet" ? 6 : colors.length} />
@@ -366,7 +369,7 @@ function ToolIcon({ tool }: { tool: EditorTool }) {
   if (tool === "outlet" || tool === "station") {
     const object = tool === "outlet"
       ? { id: "tool-outlet", type: "outlet" as const, x: 0, y: 0, facing: "E" as Direction, trains: ["red" as TrainColor] }
-      : { id: "tool-station", type: "station" as const, x: 0, y: 0, facing: "E" as Direction, expects: ["red" as TrainColor] };
+      : { id: "tool-station", type: "station" as const, x: 0, y: 0, facings: ["E" as Direction], expects: ["red" as TrainColor] };
     return <span className="tool-preview terminal-preview"><TerminalBuilding object={object} /></span>;
   }
   if (tool === "painter") return <span className="tool-preview"><PainterPiece object={{ id: "tool-painter", type: "painter", x: 0, y: 0, color: "red" }} /></span>;
@@ -666,8 +669,18 @@ export default function App() {
     setGesture([]);
     gestureRef.current = [];
     drawingRef.current = false;
+    if (nextMode === "play" && mode === "editor") {
+      // Au retour en mode jeu : ne conserver les rails existants que là où
+      // aucun élément de niveau (remise, gare, peintre, splitter, obstacle)
+      // n'a été posé entre-temps dans l'éditeur.
+      const occupied = new Set(objects.map((object) => pointKey([object.x, object.y])));
+      setEdges((current) => new Set([...current].filter((edge) => {
+        const [a, b] = edge.split("|");
+        return !occupied.has(a) && !occupied.has(b);
+      })));
+    }
     setMode(nextMode);
-    setEditorTool("rail");
+    setEditorTool(nextMode === "editor" ? "outlet" : "rail");
   }
 
   function changeLevel(offset: -1 | 1) {
@@ -775,6 +788,7 @@ export default function App() {
       });
 
       const advanced: MovingTrain[] = [];
+      const stationArrivals = new Map<string, MovingTrain[]>();
       for (const train of sim.trains) {
         let moved = { ...train, progress: train.progress + dt * 1.15 };
         if (moved.progress < 1) {
@@ -796,14 +810,13 @@ export default function App() {
           break;
         }
         if (object?.type === "station") {
-          const receivedCount = sim.received[object.id] ?? 0;
-          const expected = object.expects[receivedCount];
-          if (expected !== moved.color) {
-            explode(current[0], current[1], "Train non attendu dans cette gare");
-            break;
-          }
-          sim.received[object.id] = receivedCount + 1;
-          playEffect("station");
+          // Décision différée : plusieurs trains peuvent arriver au même tick depuis
+          // des entrées différentes d'une gare multi-entrées. Voir résolution groupée
+          // juste après cette boucle (règle : priorité à la couleur attendue, quelle
+          // que soit l'entrée d'où elle arrive).
+          const list = stationArrivals.get(object.id) ?? [];
+          list.push(moved);
+          stationArrivals.set(object.id, list);
           continue;
         }
 
@@ -865,6 +878,35 @@ export default function App() {
         const next = add(current, exit);
         const nextAngle = DIR_ANGLE[directionBetween(current, next)];
         advanced.push({ ...moved, previous: from, cell: current, next, progress: moved.progress - 1, fromAngle: moved.angle, angle: nextAngle });
+      }
+
+      if (!sim.failed) {
+        for (const [stationId, arrivals] of stationArrivals) {
+          const station = objects.find((item) => item.id === stationId && item.type === "station") as
+            | Extract<LevelObject, { type: "station" }>
+            | undefined;
+          if (!station) continue;
+          const remaining = [...arrivals];
+          while (remaining.length > 0) {
+            const receivedCount = sim.received[stationId] ?? 0;
+            const expectedColor = station.expects[receivedCount];
+            const matchIndex = remaining.findIndex((candidate) => candidate.color === expectedColor);
+            if (matchIndex === -1) {
+              explode(
+                station.x,
+                station.y,
+                remaining.length > 1
+                  ? "Conflit d’arrivée simultanée en gare : aucune couleur attendue parmi les entrées"
+                  : "Train non attendu dans cette gare",
+              );
+              break;
+            }
+            remaining.splice(matchIndex, 1);
+            sim.received[stationId] = receivedCount + 1;
+            playEffect("station");
+          }
+          if (sim.failed) break;
+        }
       }
 
       let resolved = advanced;
@@ -973,7 +1015,7 @@ export default function App() {
     const id = `${editorTool}-${x}-${y}-${++objectId.current}`;
     let object: LevelObject;
     if (editorTool === "outlet") object = { id, type: "outlet", x, y, facing: "N", trains: ["red"] };
-    else if (editorTool === "station") object = { id, type: "station", x, y, facing: "S", expects: ["red"] };
+    else if (editorTool === "station") object = { id, type: "station", x, y, facings: ["S"], expects: ["red"] };
     else if (editorTool === "painter") object = { id, type: "painter", x, y, color: "red" };
     else if (editorTool === "splitter") object = { id, type: "splitter", x, y, orientation: "H" };
     else object = { id, type: "obstacle", x, y };
@@ -1199,9 +1241,20 @@ export default function App() {
     window.localStorage.setItem("signal-nocturne-level-repository", JSON.stringify(next));
   }
 
-  function updateSelectedObject(update: Partial<{ facing: Direction; trains: TrainColor[]; expects: TrainColor[]; color: TrainColor; orientation: "H" | "V" }>) {
+  function updateSelectedObject(update: Partial<{ facing: Direction; facings: Direction[]; trains: TrainColor[]; expects: TrainColor[]; color: TrainColor; orientation: "H" | "V" }>) {
     if (!selectedObject) return;
     setObjects((items) => items.map((object) => object.id === selectedObject ? { ...object, ...update } as LevelObject : object));
+  }
+
+  function toggleStationFacing(direction: Direction) {
+    if (!selectedObject) return;
+    setObjects((items) => items.map((object) => {
+      if (object.id !== selectedObject || object.type !== "station") return object;
+      const has = object.facings.includes(direction);
+      if (has && object.facings.length === 1) return object; // une gare doit garder au moins une entrée
+      const facings = has ? object.facings.filter((item) => item !== direction) : [...object.facings, direction];
+      return { ...object, facings };
+    }));
   }
 
   function updateSequence(index: number, value: TrainColor | "") {
@@ -1327,23 +1380,20 @@ export default function App() {
         {mode === "editor" && (
           <aside className="palette">
             <h2>OUTILS</h2>
-            {([
-              ["rail", "Rails"],
-              ["erase", "Effacer"],
-              ["outlet", "Remise"],
-              ["station", "Gare"],
-              ["painter", "Peinture"],
-              ["splitter", "Splitter"],
-              ["obstacle", "Obstacle"],
-              ["delete", "Supprimer"],
-            ] as [EditorTool, string][]).map(([tool, label]) => (
-              <button key={tool} title={label} className={editorTool === tool ? "selected" : ""} onClick={() => { setEditorDialog(null); setEditorTool(tool); }}><span className="tool-icon"><ToolIcon tool={tool} /></span><span className="tool-label">{label}</span></button>
-            ))}
-            <button className="level-settings" onClick={() => setEditorDialog("level")}><span className="tool-icon">⚙</span><span className="tool-label">Niveau</span></button>
-            <button className="palette-action" title="Exporter la puzzleString" onClick={handleExportLevel}><span className="tool-icon"><span className="tool-glyph">⇪</span></span><span className="tool-label">Exporter</span></button>
-            {exportFeedback && <p className="export-feedback" role="status">{exportFeedback}</p>}
-            <button className="palette-action" title="Annuler" disabled={!history.length} onClick={undoTrack}><span className="tool-icon"><span className="tool-glyph">↶</span></span><span className="tool-label">Annuler</span></button>
-            <button className="palette-action danger" title="Vider les rails" onClick={clearTracks}><span className="tool-icon"><span className="tool-glyph">×</span></span><span className="tool-label">Vider</span></button>
+            <div className="palette-grid">
+              {([
+                ["outlet", "Remise"],
+                ["station", "Gare"],
+                ["painter", "Peinture"],
+                ["splitter", "Splitter"],
+                ["obstacle", "Obstacle"],
+                ["delete", "Supprimer"],
+              ] as [EditorTool, string][]).map(([tool, label]) => (
+                <button key={tool} title={label} className={editorTool === tool ? "selected" : ""} onClick={() => { setEditorDialog(null); setEditorTool(tool); }}><span className="tool-icon"><ToolIcon tool={tool} /></span><span className="tool-label">{label}</span></button>
+              ))}
+              <button className="level-settings" onClick={() => setEditorDialog("level")}><span className="tool-icon">⚙</span><span className="tool-label">Niveau</span></button>
+              <button className="palette-action" title="Importer / exporter un niveau" onClick={() => setEditorDialog("io")}><span className="tool-icon"><span className="tool-glyph">⇄</span></span><span className="tool-label">Import/Export</span></button>
+            </div>
             <div className={`editor-validation ${feasibility.feasible ? "ok" : "error"}`}>
               <b>{feasibility.feasible ? "✓ FAISABLE" : `⚠ ${feasibility.issues.length} PROBLÈME${feasibility.issues.length > 1 ? "S" : ""}`}</b>
             </div>
@@ -1439,8 +1489,8 @@ export default function App() {
             <section className="editor-dialog" role="dialog" aria-modal="true" aria-labelledby="editor-dialog-title">
               <div className="dialog-heading">
                 <div>
-                  <small>{editorDialog === "library" ? "BIBLIOTHÈQUE FERROVIAIRE" : editorDialog === "level" ? "PARAMÈTRES DU TABLEAU" : "CONFIGURATION D’UN ÉLÉMENT"}</small>
-                  <h2 id="editor-dialog-title">{editorDialog === "library" ? (libraryFamily?.title.toUpperCase() ?? "FAMILLES") : editorDialog === "level" ? "NIVEAU & DÉPÔT" : selected?.type === "outlet" ? "REMISE" : selected?.type === "station" ? "GARE" : selected?.type === "painter" ? "PEINTURE" : selected?.type === "splitter" ? "SPLITTER" : "OBSTACLE"}</h2>
+                  <small>{editorDialog === "library" ? "BIBLIOTHÈQUE FERROVIAIRE" : editorDialog === "level" ? "PARAMÈTRES DU TABLEAU" : editorDialog === "io" ? "ÉCHANGE DE NIVEAUX" : "CONFIGURATION D’UN ÉLÉMENT"}</small>
+                  <h2 id="editor-dialog-title">{editorDialog === "library" ? (libraryFamily?.title.toUpperCase() ?? "FAMILLES") : editorDialog === "level" ? "NIVEAU & DÉPÔT" : editorDialog === "io" ? "IMPORT / EXPORT" : selected?.type === "outlet" ? "REMISE" : selected?.type === "station" ? "GARE" : selected?.type === "painter" ? "PEINTURE" : selected?.type === "splitter" ? "SPLITTER" : "OBSTACLE"}</h2>
                 </div>
                 <button className="dialog-close" aria-label="Fermer" onClick={() => setEditorDialog(null)}>×</button>
               </div>
@@ -1452,6 +1502,7 @@ export default function App() {
               }}>
               {editorDialog === "library" && (
                 <div className="level-library">
+                  <button className="library-io-trigger" onClick={() => setEditorDialog("io")}><span className="tool-glyph">⇄</span> IMPORTER / EXPORTER UN NIVEAU</button>
                   {!libraryFamily && <div className="library-family-index">
                     {visibleFamilies.map((item) => {
                       const completed = item.levels.filter((level) => {
@@ -1535,64 +1586,69 @@ export default function App() {
             </div>
             {saveStatus && <p className="save-status">{saveStatus}</p>}
             <button className="validate" onClick={() => changeMode("play")}>▶ TESTER SANS VALIDATION</button>
-            <div className="level-io">
-              <h3>IMPORTER UN NIVEAU</h3>
-              <p className="io-hint">Colle soit une ligne CSV à 20 colonnes (id,webID,creatorID,…,puzzleString,…), soit juste une puzzleString « hh… ». Remplace le niveau en cours.</p>
-              <textarea
-                rows={4}
-                placeholder="hh3Giav6Giav3Sb5R…  ou  1,1,1,1,,Nom,Description,hh…,…"
-                value={importText}
-                onChange={(event) => setImportText(event.target.value)}
-              />
-              <button className="import-level" disabled={!importText.trim()} onClick={handleImportLevel}>IMPORTER</button>
-              {importFeedback && <p className="import-feedback" role="status">{importFeedback}</p>}
-              {importedIdentity && (
-                <div className="identity-card">
-                  <h4>FICHE D’IDENTITÉ</h4>
-                  <div><span>ID</span><b>{importedIdentity.id || "—"}</b></div>
-                  <div><span>Web ID</span><b>{importedIdentity.webID || "—"}</b></div>
-                  <div><span>Créateur</span><b>{importedIdentity.creatorID || "—"}</b></div>
-                  <div><span>Section</span><b>{importedIdentity.section || "—"}</b></div>
-                  <div><span>Nom</span><b>{importedIdentity.name || "—"}</b></div>
-                  <div><span>Description</span><b>{importedIdentity.description || "—"}</b></div>
-                  <div><span>Pièces</span><b>{importedIdentity.pieceCounts || "—"}</b></div>
-                  <div><span>Clés (wrenches)</span><b>{importedIdentity.wrenches || "—"}</b></div>
-                  <div><span>Résoluble</span><b>{importedIdentity.isSolvable || "—"}</b></div>
-                  <div><span>Aimé</span><b>{importedIdentity.hasBeenLiked || "—"}</b></div>
-                  <div><span>Soumis le</span><b>{importedIdentity.submissionDate || "—"}</b></div>
-                  <div><span>Import local</span><b>{importedIdentity.localInsertionDate || "—"}</b></div>
-                  <div><span>Likes</span><b>{importedIdentity.likes || "—"}</b></div>
-                  <div><span>Vues</span><b>{importedIdentity.views || "—"}</b></div>
-                  <div><span>Ordinal utilisateur</span><b>{importedIdentity.userOrdinal || "—"}</b></div>
-                  <div><span>Ordinal téléchargement</span><b>{importedIdentity.downloadOrdinal || "—"}</b></div>
-                  <div><span>Mis en avant</span><b>{importedIdentity.isInFeatured || "—"}</b></div>
-                  <small className="identity-note">solutionString conservée telle quelle (non décodée, format non documenté) : {importedIdentity.solutionString ? `${importedIdentity.solutionString.slice(0, 24)}…` : "—"}</small>
-                </div>
-              )}
-              <h3>EXPORTER LE NIVEAU</h3>
-              <button className="export-level" onClick={handleExportLevel}>COPIER LA PUZZLESTRING</button>
-              {exportFeedback && <p className="export-feedback" role="status">{exportFeedback}</p>}
-            </div>
                 </>
+              )}
+            {editorDialog === "io" && (
+              <div className="level-io">
+                <h3>IMPORTER UN NIVEAU</h3>
+                <p className="io-hint">Colle soit une ligne CSV à 20 colonnes (id,webID,creatorID,…,puzzleString,…), soit juste une puzzleString « hh… ». Remplace le niveau en cours.</p>
+                <textarea
+                  rows={4}
+                  placeholder="hh3Giav6Giav3Sb5R…  ou  1,1,1,1,,Nom,Description,hh…,…"
+                  value={importText}
+                  onChange={(event) => setImportText(event.target.value)}
+                />
+                <button className="import-level" disabled={!importText.trim()} onClick={handleImportLevel}>IMPORTER</button>
+                {importFeedback && <p className="import-feedback" role="status">{importFeedback}</p>}
+                {importedIdentity && (
+                  <div className="identity-card">
+                    <h4>FICHE D’IDENTITÉ</h4>
+                    <div><span>ID</span><b>{importedIdentity.id || "—"}</b></div>
+                    <div><span>Web ID</span><b>{importedIdentity.webID || "—"}</b></div>
+                    <div><span>Créateur</span><b>{importedIdentity.creatorID || "—"}</b></div>
+                    <div><span>Section</span><b>{importedIdentity.section || "—"}</b></div>
+                    <div><span>Nom</span><b>{importedIdentity.name || "—"}</b></div>
+                    <div><span>Description</span><b>{importedIdentity.description || "—"}</b></div>
+                    <div><span>Pièces</span><b>{importedIdentity.pieceCounts || "—"}</b></div>
+                    <div><span>Clés (wrenches)</span><b>{importedIdentity.wrenches || "—"}</b></div>
+                    <div><span>Résoluble</span><b>{importedIdentity.isSolvable || "—"}</b></div>
+                    <div><span>Aimé</span><b>{importedIdentity.hasBeenLiked || "—"}</b></div>
+                    <div><span>Soumis le</span><b>{importedIdentity.submissionDate || "—"}</b></div>
+                    <div><span>Import local</span><b>{importedIdentity.localInsertionDate || "—"}</b></div>
+                    <div><span>Likes</span><b>{importedIdentity.likes || "—"}</b></div>
+                    <div><span>Vues</span><b>{importedIdentity.views || "—"}</b></div>
+                    <div><span>Ordinal utilisateur</span><b>{importedIdentity.userOrdinal || "—"}</b></div>
+                    <div><span>Ordinal téléchargement</span><b>{importedIdentity.downloadOrdinal || "—"}</b></div>
+                    <div><span>Mis en avant</span><b>{importedIdentity.isInFeatured || "—"}</b></div>
+                    <small className="identity-note">solutionString conservée telle quelle (non décodée, format non documenté) : {importedIdentity.solutionString ? `${importedIdentity.solutionString.slice(0, 24)}…` : "—"}</small>
+                  </div>
+                )}
+                <h3>EXPORTER LE NIVEAU</h3>
+                <button className="export-level" onClick={handleExportLevel}>COPIER LA PUZZLESTRING</button>
+                {exportFeedback && <p className="export-feedback" role="status">{exportFeedback}</p>}
+              </div>
               )}
             {editorDialog === "object" && selected && (
               <div className="selected-properties">
                 <b>{selected.type === "outlet" ? "Remise" : selected.type === "station" ? "Gare" : selected.type === "painter" ? "Peinture" : selected.type === "splitter" ? "Splitter" : "Obstacle"} · {String.fromCharCode(65 + selected.y)}{selected.x + 1}</b>
                 {(selected.type === "outlet" || selected.type === "station") && (
                   <>
-                    <p>Connexion</p>
+                    <p>{selected.type === "outlet" ? "Direction" : "Entrées (plusieurs possibles)"}</p>
                     <div className="direction-picker" role="group" aria-label="Direction de connexion">
-                      {(["N", "E", "S", "W"] as Direction[]).map((direction) => (
-                        <button
-                          key={direction}
-                          className={selected.facing === direction ? "active" : ""}
-                          aria-pressed={selected.facing === direction}
-                          onClick={() => updateSelectedObject({ facing: direction })}
-                        >
-                          <i>{direction === "N" ? "↑" : direction === "E" ? "→" : direction === "S" ? "↓" : "←"}</i>
-                          <span>{direction === "N" ? "Nord" : direction === "E" ? "Est" : direction === "S" ? "Sud" : "Ouest"}</span>
-                        </button>
-                      ))}
+                      {(["N", "E", "S", "W"] as Direction[]).map((direction) => {
+                        const active = selected.type === "outlet" ? selected.facing === direction : selected.facings.includes(direction);
+                        return (
+                          <button
+                            key={direction}
+                            className={active ? "active" : ""}
+                            aria-pressed={active}
+                            onClick={() => selected.type === "outlet" ? updateSelectedObject({ facing: direction }) : toggleStationFacing(direction)}
+                          >
+                            <i>{direction === "N" ? "↑" : direction === "E" ? "→" : direction === "S" ? "↓" : "←"}</i>
+                            <span>{direction === "N" ? "Nord" : direction === "E" ? "Est" : direction === "S" ? "Sud" : "Ouest"}</span>
+                          </button>
+                        );
+                      })}
                     </div>
                     <p>{selected.type === "outlet" ? "Trains au départ" : "Trains attendus"} · maximum 6</p>
                     <div className="sequence-slots tactile" role="group" aria-label="Ordre des trains">

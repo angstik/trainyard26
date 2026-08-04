@@ -5,7 +5,7 @@ export type TrainColor =
 export type Direction = "N" | "E" | "S" | "W";
 export type LevelObject =
   | { id: string; type: "outlet"; x: number; y: number; facing: Direction; trains: TrainColor[] }
-  | { id: string; type: "station"; x: number; y: number; facing: Direction; expects: TrainColor[] }
+  | { id: string; type: "station"; x: number; y: number; facings: Direction[]; expects: TrainColor[] }
   | { id: string; type: "obstacle"; x: number; y: number }
   | { id: string; type: "painter"; x: number; y: number; color: TrainColor }
   | { id: string; type: "splitter"; x: number; y: number; orientation: "H" | "V" };

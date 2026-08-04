@@ -61,11 +61,21 @@ function normalizeInfrastructure(objects: LevelObject[]) {
   const directions: Direction[] = ["N", "E", "S", "W"];
 
   const terminalsNormalized = objects.map((object): LevelObject => {
-    if (object.type !== "outlet" && object.type !== "station") return object;
-    if (freeForTerminal(object, object.facing)) return object;
-    const inward = inferredFacing(object.x, object.y);
-    const facing = [inward, ...directions].find((direction) => freeForTerminal(object, direction));
-    return facing ? { ...object, facing } : object;
+    if (object.type === "outlet") {
+      if (freeForTerminal(object, object.facing)) return object;
+      const inward = inferredFacing(object.x, object.y);
+      const facing = [inward, ...directions].find((direction) => freeForTerminal(object, direction));
+      return facing ? { ...object, facing } : object;
+    }
+    if (object.type === "station") {
+      const inward = inferredFacing(object.x, object.y);
+      const facings = object.facings.map((facing) => {
+        if (freeForTerminal(object, facing)) return facing;
+        return [inward, ...directions].find((direction) => freeForTerminal(object, direction)) ?? facing;
+      });
+      return { ...object, facings };
+    }
+    return object;
   });
 
   const normalizedAt = (x: number, y: number) => terminalsNormalized.find((object) => object.x === x && object.y === y);
@@ -105,15 +115,15 @@ function parseToken(token: string, x: number, y: number, levelId: string): Level
     const explicit = token.match(/^S([NESW]):([A-Z]+)(\d+)$/);
     if (explicit) {
       const colors = parseColors(explicit[2]);
-      return { id, type: "station", x, y, facing: explicit[1] as Direction, expects: expand(colors, Number(explicit[3])) };
+      return { id, type: "station", x, y, facings: [explicit[1] as Direction], expects: expand(colors, Number(explicit[3])) };
     }
     const compactDirection = token.match(/^S([NESW])(\d+)$/);
     if (compactDirection) {
-      return { id, type: "station", x, y, facing: compactDirection[1] as Direction, expects: expand(["red"], Number(compactDirection[2])) };
+      return { id, type: "station", x, y, facings: [compactDirection[1] as Direction], expects: expand(["red"], Number(compactDirection[2])) };
     }
     const compact = token.match(/^S(BR|PK|CY|R|B|Y|O|G|P|W)(\d+)$/);
     if (compact) {
-      return { id, type: "station", x, y, facing: inferredFacing(x, y), expects: expand([colorFromCode(compact[1])], Number(compact[2])) };
+      return { id, type: "station", x, y, facings: [inferredFacing(x, y)], expects: expand([colorFromCode(compact[1])], Number(compact[2])) };
     }
   }
   throw new Error(`Jeton ASCII inconnu: ${token}`);
@@ -153,48 +163,6 @@ export function parseAsciiLevel(family: string, number: number, title: string, s
 type TownLevel = [title: string, map: string];
 
 const TOWNS: { id: string; title: string; levels: TownLevel[] }[] = [
-  {
-    id: "calgary", title: "Calgary", levels: [
-      ["First Steps", ". . . . . . ./. . . . . . ./GER . . . . . SR1/. . . . . . ./. . . . . . ./. . . . . . ./. . . . . . ."],
-      ["Gentle Curve", ". . . . . . ./. GER . . . . ./. . . . . . ./. . . . . . ./. . . . . . ./. . . . . SS1 ./. . . . . . ."],
-      ["Two Trains", ". . . . . . ./GER . . . . . SR1/. . . . . . ./. . . . . . ./GEB . . . . . SB1/. . . . . . ./. . . . . . ."],
-      ["Crossing Paths", ". . . GSR . . ./. . . . . . ./. . . . . . ./GEB . . . . . SB1/. . . . . . ./. . . . . . ./. . . SN1 . . ."],
-      ["Obstacle Course", ". . . . . . ./. GER . X . . ./. . . . . . ./. X . X . X ./. . . . . . ./. . . X . SR1 ./. . . . . . ."],
-      ["Double Output", ". . . . . . ./. GER2 . . . . ./. . . . . . ./. . . . . . ./. . . . . . ./. . . . . SR2 ./. . . . . . ."],
-      ["Split Path", ". . . . . . ./. GER2 . . . SR1 ./. . . . . . ./. . . X . . ./. . . . . . ./. . . . . SR1 ./. . . . . . ."],
-      ["Cornering", ". . . GSR . . ./. X . . . X ./. . . X . . ./GEB . X . X . SR1/. . . X . . ./. X . . . X ./. . . SB1 . . ."],
-      ["Traffic Jam", ". . . . . . ./GER . . X . . SB1/. . . . . . ./. X . . . X ./. . . . . . ./GEB . . X . . SR1/. . . . . . ."],
-      ["Calgary Graduation", ". . . GSB . . ./. . X . X . ./GER . . . . . SB1/. X . X . X ./GEB . . . . . SB1/. . X . X . ./. . . SN1 . . ."],
-    ],
-  },
-  {
-    id: "edmonton", title: "Edmonton", levels: [
-      ["Primary Colors", ". . . . . . ./. GER . . . . ./. . . . . . ./. . . . . . ./. . . . . . ./. GEB . . . SP1 ./. . . . . . ."],
-      ["Secondary Mix", ". . . . . . ./GER . . . . . ./. . . . . . ./. . . . . . SO1/. . . . . . ./GEY . . . . . ./. . . . . . ."],
-      ["Purple Crossing", ". . . . . . ./GER . . . . . ./. . . X . . ./. X . . . . SW:P2/. . . X . . ./GEB . . . . . ./. . . . . . ."],
-      ["Orange Squeeze", ". . . . . . ./. GSR . . . . ./. . . X . . ./. . . . . . SE:O1/. . . X . . ./. GEY . . . . ./. . . . . . ."],
-      ["Green Garden", ". . . GEY . . ./. . . . . . ./. . . . . . ./GEB . . . . . SG1/. . . . . . ./. . . . . . ./. . . . . . ."],
-      ["Triple Mix", ". . . GSR . . ./. . . . . . ./. . . . . . ./GEB . . . . . SBR1/. . . . . . ./. . . . . . ./. . . GNY . . ."],
-      ["Dual Color Output", ". . . . . . ./GER . . . . . SR1/. . . . . . ./. . . X . . ./. . . . . . ./GEB . . . . . SB1/. . . . . . ."],
-      ["Color Separation Prep", ". . . . . . ./GER2 . . X . . SP1/. . . . . . ./. X . . . X ./. . . . . . ./GEB2 . . X . . SP1/. . . . . . ."],
-      ["Maze of Mixes", ". . . GSR . . ./. X . . . X ./GER . . X . . SO1/. . X . X . ./GEB . . X . . SP1/. X . . . X ./. . . GSY . . ."],
-      ["Edmonton Graduation", ". . . GSR . . ./. X . . . X ./GER . . . . . SBR1/. . . X . . ./GEY . . . . . SG1/. X . . . X ./. . . GSB . . ."],
-    ],
-  },
-  {
-    id: "saskatoon", title: "Saskatoon", levels: [
-      ["Intro to Splitters", ". . . SN1 . . ./. . . . . . ./. . . . . . ./GER . . SPH . . SE1/. . . . . . ./. . . . . . ./. . . SS1 . . ."],
-      ["Vertical Split", ". . . . . . ./. . . . . . ./. . . GSR . . ./SR1 . . SPV . . SR1/. . . . . . ./. . . . . . ./. . . . . . ."],
-      ["Splitting Secondary Colors", ". . . . . . ./. . . SR1 . . ./. . . . . . ./GEO . . SPH . . ./. . . . . . ./. . . SY1 . . ./. . . . . . ."],
-      ["Double Split", ". . . . . . ./. SR1 . . . SR1 ./. . . . . . ./GER2 . . SPH . . ./. . . . . . ./. SR1 . . . SR1 ./. . . . . . ."],
-      ["Double Trouble", ". . . SN:R1 . . ./. . . . . . ./. . . . . . ./GER . . SPH . . SE:R1/. . . . . . ./. . . . . . ./. . . . . . ."],
-      ["Purple Deconstruction", ". . . SB1 . . ./. . . . . . ./. . . . . . ./GEP . . SPH . . SR1/. . . . . . ./. . . . . . ./. . . . . . ."],
-      ["Split & Re-Mix", ". . . . . . ./. . . X . . ./GEP . . SPH . . SO1/. . . . . . ./GEY . . . . . ./. . . X . . ./. . . . . . ."],
-      ["Cross Splitters", ". . . GSR . . ./. . . . . . ./. . . SPV . . ./GEB . . X . . SR1/. . . SPV . . ./. . . . . . ./. . . SB1 . . ."],
-      ["Precision Timing", ". . . . . . ./. GER . . . . ./. . . SPH . . ./. X . . . X SO1/. . . SPH . . ./. GEY . . . . ./. . . . . . ."],
-      ["Saskatoon Graduation", ". . . GSO . . ./. X . SPV . X ./GEP . . . . . SG1/. . X . X . ./GEG . . . . . SO1/. X . SPV . X ./. . . GSB . . ."],
-    ],
-  },
   {
     id: "regina", title: "Regina", levels: [
       ["Rocky Road", ". . . . . . ./. X . X . X ./GER . . . . . SR1/. X . X . X ./GEB . . . . . SB1/. X . X . X ./. . . . . . ."],

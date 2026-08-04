@@ -18,7 +18,7 @@ const LEGACY_FAMILIES: LevelFamily[] = [
         railLimit: 9,
         objects: [
           { id: "depot-red", type: "outlet", x: 1, y: 6, facing: "N", trains: ["red", "red"] },
-          { id: "terminus-red", type: "station", x: 5, y: 2, facing: "W", expects: ["red", "red"] },
+          { id: "terminus-red", type: "station", x: 5, y: 2, facings: ["W"], expects: ["red", "red"] },
         ],
         examplePaths: [[[1, 6], [1, 5], [1, 4], [2, 4], [3, 4], [4, 4], [5, 4], [5, 3], [5, 2]]],
       },
@@ -34,8 +34,8 @@ const LEGACY_FAMILIES: LevelFamily[] = [
         objects: [
           { id: "depot-red", type: "outlet", x: 1, y: 6, facing: "N", trains: ["red", "red"] },
           { id: "depot-blue", type: "outlet", x: 5, y: 6, facing: "N", trains: ["blue", "blue"] },
-          { id: "terminus-red", type: "station", x: 1, y: 0, facing: "S", expects: ["red", "red"] },
-          { id: "terminus-blue", type: "station", x: 5, y: 0, facing: "S", expects: ["blue", "blue"] },
+          { id: "terminus-red", type: "station", x: 1, y: 0, facings: ["S"], expects: ["red", "red"] },
+          { id: "terminus-blue", type: "station", x: 5, y: 0, facings: ["S"], expects: ["blue", "blue"] },
           { id: "rock-center", type: "obstacle", x: 3, y: 3 },
         ],
         examplePaths: [
@@ -54,7 +54,7 @@ const LEGACY_FAMILIES: LevelFamily[] = [
         railLimit: 11,
         objects: [
           { id: "depot-blue", type: "outlet", x: 0, y: 5, facing: "E", trains: ["blue", "blue", "blue"] },
-          { id: "terminus-blue", type: "station", x: 6, y: 1, facing: "W", expects: ["blue", "blue", "blue"] },
+          { id: "terminus-blue", type: "station", x: 6, y: 1, facings: ["W"], expects: ["blue", "blue", "blue"] },
           { id: "rock-a", type: "obstacle", x: 2, y: 5 },
           { id: "rock-b", type: "obstacle", x: 2, y: 4 },
           { id: "rock-c", type: "obstacle", x: 4, y: 2 },
@@ -73,8 +73,8 @@ const LEGACY_FAMILIES: LevelFamily[] = [
         railLimit: 14,
         objects: [
           { id: "depot-mixte", type: "outlet", x: 3, y: 6, facing: "N", trains: ["red", "blue", "red", "blue", "red", "blue"] },
-          { id: "terminus-blue", type: "station", x: 0, y: 1, facing: "E", expects: ["blue", "blue", "blue"] },
-          { id: "terminus-red", type: "station", x: 6, y: 1, facing: "W", expects: ["red", "red", "red"] },
+          { id: "terminus-blue", type: "station", x: 0, y: 1, facings: ["E"], expects: ["blue", "blue", "blue"] },
+          { id: "terminus-red", type: "station", x: 6, y: 1, facings: ["W"], expects: ["red", "red", "red"] },
           { id: "rock-a", type: "obstacle", x: 2, y: 2 },
           { id: "rock-b", type: "obstacle", x: 4, y: 2 },
         ],
@@ -95,8 +95,8 @@ const LEGACY_FAMILIES: LevelFamily[] = [
         objects: [
           { id: "depot-red", type: "outlet", x: 0, y: 5, facing: "E", trains: ["red", "red", "red"] },
           { id: "depot-blue", type: "outlet", x: 6, y: 5, facing: "W", trains: ["blue", "blue", "blue"] },
-          { id: "terminus-red", type: "station", x: 5, y: 0, facing: "S", expects: ["red", "red", "red"] },
-          { id: "terminus-blue", type: "station", x: 1, y: 0, facing: "S", expects: ["blue", "blue", "blue"] },
+          { id: "terminus-red", type: "station", x: 5, y: 0, facings: ["S"], expects: ["red", "red", "red"] },
+          { id: "terminus-blue", type: "station", x: 1, y: 0, facings: ["S"], expects: ["blue", "blue", "blue"] },
           { id: "rock-center", type: "obstacle", x: 3, y: 3 },
           { id: "rock-left", type: "obstacle", x: 2, y: 2 },
           { id: "rock-right", type: "obstacle", x: 4, y: 2 },

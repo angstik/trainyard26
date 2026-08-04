@@ -99,7 +99,7 @@ export function isImplicitInfrastructureLink(objects: LevelObject[], from: GridP
     }
   }
 
-  if (currentObject?.type === "station" && samePoint(add(current[0], current[1], currentObject.facing), from)) {
+  if (currentObject?.type === "station" && currentObject.facings.some((facing) => samePoint(add(current[0], current[1], facing), from))) {
     if (fromObject?.type === "painter") return true;
     if (fromObject?.type === "splitter") {
       return splitterOutputs(fromObject.orientation).includes(travelDirection);
@@ -124,39 +124,41 @@ function structuralChecks(objects: LevelObject[], width: number, height: number)
     const neighbor = at(nx, ny);
     if (!neighbor) return true;
     if (neighbor.type === "obstacle") return false;
-    if (neighbor.type === "outlet" || neighbor.type === "station") {
-      return neighbor.facing === OPPOSITE[direction];
-    }
+    if (neighbor.type === "outlet") return neighbor.facing === OPPOSITE[direction];
+    if (neighbor.type === "station") return neighbor.facings.includes(OPPOSITE[direction]);
     return true;
   };
 
   for (const object of objects) {
     if (object.type === "outlet" || object.type === "station") {
-      const [frontX, frontY] = add(object.x, object.y, object.facing);
       const label = object.type === "outlet" ? "Remise" : "Gare";
-      if (!inBounds(frontX, frontY, width, height)) {
-        report(object, `${label} ${object.id} : connecteur orienté hors de la grille`);
-        continue;
-      }
-      const occupant = at(frontX, frontY);
-      if (!occupant) continue;
-      if (occupant.type === "painter") {
-        const [beyondX, beyondY] = add(frontX, frontY, object.facing);
-        if (!inBounds(beyondX, beyondY, width, height) || at(beyondX, beyondY)?.type === "obstacle") {
-          report(object, `${label} ${object.id} : painter frontal sans passage libre dans l’axe`);
+      const facingsToCheck = object.type === "outlet" ? [object.facing] : object.facings;
+      for (const facing of facingsToCheck) {
+        const [frontX, frontY] = add(object.x, object.y, facing);
+        if (!inBounds(frontX, frontY, width, height)) {
+          report(object, `${label} ${object.id} : entrée ${facing} orientée hors de la grille`);
+          continue;
         }
-        continue;
-      }
-      if (occupant.type === "splitter") {
-        const compatible = object.type === "outlet"
-          ? splitterInputs(occupant.orientation).includes(OPPOSITE[object.facing])
-          : splitterOutputs(occupant.orientation).includes(OPPOSITE[object.facing]);
-        if (!compatible) {
-          report(object, `${label} ${object.id} : mauvais côté du splitter frontal`);
+        const occupant = at(frontX, frontY);
+        if (!occupant) continue;
+        if (occupant.type === "painter") {
+          const [beyondX, beyondY] = add(frontX, frontY, facing);
+          if (!inBounds(beyondX, beyondY, width, height) || at(beyondX, beyondY)?.type === "obstacle") {
+            report(object, `${label} ${object.id} : painter frontal (${facing}) sans passage libre dans l’axe`);
+          }
+          continue;
         }
-        continue;
+        if (occupant.type === "splitter") {
+          const compatible = object.type === "outlet"
+            ? splitterInputs(occupant.orientation).includes(OPPOSITE[facing])
+            : splitterOutputs(occupant.orientation).includes(OPPOSITE[facing]);
+          if (!compatible) {
+            report(object, `${label} ${object.id} : mauvais côté du splitter frontal (${facing})`);
+          }
+          continue;
+        }
+        report(object, `${label} ${object.id} : case devant l’entrée ${facing} occupée`);
       }
-      report(object, `${label} ${object.id} : case devant le connecteur occupée`);
     }
 
     if (object.type === "painter") {
