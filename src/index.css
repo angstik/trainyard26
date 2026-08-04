@@ -93,13 +93,10 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
   border:1px solid #4d4636; background:#10171b; color:#d7bd80; font-size:20px; cursor:pointer;
 }
 .board-level-arrow:disabled { opacity:.25; cursor:not-allowed; }
-.level-brief { min-width:0; display:flex; justify-content:space-between; align-items:center; gap:18px; color:#71838d; font-size:10px; letter-spacing:.04em; }
-.level-brief b { color:#d8c28d; letter-spacing:.12em; text-transform:uppercase; }
-.level-brief span { overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .game-hud { display:flex; align-items:center; justify-content:flex-end; gap:10px; min-width:0; white-space:nowrap; }
 .game-hud > span { display:grid; grid-template-columns:auto auto; align-items:baseline; gap:4px; }
 .game-hud small { color:#60737c; font-size:7px; letter-spacing:.12em; }
-.game-hud strong { color:var(--cyan); font-size:13px; letter-spacing:.04em; }
+.game-hud strong { color:var(--cyan); font-size:15px; letter-spacing:.03em; }
 
 .workspace {
   min-width:0;
@@ -155,11 +152,14 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .inspector .wide, .inspector .validate { width: 100%; margin-top: 10px; padding: 10px; background: #101b21; border: 1px solid #334751; font-size: 10px; }
 .inspector .validate { margin-top: 28px; color: var(--cyan); border-color: #1e8ca0; }
 
-.board-wrap { position:relative; width:min(calc(100dvh - 282px), calc(100vw - 48px), 720px); aspect-ratio:1; padding:0; }
-.editor .board-wrap {
+.board-column { display:flex; flex-direction:column; align-items:center; gap:7px; min-width:0; min-height:0; }
+.editor .board-column {
   grid-area:board; width:min(calc(100dvh - 190px), calc(100vw - 40px), 700px);
   align-self:center; justify-self:center;
 }
+.level-name-line { text-align:center; color:#d8c28d; font-size:13px; letter-spacing:.12em; text-transform:uppercase; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; padding:0 4px; }
+.board-wrap { position:relative; width:min(calc(100dvh - 282px), calc(100vw - 48px), 720px); aspect-ratio:1; padding:0; }
+.editor .board-wrap { width:100%; }
 .board {
   position: relative; width: 100%; height: 100%;
   display: grid; grid-template-columns: repeat(7, 1fr); grid-template-rows: repeat(7, 1fr);
@@ -416,13 +416,13 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .tool-preview.eraser-preview { position:relative; width:70%; height:52%; transform:rotate(-18deg); }
 .eraser-body { position:absolute; inset:0; background:linear-gradient(180deg,#e8798f,#c2495f); border:1px solid #7a2836; border-radius:5px 5px 8px 8px; box-shadow:inset 0 -6px 0 #a8384c; }
 .eraser-band { position:absolute; left:0; right:0; top:0; height:38%; background:#d7d9da; border:1px solid #8d9194; border-bottom:none; border-radius:5px 5px 0 0; }
-.tool-preview.select-preview { position:relative; width:76%; height:76%; }
-.select-hub { position:absolute; left:50%; top:50%; width:22%; height:22%; transform:translate(-50%,-50%); border-radius:2px; background:#35ddf3; box-shadow:0 0 6px rgba(53,221,243,.7); }
-.select-arrow { position:absolute; left:50%; top:50%; width:0; height:0; border:7px solid transparent; }
-.select-arrow.n { border-bottom-color:#dbe9ee; transform:translate(-50%,-260%); }
-.select-arrow.s { border-top-color:#dbe9ee; transform:translate(-50%,160%); }
-.select-arrow.e { border-left-color:#dbe9ee; transform:translate(160%,-50%); }
-.select-arrow.w { border-right-color:#dbe9ee; transform:translate(-260%,-50%); }
+.tool-preview.select-preview { position:relative; width:100%; height:100%; }
+.select-hub { position:absolute; left:50%; top:50%; width:20%; height:20%; transform:translate(-50%,-50%); border-radius:2px; background:#35ddf3; box-shadow:0 0 6px rgba(53,221,243,.7); }
+.select-arrow { position:absolute; width:0; height:0; }
+.select-arrow.n { left:50%; top:4%; transform:translateX(-50%); border-left:7px solid transparent; border-right:7px solid transparent; border-bottom:11px solid #dbe9ee; }
+.select-arrow.s { left:50%; bottom:4%; transform:translateX(-50%); border-left:7px solid transparent; border-right:7px solid transparent; border-top:11px solid #dbe9ee; }
+.select-arrow.e { top:50%; right:4%; transform:translateY(-50%); border-top:7px solid transparent; border-bottom:7px solid transparent; border-left:11px solid #dbe9ee; }
+.select-arrow.w { top:50%; left:4%; transform:translateY(-50%); border-top:7px solid transparent; border-bottom:7px solid transparent; border-right:11px solid #dbe9ee; }
 .tool-glyph { font-size:22px; }
 .editor-validation {
   min-width:0; max-height:96px; overflow:auto; padding:8px 10px; border:1px solid #6b4337;
@@ -449,10 +449,10 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .feasibility.ok { border-color:#276b4b; background:#0d1813; }
 .feasibility h3 { margin:0 0 9px; }
 .feasibility-total { display:grid; grid-template-columns:1fr auto; align-items:center; gap:7px; font-size:10px; padding-bottom:7px; margin-bottom:8px; border-bottom:1px solid #2d3b40; }
-.feasibility-swatches { display:grid; grid-template-columns:repeat(3,1fr); gap:5px; }
+.feasibility-swatches { display:grid; grid-template-columns:repeat(5,1fr); gap:4px; }
 .feasibility-swatch {
-  aspect-ratio:1; border-radius:5px; display:grid; place-items:center;
-  font-size:9px; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.7); border:1px solid rgba(255,255,255,.15);
+  aspect-ratio:1; border-radius:4px; display:grid; place-items:center;
+  font-size:8px; color:#fff; text-shadow:0 1px 2px rgba(0,0,0,.7); border:1px solid rgba(255,255,255,.15);
 }
 .feasibility-swatch.red { background:var(--red); }.feasibility-swatch.blue { background:var(--blue); }
 .feasibility-swatch.yellow { background:var(--yellow); color:#241c00; text-shadow:none; }.feasibility-swatch.green { background:var(--green); }
@@ -674,8 +674,7 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
   .workspace { padding:6px; }
   .board-wrap { width:min(96vw, calc(100dvh - 240px)); }
   .editor .board-wrap { width:min(calc(100% - 2px), calc(100dvh - 198px)); }
-  .level-brief { gap:6px; }
-  .level-brief > b { max-width:72px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  .level-name-line { font-size:11px; }
   .game-hud { gap:6px; }
   .game-hud > span { gap:2px; }
   .game-hud small { display:none; }

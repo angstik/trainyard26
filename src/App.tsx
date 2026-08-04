@@ -45,7 +45,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.11";
+const APP_VERSION = "1.12";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -449,7 +449,7 @@ export default function App() {
   const [saveStatus, setSaveStatus] = useState("");
   const [levelProgress, setLevelProgress] = useState<Record<string, LevelProgress>>({});
   const [editingElapsedMs, setEditingElapsedMs] = useState(0);
-  const [runElapsedMs, setRunElapsedMs] = useState(0);
+  const [totalElapsedMs, setTotalElapsedMs] = useState(0);
   const [libraryFamilyId, setLibraryFamilyId] = useState<string | null>(null);
   const [importText, setImportText] = useState("");
   const [importFeedback, setImportFeedback] = useState("");
@@ -519,15 +519,15 @@ export default function App() {
   }, [running, result]);
 
   useEffect(() => {
-    if (!running || paused) return;
+    if (result === "success" || paused) return;
     let lastTick = Date.now();
     const timer = window.setInterval(() => {
       const now = Date.now();
-      setRunElapsedMs((value) => value + now - lastTick);
+      setTotalElapsedMs((value) => value + now - lastTick);
       lastTick = now;
     }, 200);
     return () => window.clearInterval(timer);
-  }, [running, paused]);
+  }, [result, paused]);
 
   useEffect(() => {
     const timeout = window.setTimeout(() => {
@@ -670,6 +670,7 @@ export default function App() {
     objectsHistoryRef.current = [];
     setObjectsHistoryLength(0);
     setGesture([]);
+    setTotalElapsedMs(0);
     setObjects(level.objects);
     setRailLimit(level.railLimit);
     setFamily(level.family);
@@ -786,29 +787,16 @@ export default function App() {
     gestureRef.current = [];
     drawingRef.current = false;
     if (nextMode === "play" && mode === "editor") {
-      // Au retour en mode jeu : on ne touche jamais aux rails connectés à une
-      // remise ou une gare (les "bouts de connexion" doivent rester
-      // connectés), ni à un splitter (ses 4 côtés sont potentiellement
-      // valides, en entrée comme en sortie selon son orientation — le moteur
-      // de simulation gère déjà les entrées invalides comme un accident). On
-      // retire uniquement : tout rail touchant un obstacle, et les rails
-      // d'un painter qui n'empruntent pas l'un de ses 2 côtés configurés.
-      const obstacleCells = new Set(objects.filter((object) => object.type === "obstacle").map((object) => pointKey([object.x, object.y])));
-      const painterSides = new Map<string, Set<Direction>>();
-      objects.filter((object) => object.type === "painter").forEach((object) => {
-        painterSides.set(pointKey([object.x, object.y]), new Set(object.sides));
-      });
+      // Au retour en mode jeu : on retire tout rail qui, à ce moment précis,
+      // se trouve sur une case artefact sans correspondre à un côté
+      // réellement valide pour cet artefact (même règle qu'au tracé, voir
+      // isEdgeAllowed). Un rail connecté au bon côté d'une remise/gare/
+      // painter reste donc en place ; un obstacle ne tolère jamais de rail.
       setEdges((current) => new Set([...current].filter((edge) => {
         const [aKey, bKey] = edge.split("|");
-        if (obstacleCells.has(aKey) || obstacleCells.has(bKey)) return false;
-        for (const [selfKey, otherKey] of [[aKey, bKey], [bKey, aKey]] as const) {
-          const allowed = painterSides.get(selfKey);
-          if (!allowed) continue;
-          const [sx, sy] = selfKey.split(",").map(Number) as [number, number];
-          const [ox, oy] = otherKey.split(",").map(Number) as [number, number];
-          if (!allowed.has(directionBetween([sx, sy], [ox, oy]))) return false;
-        }
-        return true;
+        const [ax, ay] = aKey.split(",").map(Number) as [number, number];
+        const [bx, by] = bKey.split(",").map(Number) as [number, number];
+        return isEdgeAllowed([ax, ay], [bx, by]);
       })));
     }
     setMode(nextMode);
@@ -879,7 +867,6 @@ export default function App() {
       return;
     }
     persistAttempt(false);
-    setRunElapsedMs(0);
     const clean = createEmptySim(objects, switchPositions);
     simRef.current = clean;
     setDisplaySwitchPositions({ ...switchPositions });
@@ -1051,6 +1038,7 @@ export default function App() {
 
       let resolved = advanced;
       if (!sim.failed) {
+        const stationCellKeys = new Set(objects.filter((o) => o.type === "station").map((o) => pointKey([o.x, o.y])));
         const consumed = new Set<number>();
         const merged: MovingTrain[] = [];
         for (let i = 0; i < advanced.length; i++) {
@@ -1059,6 +1047,11 @@ export default function App() {
           for (let j = i + 1; j < advanced.length; j++) {
             if (consumed.has(j)) continue;
             const a = advanced[i], b = advanced[j];
+            // Deux trains qui convergent vers une gare (potentiellement multi-entrées)
+            // ne doivent jamais être mélangés par la logique de croisement générale :
+            // leur arrivée simultanée y est intentionnelle et gérée séparément (voir
+            // la résolution par lot des arrivées en gare, plus bas).
+            if (stationCellKeys.has(pointKey(a.next)) || stationCellKeys.has(pointKey(b.next))) continue;
             const sameDirection = samePoint(a.cell, b.cell) && samePoint(a.next, b.next);
             const frontal = samePoint(a.cell, b.next) && samePoint(a.next, b.cell);
             const ax = a.cell[0] + (a.next[0] - a.cell[0]) * a.progress;
@@ -1168,7 +1161,6 @@ export default function App() {
     else if (editorTool === "splitter") object = { id, type: "splitter", x, y, orientation: "H" };
     else object = { id, type: "obstacle", x, y };
     setObjects((items) => [...items.filter((o) => o.x !== x || o.y !== y), object]);
-    stripInvalidEdgesFor(object);
     setSelectedObject(id);
     setSequenceSlot(0);
     setEditorDialog("object");
@@ -1189,6 +1181,7 @@ export default function App() {
       setMovingObjectId(object.id);
       setMoveGhostCell(cell);
       playEffect("switch");
+      if (navigator.vibrate) navigator.vibrate(35);
       setStatus("DÉPLACEMENT — RELÂCHEZ SUR LA CASE CIBLE");
     }, LONG_PRESS_MS);
   }
@@ -1211,7 +1204,6 @@ export default function App() {
     if (gesture.moving) {
       const target = moveGhostCell ?? gesture.startCell;
       const objectId = gesture.objectId;
-      let moved: LevelObject | null = null;
       pushObjectsHistory();
       setObjects((items) => {
         const occupied = items.some((item) => item.id !== objectId && item.x === target[0] && item.y === target[1]);
@@ -1220,13 +1212,8 @@ export default function App() {
           return items;
         }
         setStatus("ÉLÉMENT DÉPLACÉ");
-        return items.map((item) => {
-          if (item.id !== objectId) return item;
-          moved = { ...item, x: target[0], y: target[1] };
-          return moved;
-        });
+        return items.map((item) => item.id === objectId ? { ...item, x: target[0], y: target[1] } : item);
       });
-      if (moved) stripInvalidEdgesFor(moved);
       setMovingObjectId(null);
       setMoveGhostCell(null);
       return;
@@ -1244,27 +1231,6 @@ export default function App() {
     setSelectedObject(object.id);
     setSequenceSlot(0);
     setEditorDialog("object");
-  }
-
-  function edgeAllowedForPlacement(object: LevelObject, a: Point, b: Point): boolean {
-    const objectCell: Point = [object.x, object.y];
-    if (!samePoint(a, objectCell) && !samePoint(b, objectCell)) return true;
-    const other = samePoint(a, objectCell) ? b : a;
-    const direction = directionBetween(objectCell, other);
-    if (object.type === "obstacle") return false;
-    if (object.type === "outlet") return direction === object.facing;
-    if (object.type === "station") return object.facings.includes(direction);
-    if (object.type === "painter") return object.sides.includes(direction);
-    return true;
-  }
-
-  function stripInvalidEdgesFor(object: LevelObject) {
-    setEdges((current) => new Set([...current].filter((key) => {
-      const [aKey, bKey] = key.split("|");
-      const [ax, ay] = aKey.split(",").map(Number) as [number, number];
-      const [bx, by] = bKey.split(",").map(Number) as [number, number];
-      return edgeAllowedForPlacement(object, [ax, ay], [bx, by]);
-    })));
   }
 
   function isEdgeAllowed(a: Point, b: Point): boolean {
@@ -1534,30 +1500,24 @@ export default function App() {
   function togglePainterSide(direction: Direction) {
     if (!selectedObject) return;
     pushObjectsHistory();
-    let updated: LevelObject | null = null;
     setObjects((items) => items.map((object) => {
       if (object.id !== selectedObject || object.type !== "painter") return object;
       if (object.sides.includes(direction)) return object; // toujours exactement 2 côtés actifs
       const [, second] = object.sides;
-      updated = { ...object, sides: [second, direction] };
-      return updated;
+      return { ...object, sides: [second, direction] };
     }));
-    if (updated) stripInvalidEdgesFor(updated);
   }
 
   function toggleStationFacing(direction: Direction) {
     if (!selectedObject) return;
     pushObjectsHistory();
-    let updated: LevelObject | null = null;
     setObjects((items) => items.map((object) => {
       if (object.id !== selectedObject || object.type !== "station") return object;
       const has = object.facings.includes(direction);
       if (has && object.facings.length === 1) return object; // une gare doit garder au moins une entrée
       const facings = has ? object.facings.filter((item) => item !== direction) : [...object.facings, direction];
-      updated = { ...object, facings };
-      return updated;
+      return { ...object, facings };
     }));
-    if (updated) stripInvalidEdgesFor(updated);
   }
 
   function updateSequence(index: number, value: TrainColor | "") {
@@ -1702,7 +1662,7 @@ export default function App() {
       })()}      <header>
         <div className="brand">
           <span className="sigil">✣<small className="version-tag">v{APP_VERSION}</small></span>
-          <div><b>{activeLevel.title.toUpperCase()}</b><small>SIGNAL NOCTURNE · NIVEAU {activeLevel.number.toString().padStart(2, "0")}</small></div>
+          <div><b>SIGNAL NOCTURNE</b><small>NIVEAU {activeLevel.number.toString().padStart(2, "0")}</small></div>
         </div>
         <div className="status-strip">
           <span><small>ÉTAT</small><b className={result}>{paused ? "PAUSE" : status}</b></span>
@@ -1744,17 +1704,16 @@ export default function App() {
           </aside>
         )}
 
-        <div className="board-wrap">
+        <div className="board-column">
+          <div className="level-name-line"><b>{activeLevel.title}</b></div>
+          <div className="board-wrap">
           <div className="board-heading">
             <button className="board-level-arrow" aria-label="Niveau précédent" title="Niveau précédent" disabled={running || activeLevelIndex <= 0} onClick={() => changeLevel(-1)}>←</button>
-            <div className="level-brief">
-              <b>{activeLevel.title}</b>
-              {mode === "play" && <div className="game-hud" aria-label={`Version ${APP_VERSION}, ${railCount} rails sur ${railLimit}, ${trackCells} cases, temps ${formatTime(runElapsedMs)}`}>
-                <span><small>RAILS</small><strong style={{ color: railMetricColor }}>{railCount}/{railLimit}</strong></span>
-                <span><small>CASES</small><strong>{trackCells}</strong></span>
-                <span><small>TEMPS</small><strong>{formatTime(runElapsedMs)}</strong></span>
-              </div>}
-            </div>
+            {mode === "play" && <div className="game-hud" aria-label={`Version ${APP_VERSION}, ${railCount} rails sur ${railLimit}, ${trackCells} cases, temps ${formatTime(totalElapsedMs)}`}>
+              <span><small>RAILS</small><strong style={{ color: railMetricColor }}>{railCount}/{railLimit}</strong></span>
+              <span><small>CASES</small><strong>{trackCells}</strong></span>
+              <span><small>TEMPS</small><strong>{formatTime(totalElapsedMs)}</strong></span>
+            </div>}
             <button className="board-level-arrow" aria-label="Niveau suivant" title="Niveau suivant" disabled={running || activeLevelIndex < 0 || activeLevelIndex >= navigableLevels.length - 1} onClick={() => changeLevel(1)}>→</button>
           </div>
           <div
@@ -1831,6 +1790,7 @@ export default function App() {
               <button onClick={() => resetSimulation()}>RETOUR AU PLAN</button>
             </div>
           )}
+        </div>
         </div>
 
         {editorDialog && (

@@ -1,4 +1,4 @@
-const CACHE = "signal-nocturne-v1.1";
+const CACHE = "signal-nocturne-v1.2";
 const SCOPE = self.registration.scope;
 const CORE = [
   "", "manifest.webmanifest", "favicon.svg", "icon-192.svg", "icon-512.svg",
