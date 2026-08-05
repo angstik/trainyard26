@@ -35,9 +35,23 @@ export type LevelDefinition = {
   switchPositions?: Record<string, number>;
 };
 
+/**
+ * Forme compacte d'un niveau dans un catalogue : mêmes métadonnées que
+ * `LevelDefinition`, mais soit `puzzleString` (catalogue officiel — décodé à
+ * la demande via `hydrateLevel`), soit `objects` déjà présent (niveaux
+ * personnalisés créés dans l'éditeur, qui n'ont pas de puzzleString comme
+ * source de vérité). Jamais les deux formats développés en mémoire pour
+ * l'ensemble d'un catalogue en même temps.
+ */
+export type LevelSource = Omit<LevelDefinition, "objects" | "examplePaths"> & {
+  puzzleString?: string;
+  objects?: LevelObject[];
+  examplePaths?: [number, number][][];
+};
+
 export type LevelFamily = {
   id: string;
   title: string;
   playable: boolean;
-  levels: LevelDefinition[];
+  levels: LevelSource[];
 };

@@ -1,5 +1,8 @@
 // Généré automatiquement depuis trainyard_standard_levels.csv (extraction officielle
 // trainyard.ca, catalogues Regular/Bonus/Express, 233 niveaux, 36 familles).
+// Catalogue compact : chaque niveau ne porte que son puzzleString + métadonnées,
+// jamais les objets décodés (voir hydrateLevel() dans hydrate.ts, appelé à la
+// demande lorsqu'un niveau devient actif).
 // Ne pas éditer à la main : régénérer via scripts/generateStandardCatalog.ts.
 import type { LevelFamily } from "./types";
 
@@ -13,7 +16,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-redLine",
         title: "Red Line",
         number: 1,
-        brief: "Regular · Abbotsford · 1/30 clés",
+        brief: "",
         family: "regular-abbotsford",
         width: 7,
         height: 7,
@@ -22,37 +25,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 3,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-1"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh002Oja3Giaa00"
       },
       {
         id: "std-grorangeLines",
         title: "Grorange lines",
         number: 2,
-        brief: "Regular · Abbotsford · 1/30 clés",
+        brief: "",
         family: "regular-abbotsford",
         width: 7,
         height: 7,
@@ -61,59 +40,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 5,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 5,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 5,
-            facing: "E",
-            trains: [
-              "orange"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8OsC007GbaCOjv2Giav"
       },
       {
         id: "std-yorpleLines",
         title: "Yorple lines",
         number: 3,
-        brief: "Regular · Abbotsford · 1/30 clés",
+        brief: "",
         family: "regular-abbotsford",
         width: 7,
         height: 7,
@@ -122,103 +55,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 12,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 2,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 2,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 4,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 4,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "purple"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcaJ5OBJ8Osh3Geah9Gbah3Oah8OjJ5GiaJ"
       },
       {
         id: "std-magicalTrains",
         title: "Magical Trains",
         number: 4,
-        brief: "Regular · Abbotsford · 1/30 clés",
+        brief: "",
         family: "regular-abbotsford",
         width: 7,
         height: 7,
@@ -227,59 +70,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 9,
         optimalSwitchCells: 1,
         wrenches: 1,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3GeaJ07OjJ5GiaJ07OaJ"
       },
       {
         id: "std-theRedCorner",
         title: "The Red Corner",
         number: 5,
-        brief: "Regular · Abbotsford · 1/30 clés",
+        brief: "",
         family: "regular-abbotsford",
         width: 7,
         height: 7,
@@ -288,37 +85,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 7,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-1"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Osa0001Giaa"
       },
       {
         id: "std-purpablu",
         title: "Purpablu",
         number: 6,
-        brief: "Regular · Abbotsford · 1/30 clés",
+        brief: "",
         family: "regular-abbotsford",
         width: 7,
         height: 7,
@@ -327,53 +100,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 16,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "W",
-            trains: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 5,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8OBJ3GcaJ003Oso3Gbao"
       }
     ]
   },
@@ -386,7 +113,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-aRockInTheWay",
         title: "A Rock in the Way",
         number: 1,
-        brief: "Regular · Brampton · 1/30 clés",
+        brief: "",
         family: "regular-brampton",
         width: 7,
         height: 7,
@@ -395,43 +122,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 7,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3GeaC00R00OaC"
       },
       {
         id: "std-greenWally",
         title: "Green Wally",
         number: 2,
-        brief: "Regular · Brampton · 1/30 clés",
+        brief: "",
         family: "regular-brampton",
         width: 7,
         height: 7,
@@ -440,73 +137,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 9,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "station",
-            x: 1,
-            y: 1,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 1,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 5,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 6,
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8GeaC1R1OsC4R6R6R6R6R"
       },
       {
         id: "std-yellowSnake",
         title: "Yellow Snake",
         number: 3,
-        brief: "Regular · Brampton · 1/30 clés",
+        brief: "",
         family: "regular-brampton",
         width: 7,
         height: 7,
@@ -515,109 +152,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 23,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 1,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 1,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-12"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh6OBh1RRRRRR7RRRRRR05Gcah"
       },
       {
         id: "std-uTurn",
         title: "U-Turn",
         number: 4,
-        brief: "Regular · Brampton · 1/30 clés",
+        brief: "",
         family: "regular-brampton",
         width: 7,
         height: 7,
@@ -626,131 +167,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 2,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 0,
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 1,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 2,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 2,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 4,
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 4,
-            id: "import-13"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 5,
-            id: "import-14"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 5,
-            id: "import-15"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOsJRGeaJ1GeaaROsa1R3R2R3R2R3R2R3R2R3R"
       },
       {
         id: "std-journey",
         title: "Journey",
         number: 5,
-        brief: "Regular · Brampton · 1/30 clés",
+        brief: "",
         family: "regular-brampton",
         width: 7,
         height: 7,
@@ -759,73 +182,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "obstacle",
-            x: 0,
-            y: 0,
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 4,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 5,
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 6,
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhR5Geav3R4R9R8R2R4Oav4R"
       }
     ]
   },
@@ -838,7 +195,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-rainbow",
         title: "Rainbow",
         number: 1,
-        brief: "Regular · Calgary · 1/30 clés",
+        brief: "",
         family: "regular-calgary",
         width: 7,
         height: 7,
@@ -847,169 +204,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 25,
         optimalSwitchCells: 15,
         wrenches: 1,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 0,
-            facing: "S",
-            trains: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 0,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 0,
-            facing: "S",
-            trains: [
-              "orange"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 6,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-12"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGeaaOsJGeaoOsCGeahOsvGeaa0005OaaGbaJOaoGbaCOahGbavOaa"
       },
       {
         id: "std-innieOutie",
         title: "Innie Outie",
         number: 2,
-        brief: "Regular · Calgary · 1/30 clés",
+        brief: "",
         family: "regular-calgary",
         width: 7,
         height: 7,
@@ -1018,59 +219,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 2,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 5,
-            y: 1,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 2,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh02Oja5Ojo01Giao5Giaa0"
       },
       {
         id: "std-aroundTheBack",
         title: "Around the Back",
         number: 3,
-        brief: "Regular · Calgary · 2/30 clés",
+        brief: "",
         family: "regular-calgary",
         width: 7,
         height: 7,
@@ -1079,81 +234,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 4,
         wrenches: 2,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 1,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Oja3Giao9Ojh3Giaa9Ojo3Giah"
       },
       {
         id: "std-multiColor",
         title: "Multicolor",
         number: 4,
-        brief: "Regular · Calgary · 1/30 clés",
+        brief: "",
         family: "regular-calgary",
         width: 7,
         height: 7,
@@ -1162,73 +249,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 8,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "green",
-              "blue",
-              "red",
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Oso07OjC2GpdEb2OBh07Oaa"
       },
       {
         id: "std-squiggle",
         title: "Squiggle",
         number: 5,
-        brief: "Regular · Calgary · 1/30 clés",
+        brief: "",
         family: "regular-calgary",
         width: 7,
         height: 7,
@@ -1237,49 +264,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 8,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 2,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "W",
-              "E"
-            ],
-            expects: [
-              "green",
-              "orange"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh07Oav6GkbF6OsC0"
       },
       {
         id: "std-twoTwo",
         title: "Two Two",
         number: 6,
-        brief: "Regular · Calgary · 1/30 clés",
+        brief: "",
         family: "regular-calgary",
         width: 7,
         height: 7,
@@ -1288,39 +279,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 5,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red",
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red",
-              "red"
-            ],
-            id: "import-1"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Geba00001Oba"
       },
       {
         id: "std-crossover",
         title: "Crossover",
         number: 7,
-        brief: "Regular · Calgary · 2/30 clés",
+        brief: "",
         family: "regular-calgary",
         width: 7,
         height: 7,
@@ -1329,53 +294,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 10,
         optimalSwitchCells: 2,
         wrenches: 2,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Oso07Oja5Giaa07Gbao"
       }
     ]
   },
@@ -1388,7 +307,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-mellowYellow",
         title: "Mellow Yellow",
         number: 1,
-        brief: "Regular · Delson · 2/30 clés",
+        brief: "",
         family: "regular-delson",
         width: 7,
         height: 7,
@@ -1397,50 +316,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 6,
         optimalSwitchCells: 1,
         wrenches: 2,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 1,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 5,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 5,
-            facing: "W",
-            trains: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh0Geah005Gcah3OCi"
       },
       {
         id: "std-deliveringOranges",
         title: "Delivering Oranges",
         number: 2,
-        brief: "Regular · Delson · 2/30 clés",
+        brief: "",
         family: "regular-delson",
         width: 7,
         height: 7,
@@ -1449,50 +331,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 6,
         optimalSwitchCells: 1,
         wrenches: 2,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 3,
-            facing: "N",
-            trains: [
-              "orange",
-              "orange"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh004Oby6Geav03Gbav"
       },
       {
         id: "std-purpleParcels",
         title: "Purple Parcels",
         number: 3,
-        brief: "Regular · Delson · 2/30 clés",
+        brief: "",
         family: "regular-delson",
         width: 7,
         height: 7,
@@ -1501,96 +346,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 15,
         optimalSwitchCells: 2,
         wrenches: 2,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "purple",
-              "purple",
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S",
-              "W"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 5,
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N",
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W",
-              "N"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOuOJ5GmaJ3R01R1R1R01R3GdaJ5GjaJ"
       },
       {
         id: "std-prellow",
         title: "Prellow",
         number: 4,
-        brief: "Regular · Delson · 2/30 clés",
+        brief: "",
         family: "regular-delson",
         width: 7,
         height: 7,
@@ -1599,50 +361,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 6,
         optimalSwitchCells: 1,
         wrenches: 2,
-        objects: [
-          {
-            type: "station",
-            x: 1,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 1,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 5,
-            facing: "N",
-            trains: [
-              "purple",
-              "yellow"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8GcaJ3Giah005ObK0"
       },
       {
         id: "std-aroundTheBend",
         title: "Around the Bend",
         number: 5,
-        brief: "Regular · Delson · 2/30 clés",
+        brief: "",
         family: "regular-delson",
         width: 7,
         height: 7,
@@ -1651,80 +376,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 1,
         wrenches: 2,
-        objects: [
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 3,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 3,
-            facing: "N",
-            trains: [
-              "orange",
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 4,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 5,
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh002RRRGeavObxGeao5R6R"
       },
       {
         id: "std-preenies",
         title: "Preenies",
         number: 6,
-        brief: "Regular · Delson · 2/30 clés",
+        brief: "",
         family: "regular-delson",
         width: 7,
         height: 7,
@@ -1733,150 +391,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 23,
         optimalSwitchCells: 1,
         wrenches: 2,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "purple",
-              "green",
-              "purple",
-              "green",
-              "purple",
-              "green",
-              "purple",
-              "green",
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 1,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-13"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 5,
-            id: "import-14"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N",
-              "E"
-            ],
-            expects: [
-              "green",
-              "green",
-              "green",
-              "green"
-            ],
-            id: "import-15"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W",
-              "N"
-            ],
-            expects: [
-              "purple",
-              "purple",
-              "purple",
-              "purple",
-              "purple"
-            ],
-            id: "import-16"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOrNNNNJ6RRRRRR9RRRRRR3R6R3GddGG5GjeOOJ"
       },
       {
         id: "std-tooMany",
         title: "Too Many",
         number: 7,
-        brief: "Regular · Delson · 3/30 clés",
+        brief: "",
         family: "regular-delson",
         width: 7,
         height: 7,
@@ -1885,143 +406,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 15,
         optimalSwitchCells: 2,
         wrenches: 3,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green",
-              "green",
-              "green",
-              "green",
-              "blue",
-              "blue",
-              "blue",
-              "blue",
-              "orange",
-              "orange",
-              "orange",
-              "orange"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 2,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 2,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 2,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 2,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-12"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "W",
-            trains: [
-              "green",
-              "green",
-              "green",
-              "green"
-            ],
-            id: "import-13"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 5,
-            facing: "N",
-            trains: [
-              "blue",
-              "blue",
-              "blue",
-              "blue"
-            ],
-            id: "import-14"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 5,
-            facing: "E",
-            trains: [
-              "orange",
-              "orange",
-              "orange",
-              "orange"
-            ],
-            id: "import-15"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3GelGGqqyy0RRR1RRRRRR1RRR8OEGG1Odqq1Omyy"
       }
     ]
   },
@@ -2034,7 +419,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-yield",
         title: "Yield",
         number: 1,
-        brief: "Regular · Edmonton · 3/30 clés",
+        brief: "",
         family: "regular-edmonton",
         width: 7,
         height: 7,
@@ -2043,47 +428,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 7,
         optimalSwitchCells: 1,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Ojh07Giah9Ojh0"
       },
       {
         id: "std-blueBoys",
         title: "Blue Boys",
         number: 2,
-        brief: "Regular · Edmonton · 3/30 clés",
+        brief: "",
         family: "regular-edmonton",
         width: 7,
         height: 7,
@@ -2092,47 +443,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 4,
         optimalSwitchCells: 1,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 1,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 3,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 5,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh0Oso05OBo01Gbao0"
       },
       {
         id: "std-timingTest",
         title: "Timing Test",
         number: 3,
-        brief: "Regular · Edmonton · 3/30 clés",
+        brief: "",
         family: "regular-edmonton",
         width: 7,
         height: 7,
@@ -2141,47 +458,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 12,
         optimalSwitchCells: 3,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 1,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Oja3Oja0002Giaa"
       },
       {
         id: "std-grimaceTown",
         title: "Grimace Town",
         number: 4,
-        brief: "Regular · Edmonton · 3/30 clés",
+        brief: "",
         family: "regular-edmonton",
         width: 7,
         height: 7,
@@ -2190,63 +473,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 10,
         optimalSwitchCells: 2,
         wrenches: 3,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "purple",
-              "purple",
-              "purple"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3GeaJ07GcaJ5GiaJ07OcOJ"
       },
       {
         id: "std-lemonLatency",
         title: "Lemon Latency",
         number: 5,
-        brief: "Regular · Edmonton · 3/30 clés",
+        brief: "",
         family: "regular-edmonton",
         width: 7,
         height: 7,
@@ -2255,47 +488,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 3,
         wrenches: 3,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 0,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 6,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGeahOsh00005OBh"
       },
       {
         id: "std-threeReds",
         title: "Three Reds",
         number: 6,
-        brief: "Regular · Edmonton · 3/30 clés",
+        brief: "",
         family: "regular-edmonton",
         width: 7,
         height: 7,
@@ -2304,57 +503,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 12,
         optimalSwitchCells: 4,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOsa1Osa3Osa0008Gbaa"
       },
       {
         id: "std-colourTheory",
         title: "Colour Theory",
         number: 7,
-        brief: "Regular · Edmonton · 3/30 clés",
+        brief: "",
         family: "regular-edmonton",
         width: 7,
         height: 7,
@@ -2363,47 +518,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 5,
         optimalSwitchCells: 1,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 2,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 2,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 5,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh05Ojo3OBh08GbaC0"
       },
       {
         id: "std-secondary",
         title: "Secondary",
         number: 8,
-        brief: "Regular · Edmonton · 3/30 clés",
+        brief: "",
         family: "regular-edmonton",
         width: 7,
         height: 7,
@@ -2412,47 +533,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 12,
         optimalSwitchCells: 3,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOsa5Osh00001Gbav"
       },
       {
         id: "std-nurple",
         title: "Nurple",
         number: 9,
-        brief: "Regular · Edmonton · 3/30 clés",
+        brief: "",
         family: "regular-edmonton",
         width: 7,
         height: 7,
@@ -2461,44 +548,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 8,
         optimalSwitchCells: 1,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 5,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Osa05GpaJ05Oao"
       }
     ]
   },
@@ -2511,7 +561,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-microMix",
         title: "Micro Mix",
         number: 1,
-        brief: "Regular · Fredericton · 3/30 clés",
+        brief: "",
         family: "regular-fredericton",
         width: 7,
         height: 7,
@@ -2520,47 +570,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 9,
         optimalSwitchCells: 1,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 5,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Ojo007OBhGcaC0"
       },
       {
         id: "std-theFirst",
         title: "The First",
         number: 2,
-        brief: "Regular · Fredericton · 3/30 clés",
+        brief: "",
         family: "regular-fredericton",
         width: 7,
         height: 7,
@@ -2569,59 +585,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 7,
         optimalSwitchCells: 2,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 1,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 5,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh0Oso01GcaJ3GiaJ01Oaa0"
       },
       {
         id: "std-waitOutside",
         title: "Wait Outside",
         number: 3,
-        brief: "Regular · Fredericton · 3/30 clés",
+        brief: "",
         family: "regular-fredericton",
         width: 7,
         height: 7,
@@ -2630,119 +600,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 1,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 4,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 5,
-            id: "import-11"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 6,
-            id: "import-13"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-14"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Osa1R1R4R1R1RRRR1R6R6R1GcaJ4ROao"
       },
       {
         id: "std-nineMensMorris",
         title: "Nine Men's Morris",
         number: 4,
-        brief: "Regular · Fredericton · 3/30 clés",
+        brief: "",
         family: "regular-fredericton",
         width: 7,
         height: 7,
@@ -2751,115 +615,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 15,
         optimalSwitchCells: 2,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S",
-              "W"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 2,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 4,
-            id: "import-10"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N",
-              "E"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-12"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOsh5Gmav9RRR4RRR4RRR9Gdav5Oaa"
       },
       {
         id: "std-eeeTee",
         title: "Eee Tee",
         number: 5,
-        brief: "Regular · Fredericton · 3/30 clés",
+        brief: "",
         family: "regular-fredericton",
         width: 7,
         height: 7,
@@ -2868,68 +630,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 15,
         optimalSwitchCells: 3,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 4,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 4,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 6,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "orange",
-              "purple"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 6,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh009Oaa3Oah9OBa1GbbA1Ojo"
       },
       {
         id: "std-relish",
         title: "Relish",
         number: 6,
-        brief: "Regular · Fredericton · 4/30 clés",
+        brief: "",
         family: "regular-fredericton",
         width: 7,
         height: 7,
@@ -2938,75 +645,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 16,
         optimalSwitchCells: 6,
         wrenches: 4,
-        objects: [
-          {
-            type: "obstacle",
-            x: 0,
-            y: 0,
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 0,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 1,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 5,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 5,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 6,
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 6,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhROjh5OsCGeaC000RR5ROjo"
       }
     ]
   },
@@ -3019,7 +658,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-mirrorSquad",
         title: "Mirror Squad",
         number: 1,
-        brief: "Regular · Guelph · 3/30 clés",
+        brief: "",
         family: "regular-guelph",
         width: 7,
         height: 7,
@@ -3028,145 +667,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 20,
         optimalSwitchCells: 6,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 1,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 4,
-            id: "import-12"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-13"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 5,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-14"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 5,
-            id: "import-15"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-16"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOja8R3GiaJOjo1R4RRRRRRR4R1OBoGcaC3R8OBh"
       },
       {
         id: "std-cuteLoop",
         title: "Cute Loop",
         number: 2,
-        brief: "Regular · Guelph · 3/30 clés",
+        brief: "",
         family: "regular-guelph",
         width: 7,
         height: 7,
@@ -3175,107 +682,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 20,
         optimalSwitchCells: 3,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 1,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 1,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 4,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 5,
-            id: "import-12"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOja5OBoR1RRRRR4R1GiaJ4R6R6R"
       },
       {
         id: "std-hourglass",
         title: "Hourglass",
         number: 3,
-        brief: "Regular · Guelph · 4/30 clés",
+        brief: "",
         family: "regular-guelph",
         width: 7,
         height: 7,
@@ -3284,85 +697,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 6,
         wrenches: 4,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-6"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOja5OBh0GbaJ6R6Geav0Oja5OBo"
       },
       {
         id: "std-gauss",
         title: "Gauss",
         number: 4,
-        brief: "Regular · Guelph · 4/30 clés",
+        brief: "",
         family: "regular-guelph",
         width: 7,
         height: 7,
@@ -3371,69 +712,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 10,
         optimalSwitchCells: 4,
         wrenches: 4,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 2,
-            facing: "W",
-            trains: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh04Oja5OBJR5ROjo5GiaJ0"
       },
       {
         id: "std-thirdWheel",
         title: "Third Wheel",
         number: 5,
-        brief: "Regular · Guelph · 4/30 clés",
+        brief: "",
         family: "regular-guelph",
         width: 7,
         height: 7,
@@ -3442,57 +727,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 14,
         optimalSwitchCells: 4,
         wrenches: 4,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 0,
-            facing: "S",
-            trains: [
-              "orange"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Osv07Oah5Oaa07Gbav"
       },
       {
         id: "std-turtles",
         title: "Turtles",
         number: 6,
-        brief: "Regular · Guelph · 4/30 clés",
+        brief: "",
         family: "regular-guelph",
         width: 7,
         height: 7,
@@ -3501,103 +742,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 20,
         optimalSwitchCells: 4,
         wrenches: 4,
-        objects: [
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 2,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 4,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 4,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 5,
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 6,
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-10"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh02R6R6R1OjC3OBCR6R1OjC3OBCRGbaC"
       },
       {
         id: "std-royals",
         title: "Royals",
         number: 7,
-        brief: "Regular · Guelph · 4/30 clés",
+        brief: "",
         family: "regular-guelph",
         width: 7,
         height: 7,
@@ -3606,89 +757,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 20,
         optimalSwitchCells: 3,
         wrenches: 4,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 4,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 4,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 4,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 4,
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 6,
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 6,
-            facing: "E",
-            trains: [
-              "purple"
-            ],
-            id: "import-9"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOsJ007RRRRRR8GbaJROjJ"
       },
       {
         id: "std-spiced",
         title: "Spiced",
         number: 8,
-        brief: "Regular · Guelph · 4/30 clés",
+        brief: "",
         family: "regular-guelph",
         width: 7,
         height: 7,
@@ -3697,69 +772,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 17,
         optimalSwitchCells: 3,
         wrenches: 4,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "red",
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "orange",
-              "orange"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "red",
-              "red"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOka5OCi07Gpby07Oki5OCa"
       }
     ]
   },
@@ -3772,7 +785,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-handlebars",
         title: "Handlebars",
         number: 1,
-        brief: "Regular · Halifax · 4/30 clés",
+        brief: "",
         family: "regular-halifax",
         width: 7,
         height: 7,
@@ -3781,103 +794,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 4,
         wrenches: 4,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 1,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 5,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 5,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcaC5GiaCOso5Osh001Oah5OaoGcaC5GiaC"
       },
       {
         id: "std-compact",
         title: "Compact",
         number: 2,
-        brief: "Regular · Halifax · 4/30 clés",
+        brief: "",
         family: "regular-halifax",
         width: 7,
         height: 7,
@@ -3886,99 +809,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 7,
         wrenches: 4,
-        objects: [
-          {
-            type: "station",
-            x: 2,
-            y: 2,
-            facings: [
-              "W",
-              "N"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 2,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 3,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 4,
-            facings: [
-              "S",
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh06GjavOaaR4OBoROja4ROshGgaJ0"
       },
       {
         id: "std-wailing",
         title: "Wailing",
         number: 3,
-        brief: "Regular · Halifax · 5/30 clés",
+        brief: "",
         family: "regular-halifax",
         width: 7,
         height: 7,
@@ -3987,117 +824,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 21,
         optimalSwitchCells: 4,
         wrenches: 5,
-        objects: [
-          {
-            type: "obstacle",
-            x: 3,
-            y: 0,
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 1,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 5,
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 6,
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3R4Ojo1R1Giaa4R4Oja3Giah4R4Ojh1R1Giao4R"
       },
       {
         id: "std-laserMaster",
         title: "Laser Master",
         number: 4,
-        brief: "Regular · Halifax · 7/30 clés",
+        brief: "",
         family: "regular-halifax",
         width: 7,
         height: 7,
@@ -4106,43 +839,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 8,
         optimalSwitchCells: 4,
         wrenches: 7,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple",
-              "purple",
-              "purple",
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red",
-              "blue",
-              "red",
-              "blue"
-            ],
-            id: "import-1"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3GedOO00001Odcc"
       },
       {
         id: "std-squads",
         title: "Squads",
         number: 5,
-        brief: "Regular · Halifax · 6/30 clés",
+        brief: "",
         family: "regular-halifax",
         width: 7,
         height: 7,
@@ -4151,70 +854,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 15,
         optimalSwitchCells: 7,
         wrenches: 6,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 0,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple",
-              "purple",
-              "orange",
-              "orange"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 5,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 6,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh1Oja5Oso06GedOy06Oaa5OBh"
       },
       {
         id: "std-aspire",
         title: "Aspire",
         number: 6,
-        brief: "Regular · Halifax · 7/30 clés",
+        brief: "",
         family: "regular-halifax",
         width: 7,
         height: 7,
@@ -4223,67 +869,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 14,
         optimalSwitchCells: 4,
         wrenches: 7,
-        objects: [
-          {
-            type: "station",
-            x: 1,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 4,
-            facing: "S",
-            trains: [
-              "blue",
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "S",
-            trains: [
-              "red",
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 6,
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh009GiaCOtoOtb4Giaa6R"
       },
       {
         id: "std-underTheFence",
         title: "Under The Fence",
         number: 7,
-        brief: "Regular · Halifax · 5/30 clés",
+        brief: "",
         family: "regular-halifax",
         width: 7,
         height: 7,
@@ -4292,103 +884,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 21,
         optimalSwitchCells: 7,
         wrenches: 5,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 1,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-10"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOja2R2OBaOjo2R2OBo3R6R6R0Gbaa5Gbao"
       }
     ]
   },
@@ -4401,7 +897,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-inverse",
         title: "Inverse",
         number: 1,
-        brief: "Regular · Iqaluit · 7/30 clés",
+        brief: "",
         family: "regular-iqaluit",
         width: 7,
         height: 7,
@@ -4410,112 +906,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 22,
         optimalSwitchCells: 6,
         wrenches: 7,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "N",
-            trains: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 1,
-            facing: "N",
-            trains: [
-              "blue",
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 2,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 4,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 4,
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 5,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 5,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-10"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh7Obi5OboR5RR2Gpav2RR5RGeaC5GeaC"
       },
       {
         id: "std-totemPole",
         title: "Totem Pole",
         number: 2,
-        brief: "Regular · Iqaluit · 5/30 clés",
+        brief: "",
         family: "regular-iqaluit",
         width: 7,
         height: 7,
@@ -4524,68 +921,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 3,
         wrenches: 5,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange",
-              "orange"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 3,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 5,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Geby00OBh6OBa6Oja6Ojh"
       },
       {
         id: "std-western",
         title: "Western",
         number: 3,
-        brief: "Regular · Iqaluit · 6/30 clés",
+        brief: "",
         family: "regular-iqaluit",
         width: 7,
         height: 7,
@@ -4594,150 +936,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 26,
         optimalSwitchCells: 7,
         wrenches: 6,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 1,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow",
-              "blue"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 5,
-            id: "import-10"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 6,
-            id: "import-13"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-14"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOjh2R4Ojo1R1Giaa4R4Oja3Gibj4R4Ojh1R1Giao1Ojo2R2Gbah"
       },
       {
         id: "std-collider",
         title: "Collider",
         number: 4,
-        brief: "Regular · Iqaluit · 6/30 clés",
+        brief: "",
         family: "regular-iqaluit",
         width: 7,
         height: 7,
@@ -4746,95 +951,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 13,
         optimalSwitchCells: 6,
         wrenches: 6,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 2,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "green",
-              "green",
-              "green",
-              "green",
-              "green",
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-6"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh04Ojh5OBoOjh2GpfGGG2OBoOjh5OBo0"
       },
       {
         id: "std-starshipSandwich",
         title: "Starship Sandwich",
         number: 5,
-        brief: "Regular · Iqaluit · 6/30 clés",
+        brief: "",
         family: "regular-iqaluit",
         width: 7,
         height: 7,
@@ -4843,117 +966,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 23,
         optimalSwitchCells: 10,
         wrenches: 6,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple",
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 5,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple",
-              "purple"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcbO6Oja6Oja6RRRRRR1Ojo6Ojo6GcbO"
       },
       {
         id: "std-theClassic",
         title: "The Classic",
         number: 6,
-        brief: "Regular · Iqaluit · 7/30 clés",
+        brief: "",
         family: "regular-iqaluit",
         width: 7,
         height: 7,
@@ -4962,76 +981,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 12,
         optimalSwitchCells: 7,
         wrenches: 7,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 2,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 4,
-            facing: "E",
-            trains: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 6,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3GeaCGeav0Oja03Oki02GbaCOjo"
       }
     ]
   },
@@ -5044,7 +994,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-redPear",
         title: "Red Pear",
         number: 1,
-        brief: "Regular · Joliette · 2/30 clés",
+        brief: "",
         family: "regular-joliette",
         width: 7,
         height: 7,
@@ -5053,48 +1003,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 9,
         optimalSwitchCells: 2,
         wrenches: 2,
-        objects: [
-          {
-            type: "painter",
-            x: 0,
-            y: 0,
-            color: "red",
-            sides: [
-              "E",
-              "S"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhPaj00OjC5Giaa00"
       },
       {
         id: "std-paintTheTown",
         title: "Paint The Town",
         number: 2,
-        brief: "Regular · Joliette · 4/30 clés",
+        brief: "",
         family: "regular-joliette",
         width: 7,
         height: 7,
@@ -5103,58 +1018,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 13,
         optimalSwitchCells: 1,
         wrenches: 4,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 3,
-            color: "red",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOsh5Oso07Pao00Gbav"
       },
       {
         id: "std-lopsided",
         title: "Lopsided",
         number: 3,
-        brief: "Regular · Joliette · 5/30 clés",
+        brief: "",
         family: "regular-joliette",
         width: 7,
         height: 7,
@@ -5163,117 +1033,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 14,
         optimalSwitchCells: 2,
         wrenches: 5,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 4,
-            id: "import-7"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 5,
-            color: "yellow",
-            sides: [
-              "W",
-              "S"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 5,
-            color: "red",
-            sides: [
-              "S",
-              "E"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3GiavGcav02RR5RR5RR5PbxPap5OavOav"
       },
       {
         id: "std-plus",
         title: "Plus",
         number: 4,
-        brief: "Regular · Joliette · 6/30 clés",
+        brief: "",
         family: "regular-joliette",
         width: 7,
         height: 7,
@@ -5282,83 +1048,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 15,
         optimalSwitchCells: 4,
         wrenches: 6,
-        objects: [
-          {
-            type: "painter",
-            x: 0,
-            y: 0,
-            color: "red",
-            sides: [
-              "E",
-              "S"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 3,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N",
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhPaj06R3Oah1RROjo5R0GdaJ"
       },
       {
         id: "std-orangeWall",
         title: "Orange Wall",
         number: 5,
-        brief: "Regular · Joliette · 7/30 clés",
+        brief: "",
         family: "regular-joliette",
         width: 7,
         height: 7,
@@ -5367,112 +1063,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 19,
         optimalSwitchCells: 5,
         wrenches: 7,
-        objects: [
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 1,
-            color: "orange",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "N",
-            trains: [
-              "blue",
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 3,
-            color: "orange",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "S",
-            trains: [
-              "blue",
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 5,
-            color: "orange",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh6Giav3Pdo6Gbav3Obq2Pdw2Otq3Geav6Pdo3Gcav"
       }
     ]
   },
@@ -5485,7 +1076,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-poddedPeas",
         title: "Podded Peas",
         number: 1,
-        brief: "Regular · Kamloops · 4/30 clés",
+        brief: "",
         family: "regular-kamloops",
         width: 7,
         height: 7,
@@ -5494,70 +1085,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 14,
         optimalSwitchCells: 2,
         wrenches: 4,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green",
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "S",
-            trains: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "S",
-            trains: [
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "painter",
-            x: 0,
-            y: 6,
-            color: "yellow",
-            sides: [
-              "E",
-              "N"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 6,
-            y: 6,
-            color: "blue",
-            sides: [
-              "W",
-              "N"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3GebG004OsJ5OsJ7Pbh5Pcv"
       },
       {
         id: "std-letThemYellow",
         title: "Let Them Yellow",
         number: 2,
-        brief: "Regular · Kamloops · 7/30 clés",
+        brief: "",
         family: "regular-kamloops",
         width: 7,
         height: 7,
@@ -5566,123 +1100,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 5,
         wrenches: 7,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 3,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "purple",
-              "purple",
-              "purple",
-              "purple"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGeah5Geah04RRRPboRRR04Gbah2OdOO2Gbah"
       },
       {
         id: "std-theOriginal",
         title: "The Original",
         number: 3,
-        brief: "Regular · Kamloops · 7/30 clés",
+        brief: "",
         family: "regular-kamloops",
         width: 7,
         height: 7,
@@ -5691,71 +1115,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 13,
         optimalSwitchCells: 5,
         wrenches: 7,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 2,
-            facing: "N",
-            trains: [
-              "blue",
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 2,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple",
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 3,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh07ObqOah5GebOGeaC002OBa"
       },
       {
         id: "std-stuckToYou",
         title: "Stuck To You",
         number: 4,
-        brief: "Regular · Kamloops · 7/30 clés",
+        brief: "",
         family: "regular-kamloops",
         width: 7,
         height: 7,
@@ -5764,87 +1130,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 12,
         optimalSwitchCells: 3,
         wrenches: 7,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 2,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-2"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 3,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "purple"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 4,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 4,
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh04OjJ5RR2Pco2GiaCOjJ2Pbo2R0"
       },
       {
         id: "std-diagonalMirror",
         title: "Diagonal Mirror",
         number: 5,
-        brief: "Regular · Kamloops · 7/30 clés",
+        brief: "",
         family: "regular-kamloops",
         width: 7,
         height: 7,
@@ -5853,77 +1145,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 17,
         optimalSwitchCells: 5,
         wrenches: 7,
-        objects: [
-          {
-            type: "outlet",
-            x: 4,
-            y: 1,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 1,
-            facings: [
-              "N",
-              "E"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 2,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 1,
-            y: 5,
-            color: "yellow",
-            sides: [
-              "S",
-              "W"
-            ],
-            id: "import-6"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh01OaoGdah5ROjo4R5R5Pbr0"
       },
       {
         id: "std-fourShadowing",
         title: "Four Shadowing",
         number: 6,
-        brief: "Regular · Kamloops · 8/30 clés",
+        brief: "",
         family: "regular-kamloops",
         width: 7,
         height: 7,
@@ -5932,87 +1160,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 17,
         optimalSwitchCells: 8,
         wrenches: 8,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red",
-              "red",
-              "red",
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 2,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "painter",
-            x: 2,
-            y: 3,
-            color: "blue",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 3,
-            color: "orange",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 4,
-            color: "green",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue",
-              "yellow",
-              "orange",
-              "green"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOvaa06Pbo5Pcw1Pdw5Peo06Gbdpz"
       },
       {
         id: "std-fireballIsland",
         title: "Fireball Island",
         number: 7,
-        brief: "Regular · Kamloops · 10/30 clés",
+        brief: "",
         family: "regular-kamloops",
         width: 7,
         height: 7,
@@ -6021,95 +1175,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 26,
         optimalSwitchCells: 8,
         wrenches: 10,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "S",
-              "E"
-            ],
-            expects: [
-              "green",
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 1,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 2,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 4,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 5,
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 5,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N",
-              "E"
-            ],
-            expects: [
-              "orange",
-              "orange"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGgbG8R1Oaa7Ojh7R5Ojh3R1Oso2Gdby"
       }
     ]
   },
@@ -6122,7 +1188,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-roundTheTwist",
         title: "Round The Twist",
         number: 1,
-        brief: "Regular · London · 3/30 clés",
+        brief: "",
         family: "regular-london",
         width: 7,
         height: 7,
@@ -6131,56 +1197,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 12,
         optimalSwitchCells: 4,
         wrenches: 3,
-        objects: [
-          {
-            type: "splitter",
-            x: 3,
-            y: 3,
-            orientation: "V",
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh004Sc07Gbaa2OaJ2Gbao"
       },
       {
         id: "std-moreIsMerrier",
         title: "More Is Merrier",
         number: 2,
-        brief: "Regular · London · 4/30 clés",
+        brief: "",
         family: "regular-london",
         width: 7,
         height: 7,
@@ -6189,76 +1212,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 9,
         optimalSwitchCells: 2,
         wrenches: 4,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "green",
-              "green",
-              "green",
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 3,
-            orientation: "V",
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue",
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 4,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow",
-              "yellow",
-              "yellow",
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue",
-              "blue"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh001OmGG2Sa2GibqGcdii5Gibq0"
       },
       {
         id: "std-threePeas",
         title: "Three Peas",
         number: 3,
-        brief: "Regular · London · 4/30 clés",
+        brief: "",
         family: "regular-london",
         width: 7,
         height: 7,
@@ -6267,80 +1227,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 12,
         optimalSwitchCells: 3,
         wrenches: 4,
-        objects: [
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow",
-              "yellow",
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 2,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 3,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 4,
-            y: 3,
-            orientation: "H",
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue",
-              "blue",
-              "blue"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh4Gecih02OBC6OBCSb5OBC04Gbcqo"
       },
       {
         id: "std-akeeTree",
         title: "Ackee Tree",
         number: 4,
-        brief: "Regular · London · 5/30 clés",
+        brief: "",
         family: "regular-london",
         width: 7,
         height: 7,
@@ -6349,86 +1242,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 1,
         wrenches: 5,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 0,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 1,
-            orientation: "V",
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 2,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 4,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 5,
-            orientation: "V",
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-6"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3OsC6Sa6Gcao6Gibi6Gcaa6Sc6Oav"
       },
       {
         id: "std-hookshot",
         title: "Hookshot",
         number: 5,
-        brief: "Regular · London · 6/30 clés",
+        brief: "",
         family: "regular-london",
         width: 7,
         height: 7,
@@ -6437,66 +1257,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 20,
         optimalSwitchCells: 5,
         wrenches: 6,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 3,
-            orientation: "H",
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 5,
-            facing: "S",
-            trains: [
-              "orange"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Oao3GcaC01Sb01Giaa3Osv"
       },
       {
         id: "std-pickYourPartner",
         title: "Pick Your Partner",
         number: 6,
-        brief: "Regular · London · 7/30 clés",
+        brief: "",
         family: "regular-london",
         width: 7,
         height: 7,
@@ -6505,133 +1272,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 4,
         wrenches: 7,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 2,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 2,
-            orientation: "V",
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 5,
-            facing: "E",
-            trains: [
-              "purple"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "splitter",
-            x: 2,
-            y: 5,
-            orientation: "H",
-            id: "import-12"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 5,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcao6Gcao6Gcao2Sc2GiaaRRR1RRR7OjJ1Sd3OBo"
       },
       {
         id: "std-primer",
         title: "Primer",
         number: 7,
-        brief: "Regular · London · 8/30 clés",
+        brief: "",
         family: "regular-london",
         width: 7,
         height: 7,
@@ -6640,68 +1287,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 15,
         optimalSwitchCells: 3,
         wrenches: 8,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 0,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 2,
-            orientation: "V",
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Osh03Sa004Gbah2Gbah2Gbah"
       },
       {
         id: "std-reunited",
         title: "Reunited",
         number: 8,
-        brief: "Regular · London · 9/30 clés",
+        brief: "",
         family: "regular-london",
         width: 7,
         height: 7,
@@ -6710,54 +1302,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 16,
         optimalSwitchCells: 7,
         wrenches: 9,
-        objects: [
-          {
-            type: "splitter",
-            x: 1,
-            y: 0,
-            orientation: "V",
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 1,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 3,
-            facing: "E",
-            trains: [
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh1Sc8OBo03OjJ03GiaJ0"
       },
       {
         id: "std-starStuck",
         title: "Star Stuck",
         number: 9,
-        brief: "Regular · London · 10/30 clés",
+        brief: "",
         family: "regular-london",
         width: 7,
         height: 7,
@@ -6766,59 +1317,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 14,
         optimalSwitchCells: 6,
         wrenches: 10,
-        objects: [
-          {
-            type: "outlet",
-            x: 2,
-            y: 2,
-            facing: "N",
-            trains: [
-              "orange",
-              "orange",
-              "orange",
-              "orange"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red",
-              "blue",
-              "blue",
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 4,
-            color: "blue",
-            sides: [
-              "E",
-              "S"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 5,
-            color: "red",
-            sides: [
-              "N",
-              "W"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh06Odyy1Gbdco02Pcj6Pad0"
       }
     ]
   },
@@ -6831,7 +1330,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-warmUp",
         title: "Warm Up",
         number: 1,
-        brief: "Regular · Mississauga · 4/30 clés",
+        brief: "",
         family: "regular-mississauga",
         width: 7,
         height: 7,
@@ -6840,74 +1339,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 7,
         optimalSwitchCells: 1,
         wrenches: 4,
-        objects: [
-          {
-            type: "station",
-            x: 2,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue",
-              "blue",
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 0,
-            orientation: "V",
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red",
-              "red",
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 6,
-            facing: "N",
-            trains: [
-              "blue",
-              "yellow",
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red",
-              "blue",
-              "yellow"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh2GccqhScGicah0009Ocpa1Occh"
       },
       {
         id: "std-theNumerator",
         title: "The Numerator",
         number: 2,
-        brief: "Regular · Mississauga · 5/30 clés",
+        brief: "",
         family: "regular-mississauga",
         width: 7,
         height: 7,
@@ -6916,73 +1354,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 12,
         optimalSwitchCells: 5,
         wrenches: 5,
-        objects: [
-          {
-            type: "station",
-            x: 2,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "splitter",
-            x: 2,
-            y: 3,
-            orientation: "V",
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 4,
-            y: 3,
-            orientation: "V",
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 6,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh2Geah1GeaJ08Sc1Sc08Oav1OaC"
       },
       {
         id: "std-droneVsProbe",
         title: "Drone vs Probe",
         number: 3,
-        brief: "Regular · Mississauga · 6/30 clés",
+        brief: "",
         family: "regular-mississauga",
         width: 7,
         height: 7,
@@ -6991,104 +1369,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 13,
         optimalSwitchCells: 2,
         wrenches: 6,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 1,
-            orientation: "H",
-            id: "import-1"
-          },
-          {
-            type: "painter",
-            x: 1,
-            y: 2,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 2,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 4,
-            id: "import-6"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 5,
-            orientation: "H",
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-9"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Geah6Sd4PboR3OBo3R7R5Sb2Giah3Gbao"
       },
       {
         id: "std-ochosRios",
         title: "Ochos Rios",
         number: 4,
-        brief: "Regular · Mississauga · 7/30 clés",
+        brief: "",
         family: "regular-mississauga",
         width: 7,
         height: 7,
@@ -7097,55 +1384,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 20,
         optimalSwitchCells: 8,
         wrenches: 7,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "orange",
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 3,
-            orientation: "H",
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 5,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8OaJ04GibxSb05OsC"
       },
       {
         id: "std-portCredit",
         title: "Port Credit",
         number: 5,
-        brief: "Regular · Mississauga · 8/30 clés",
+        brief: "",
         family: "regular-mississauga",
         width: 7,
         height: 7,
@@ -7154,117 +1399,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 22,
         optimalSwitchCells: 4,
         wrenches: 8,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 1,
-            color: "blue",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 5,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 5,
-            id: "import-8"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 5,
-            color: "yellow",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 6,
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcah2R3Osa2R1Pcw4R03R3Oaa2R1Pbw1Gcao2R"
       },
       {
         id: "std-turtle",
         title: "Turtle",
         number: 6,
-        brief: "Regular · Mississauga · 9/30 clés",
+        brief: "",
         family: "regular-mississauga",
         width: 7,
         height: 7,
@@ -7273,103 +1414,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 17,
         optimalSwitchCells: 7,
         wrenches: 9,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue",
-              "red",
-              "yellow",
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 1,
-            orientation: "V",
-            id: "import-2"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 3,
-            color: "red",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 3,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 4,
-            color: "purple",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 4,
-            color: "green",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcah6GcdojSc06PaoPbo5PfoPeo8Ojh"
       },
       {
         id: "std-factories",
         title: "Factories",
         number: 7,
-        brief: "Regular · Mississauga · 10/30 clés",
+        brief: "",
         family: "regular-mississauga",
         width: 7,
         height: 7,
@@ -7378,105 +1429,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 16,
         optimalSwitchCells: 4,
         wrenches: 10,
-        objects: [
-          {
-            type: "painter",
-            x: 1,
-            y: 1,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 1,
-            color: "green",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "painter",
-            x: 1,
-            y: 3,
-            color: "green",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 3,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 4,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "N",
-            trains: [
-              "orange",
-              "orange"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 5,
-            facing: "N",
-            trains: [
-              "purple",
-              "purple"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Pco3Peo9Peo3Pco1Gcao5GiaC1Oby3ObO"
       },
       {
         id: "std-tor",
         title: "Tor",
         number: 8,
-        brief: "Regular · Mississauga · 10/30 clés",
+        brief: "",
         family: "regular-mississauga",
         width: 7,
         height: 7,
@@ -7485,105 +1444,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 20,
         optimalSwitchCells: 12,
         wrenches: 10,
-        objects: [
-          {
-            type: "station",
-            x: 1,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 1,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 1,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh1GeaC1GeaJ1Geav1Oja1Ojh1Ojo9Ojo1Oja1Ojh00"
       }
     ]
   },
@@ -7596,7 +1457,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-horhey",
         title: "Horhey",
         number: 1,
-        brief: "Regular · Niagara Falls · 8/30 clés",
+        brief: "",
         family: "regular-niagara-falls",
         width: 7,
         height: 7,
@@ -7605,53 +1466,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 5,
         wrenches: 8,
-        objects: [
-          {
-            type: "station",
-            x: 2,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "N"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red",
-              "red",
-              "red",
-              "red"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh003GiaaGfaaOmaa00"
       },
       {
         id: "std-christmasEve",
         title: "Christmas Eve",
         number: 2,
-        brief: "Regular · Niagara Falls · 6/30 clés",
+        brief: "",
         family: "regular-niagara-falls",
         width: 7,
         height: 7,
@@ -7660,169 +1481,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 10,
         wrenches: 6,
-        objects: [
-          {
-            type: "outlet",
-            x: 2,
-            y: 1,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 1,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 1,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 2,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 4,
-            id: "import-13"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-14"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-15"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 4,
-            id: "import-16"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 4,
-            id: "import-17"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 5,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-18"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 5,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-19"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 5,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-20"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh9OaaGbaCOaa2R1RRR1RR1RRR1RR1RRR1R2OsCGeaaOsC"
       },
       {
         id: "std-candlesticks",
         title: "Candlesticks",
         number: 3,
-        brief: "Regular · Niagara Falls · 7/30 clés",
+        brief: "",
         family: "regular-niagara-falls",
         width: 7,
         height: 7,
@@ -7831,190 +1496,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 10,
         wrenches: 7,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 2,
-            orientation: "V",
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-12"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-13"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 6,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-14"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 6,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-15"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-16"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 6,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-17"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-18"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGeaoGeaoGeah1GeaaGeaaGeah0Sc3RRR1RRR04OaCOaJOav1OavOaJOaC"
       },
       {
         id: "std-argentan",
         title: "Argentan",
         number: 4,
-        brief: "Regular · Niagara Falls · 8/30 clés",
+        brief: "",
         family: "regular-niagara-falls",
         width: 7,
         height: 7,
@@ -8023,78 +1511,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 13,
         optimalSwitchCells: 5,
         wrenches: 8,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 2,
-            facing: "E",
-            trains: [
-              "orange"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow",
-              "orange"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 4,
-            facing: "E",
-            trains: [
-              "orange"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Ojh6Ojv6Ojh3Gcbk2Ojv6Ojh0"
       },
       {
         id: "std-wagonWheels",
         title: "Wagon Wheels",
         number: 5,
-        brief: "Regular · Niagara Falls · 8/30 clés",
+        brief: "",
         family: "regular-niagara-falls",
         width: 7,
         height: 7,
@@ -8103,120 +1526,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 7,
         wrenches: 8,
-        objects: [
-          {
-            type: "painter",
-            x: 1,
-            y: 1,
-            color: "green",
-            sides: [
-              "E",
-              "S"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 1,
-            color: "blue",
-            sides: [
-              "W",
-              "S"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 3,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 3,
-            facing: "N",
-            trains: [
-              "brown",
-              "brown",
-              "brown",
-              "brown"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 3,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 1,
-            y: 5,
-            color: "yellow",
-            sides: [
-              "N",
-              "E"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 5,
-            color: "red",
-            sides: [
-              "N",
-              "W"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Pej1GcaC1Pcx9Gbah1OdWW1Geao9Pbb1Giaa1Pad"
       },
       {
         id: "std-gaius",
         title: "Gaius",
         number: 6,
-        brief: "Regular · Niagara Falls · 6/30 clés",
+        brief: "",
         family: "regular-niagara-falls",
         width: 7,
         height: 7,
@@ -8225,151 +1541,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 21,
         optimalSwitchCells: 6,
         wrenches: 6,
-        objects: [
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 1,
-            orientation: "V",
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 5,
-            y: 2,
-            orientation: "V",
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 3,
-            orientation: "V",
-            id: "import-6"
-          },
-          {
-            type: "splitter",
-            x: 5,
-            y: 4,
-            orientation: "V",
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 5,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 5,
-            orientation: "V",
-            id: "import-10"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "splitter",
-            x: 5,
-            y: 6,
-            orientation: "V",
-            id: "import-12"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh6OBaGcaaSa0SaGiaaGcaaSa0SaGiaaGcaaSa5Gcaa4SaGiaa"
       },
       {
         id: "std-machineGun",
         title: "Machine Gun",
         number: 7,
-        brief: "Regular · Niagara Falls · 11/30 clés",
+        brief: "",
         family: "regular-niagara-falls",
         width: 7,
         height: 7,
@@ -8378,116 +1556,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 12,
         wrenches: 11,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "splitter",
-            x: 5,
-            y: 4,
-            orientation: "V",
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGeaaGeaaGeaaGeaaGeaaGeaaGeaa006Sc03Oaa"
       },
       {
         id: "std-humber",
         title: "Humber",
         number: 8,
-        brief: "Regular · Niagara Falls · 9/30 clés",
+        brief: "",
         family: "regular-niagara-falls",
         width: 7,
         height: 7,
@@ -8496,91 +1571,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 10,
         wrenches: 9,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red",
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 3,
-            orientation: "V",
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "orange"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue",
-              "blue"
-            ],
-            id: "import-6"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh04OaC5GbbiGcbb2Sc2OBvOsC5Gebq0"
       },
       {
         id: "std-cooksvilleCreek",
         title: "Cooksville Creek",
         number: 9,
-        brief: "Regular · Niagara Falls · 11/30 clés",
+        brief: "",
         family: "regular-niagara-falls",
         width: 7,
         height: 7,
@@ -8589,129 +1586,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 25,
         optimalSwitchCells: 12,
         wrenches: 11,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue",
-              "blue",
-              "blue",
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "splitter",
-            x: 0,
-            y: 2,
-            orientation: "H",
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 6,
-            y: 2,
-            orientation: "H",
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue",
-              "blue",
-              "blue",
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue",
-              "blue",
-              "blue",
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "splitter",
-            x: 0,
-            y: 5,
-            orientation: "H",
-            id: "import-6"
-          },
-          {
-            type: "splitter",
-            x: 6,
-            y: 5,
-            orientation: "H",
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue",
-              "blue",
-              "blue",
-              "blue"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 6,
-            orientation: "V",
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue",
-              "blue",
-              "blue",
-              "blue"
-            ],
-            id: "import-10"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOjo5Gidqq7Sb5SdGbdqq5Gbdqq7Sb5SdGbdqq2Sa2Gbdqq"
       }
     ]
   },
@@ -8724,7 +1599,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-rockyRoad",
         title: "Rocky Road",
         number: 1,
-        brief: "Bonus · Oakville · 10/30 clés",
+        brief: "",
         family: "bonus-oakville",
         width: 7,
         height: 7,
@@ -8733,167 +1608,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 22,
         optimalSwitchCells: 6,
         wrenches: 10,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 1,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 2,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 2,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-13"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 4,
-            id: "import-14"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 4,
-            id: "import-15"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 5,
-            id: "import-16"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 5,
-            id: "import-17"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 5,
-            id: "import-18"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-19"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 6,
-            id: "import-20"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-21"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOjh2R2GiaC3R1RR3R1RRRR3RR3R1RR3R1RROjo2R2GiaC"
       },
       {
         id: "std-clownCar",
         title: "Clown Car",
         number: 2,
-        brief: "Bonus · Oakville · 10/30 clés",
+        brief: "",
         family: "bonus-oakville",
         width: 7,
         height: 7,
@@ -8902,161 +1623,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 26,
         optimalSwitchCells: 17,
         wrenches: 10,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 0,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 1,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 2,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "green",
-              "green",
-              "green",
-              "green",
-              "orange",
-              "orange",
-              "orange",
-              "orange",
-              "purple",
-              "purple",
-              "purple",
-              "purple"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 5,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 6,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-12"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOsaOshOso3OBa6OBh6OBo3GplGGyyOO3Ojo6Ojh6Oja3OaoOahOaa"
       },
       {
         id: "std-alleyway",
         title: "Alleyway",
         number: 3,
-        brief: "Bonus · Oakville · 6/30 clés",
+        brief: "",
         family: "bonus-oakville",
         width: 7,
         height: 7,
@@ -9065,154 +1638,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 12,
         optimalSwitchCells: 3,
         wrenches: 6,
-        objects: [
-          {
-            type: "outlet",
-            x: 2,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 1,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 4,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 4,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 4,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 4,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 4,
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 5,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "brown"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 5,
-            orientation: "V",
-            id: "import-10"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "brown"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 6,
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 6,
-            id: "import-13"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 6,
-            id: "import-14"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 6,
-            id: "import-15"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 6,
-            id: "import-16"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 6,
-            id: "import-17"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 6,
-            id: "import-18"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh2Osa1Oso5Osh07RRR1RRRGcaQ2Sa2GiaQRRRRRRR"
       },
       {
         id: "std-recyclingGarbage",
         title: "Recycling Garbage",
         number: 4,
-        brief: "Bonus · Oakville · 8/30 clés",
+        brief: "",
         family: "bonus-oakville",
         width: 7,
         height: 7,
@@ -9221,73 +1653,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 17,
         optimalSwitchCells: 8,
         wrenches: 8,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "brown",
-              "brown",
-              "brown",
-              "brown"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOja5OBC07GpdWW07Ojh5OBo"
       },
       {
         id: "std-shanimal",
         title: "Shanimal",
         number: 5,
-        brief: "Bonus · Oakville · 11/30 clés",
+        brief: "",
         family: "bonus-oakville",
         width: 7,
         height: 7,
@@ -9296,123 +1668,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 6,
         wrenches: 11,
-        objects: [
-          {
-            type: "station",
-            x: 5,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red",
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red",
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 4,
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 5,
-            facing: "N",
-            trains: [
-              "blue",
-              "blue"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 5,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 6,
-            id: "import-12"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue",
-              "purple"
-            ],
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh5GibfR5ROta2R1R4R1R4R1R2ObqR5RGcbt"
       },
       {
         id: "std-cayman",
         title: "Cayman",
         number: 6,
-        brief: "Bonus · Oakville · 11/30 clés",
+        brief: "",
         family: "bonus-oakville",
         width: 7,
         height: 7,
@@ -9421,105 +1683,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 8,
         wrenches: 11,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue",
-              "red",
-              "yellow",
-              "blue",
-              "red",
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 1,
-            orientation: "V",
-            id: "import-2"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 3,
-            color: "red",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 3,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 4,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 4,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcah6GcfojbSc06PaoPbo5PcoPco8Ojh"
       },
       {
         id: "std-pwrOvrwhlmng",
         title: "Pwr Ovrwhlmng",
         number: 7,
-        brief: "Bonus · Oakville · 11/30 clés",
+        brief: "",
         family: "bonus-oakville",
         width: 7,
         height: 7,
@@ -9528,132 +1698,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 16,
         optimalSwitchCells: 8,
         wrenches: 11,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 1,
-            orientation: "V",
-            id: "import-3"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 1,
-            orientation: "H",
-            id: "import-4"
-          },
-          {
-            type: "splitter",
-            x: 2,
-            y: 3,
-            orientation: "H",
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 5,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 5,
-            orientation: "V",
-            id: "import-8"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 5,
-            orientation: "H",
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3GeahGeah2GcaoSc1Sb02Sb3OBC7GcahSa1Sb6GbaoGbao"
       },
       {
         id: "std-axiom",
         title: "Axiom",
         number: 8,
-        brief: "Bonus · Oakville · 8/30 clés",
+        brief: "",
         family: "bonus-oakville",
         width: 7,
         height: 7,
@@ -9662,105 +1713,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 22,
         optimalSwitchCells: 8,
         wrenches: 8,
-        objects: [
-          {
-            type: "painter",
-            x: 2,
-            y: 0,
-            color: "blue",
-            sides: [
-              "W",
-              "S"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 0,
-            color: "yellow",
-            sides: [
-              "E",
-              "S"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 3,
-            orientation: "V",
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "orange",
-              "orange",
-              "orange",
-              "orange"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh2Pcx1Pbj09Sc07GbaCGbaC1Odyy1GbaCGbaC"
       },
       {
         id: "std-jagd",
         title: "Jagd",
         number: 9,
-        brief: "Bonus · Oakville · 9/30 clés",
+        brief: "",
         family: "bonus-oakville",
         width: 7,
         height: 7,
@@ -9769,102 +1728,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 17,
         optimalSwitchCells: 10,
         wrenches: 9,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 2,
-            facing: "E",
-            trains: [
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow",
-              "purple"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 4,
-            facing: "E",
-            trains: [
-              "purple"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 5,
-            id: "import-10"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Ojh1R4OjJ1R4Ojh1R1Gcbm2OjJ1R4Ojh1R0"
       }
     ]
   },
@@ -9877,7 +1741,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-aBarrelRoll",
         title: "A Barrel Roll",
         number: 1,
-        brief: "Bonus · Peterborough · 12/30 clés",
+        brief: "",
         family: "bonus-peterborough",
         width: 7,
         height: 7,
@@ -9886,83 +1750,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 12,
         wrenches: 12,
-        objects: [
-          {
-            type: "outlet",
-            x: 2,
-            y: 2,
-            facing: "W",
-            trains: [
-              "blue",
-              "blue",
-              "blue",
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 2,
-            facing: "N",
-            trains: [
-              "red",
-              "yellow",
-              "red",
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "purple",
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 4,
-            facing: "S",
-            trains: [
-              "red",
-              "yellow",
-              "red",
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 4,
-            facing: "E",
-            trains: [
-              "blue",
-              "blue",
-              "blue",
-              "blue"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh06OEqq1Odbb5GpbN5Ovbb1Omqq0"
       },
       {
         id: "std-klickers",
         title: "Klickers",
         number: 2,
-        brief: "Bonus · Peterborough · 6/30 clés",
+        brief: "",
         family: "bonus-peterborough",
         width: 7,
         height: 7,
@@ -9971,77 +1765,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 5,
         wrenches: 6,
-        objects: [
-          {
-            type: "obstacle",
-            x: 0,
-            y: 0,
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "orange",
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red",
-              "yellow",
-              "blue",
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 4,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 5,
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhRGcbA5OvboR7R7R7R7R"
       },
       {
         id: "std-hazard",
         title: "Hazard",
         number: 3,
-        brief: "Bonus · Peterborough · 8/30 clés",
+        brief: "",
         family: "bonus-peterborough",
         width: 7,
         height: 7,
@@ -10050,121 +1780,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 19,
         optimalSwitchCells: 5,
         wrenches: 8,
-        objects: [
-          {
-            type: "obstacle",
-            x: 0,
-            y: 0,
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 0,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 1,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 2,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 4,
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 5,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 5,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 6,
-            id: "import-12"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhROsh7R1R1Oah6RR2R2OBh5R1Ojh2R8RGbah"
       },
       {
         id: "std-squelchen",
         title: "Squelchen",
         number: 4,
-        brief: "Bonus · Peterborough · 11/30 clés",
+        brief: "",
         family: "bonus-peterborough",
         width: 7,
         height: 7,
@@ -10173,143 +1795,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 21,
         optimalSwitchCells: 9,
         wrenches: 11,
-        objects: [
-          {
-            type: "station",
-            x: 5,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green",
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 1,
-            facing: "S",
-            trains: [
-              "purple",
-              "purple"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 2,
-            color: "red",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 2,
-            y: 3,
-            color: "blue",
-            sides: [
-              "E",
-              "W"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 3,
-            color: "green",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 4,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 4,
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 5,
-            facing: "N",
-            trains: [
-              "purple",
-              "purple"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 5,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 6,
-            id: "import-12"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red",
-              "blue"
-            ],
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh5GibDR5ROtO2RPao5Pck1Pew5PboR2ObOR5RGcbc"
       },
       {
         id: "std-miniyowe",
         title: "Mini-Yo-We",
         number: 5,
-        brief: "Bonus · Peterborough · 11/30 clés",
+        brief: "",
         family: "bonus-peterborough",
         width: 7,
         height: 7,
@@ -10318,147 +1810,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 13,
         optimalSwitchCells: 7,
         wrenches: 11,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "painter",
-            x: 2,
-            y: 2,
-            color: "red",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 2,
-            color: "blue",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "painter",
-            x: 2,
-            y: 3,
-            color: "blue",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 3,
-            color: "red",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "painter",
-            x: 2,
-            y: 4,
-            color: "red",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 4,
-            color: "blue",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh04OjC1PawPcw2GiaJOjC1PcwPaw2GiaJOjC1PawPcw2GiaJ0"
       },
       {
         id: "std-asymmetric",
         title: "Asymmetric",
         number: 6,
-        brief: "Bonus · Peterborough · 11/30 clés",
+        brief: "",
         family: "bonus-peterborough",
         width: 7,
         height: 7,
@@ -10467,91 +1825,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 15,
         optimalSwitchCells: 5,
         wrenches: 11,
-        objects: [
-          {
-            type: "station",
-            x: 5,
-            y: 1,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 2,
-            orientation: "V",
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "S",
-            trains: [
-              "orange"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 4,
-            orientation: "V",
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 5,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh02Geaa4Sa3Oav1RRR1Osv3Sc4Gbah0"
       },
       {
         id: "std-lornePark",
         title: "Lorne Park",
         number: 7,
-        brief: "Bonus · Peterborough · 12/30 clés",
+        brief: "",
         family: "bonus-peterborough",
         width: 7,
         height: 7,
@@ -10560,149 +1840,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 17,
         wrenches: 12,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 1,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 2,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red",
-              "yellow",
-              "blue"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 5,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 5,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-12"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOja5OBoOjh5OBhOjo5OBa3Gecbo3Ojo5OBaOjh5OBhOja5OBo"
       },
       {
         id: "std-adama",
         title: "Adama",
         number: 8,
-        brief: "Bonus · Peterborough · 13/30 clés",
+        brief: "",
         family: "bonus-peterborough",
         width: 7,
         height: 7,
@@ -10711,161 +1855,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 12,
         wrenches: 13,
-        objects: [
-          {
-            type: "outlet",
-            x: 4,
-            y: 0,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "orange"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 1,
-            orientation: "V",
-            id: "import-3"
-          },
-          {
-            type: "splitter",
-            x: 5,
-            y: 2,
-            orientation: "V",
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 3,
-            orientation: "V",
-            id: "import-7"
-          },
-          {
-            type: "splitter",
-            x: 5,
-            y: 4,
-            orientation: "V",
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 5,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 5,
-            orientation: "V",
-            id: "import-11"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-12"
-          },
-          {
-            type: "splitter",
-            x: 5,
-            y: 6,
-            orientation: "V",
-            id: "import-13"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-14"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh4OsC1OBvGcaaSa0SaGiahGcahSa0SaGiaaGcaaSa5Gcav4SaGiao"
       },
       {
         id: "std-tonelympics",
         title: "Tonelympics",
         number: 9,
-        brief: "Bonus · Peterborough · 13/30 clés",
+        brief: "",
         family: "bonus-peterborough",
         width: 7,
         height: 7,
@@ -10874,133 +1870,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 10,
         wrenches: 13,
-        objects: [
-          {
-            type: "obstacle",
-            x: 0,
-            y: 0,
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 2,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 2,
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 2,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 3,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 4,
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 5,
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhRGcav5OsaRGcaJ5OshRGcav5OsoRGcaJ5OsaR7R"
       }
     ]
   },
@@ -11013,7 +1883,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-picnic",
         title: "Picnic",
         number: 1,
-        brief: "Bonus · Quebec City · 7/30 clés",
+        brief: "",
         family: "bonus-quebec-city",
         width: 7,
         height: 7,
@@ -11022,85 +1892,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 13,
         optimalSwitchCells: 9,
         wrenches: 7,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "red",
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple",
-              "purple"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "blue",
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh04Oka5GiavOki5GibOOkq5GiaC0"
       },
       {
         id: "std-spindle",
         title: "Spindle",
         number: 2,
-        brief: "Bonus · Quebec City · 8/30 clés",
+        brief: "",
         family: "bonus-quebec-city",
         width: 7,
         height: 7,
@@ -11109,139 +1907,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 22,
         optimalSwitchCells: 8,
         wrenches: 8,
-        objects: [
-          {
-            type: "obstacle",
-            x: 4,
-            y: 1,
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 2,
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 2,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 2,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 3,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 3,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 4,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 5,
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 6,
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh01R3RGbaCOaaGcao4OBhROjC4GiaaOsoGeahR3R6R"
       },
       {
         id: "std-fireEyed",
         title: "Fire Eyed",
         number: 3,
-        brief: "Bonus · Quebec City · 7/30 clés",
+        brief: "",
         family: "bonus-quebec-city",
         width: 7,
         height: 7,
@@ -11250,99 +1922,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 30,
         optimalSwitchCells: 8,
         wrenches: 7,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 1,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 5,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 5,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Geav3Oah5Oaa8OBa3Ojh8Osh5Osa3Gbav"
       },
       {
         id: "std-rebelt",
         title: "Rebelt",
         number: 4,
-        brief: "Bonus · Quebec City · 10/30 clés",
+        brief: "",
         family: "bonus-quebec-city",
         width: 7,
         height: 7,
@@ -11351,90 +1937,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 16,
         optimalSwitchCells: 11,
         wrenches: 10,
-        objects: [
-          {
-            type: "station",
-            x: 2,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue",
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 3,
-            orientation: "V",
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 3,
-            color: "orange",
-            sides: [
-              "W",
-              "S"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 5,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 5,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-6"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh2GeahGebqGeav09ScPdx9OjC5OBC"
       },
       {
         id: "std-rgb",
         title: "RGB",
         number: 5,
-        brief: "Bonus · Quebec City · 11/30 clés",
+        brief: "",
         family: "bonus-quebec-city",
         width: 7,
         height: 7,
@@ -11443,147 +1952,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 19,
         optimalSwitchCells: 11,
         wrenches: 11,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 3,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 3,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 3,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh04GbaoGbaCGbaa1GbaaGbaCGbaoOsaOsCOso1OsoOsCOsa0"
       },
       {
         id: "std-drLinus",
         title: "Dr. Linus",
         number: 6,
-        brief: "Bonus · Quebec City · 11/30 clés",
+        brief: "",
         family: "bonus-quebec-city",
         width: 7,
         height: 7,
@@ -11592,124 +1967,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 23,
         optimalSwitchCells: 12,
         wrenches: 11,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 1,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 2,
-            facing: "N",
-            trains: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 2,
-            facing: "N",
-            trains: [
-              "red",
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 4,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 4,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 5,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange",
-              "orange"
-            ],
-            id: "import-12"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh0GbaJ5ObiROba3RRRRR3OsaROso5Geby0"
       },
       {
         id: "std-glockenspiel",
         title: "Glockenspiel",
         number: 7,
-        brief: "Bonus · Quebec City · 11/30 clés",
+        brief: "",
         family: "bonus-quebec-city",
         width: 7,
         height: 7,
@@ -11718,111 +1982,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 13,
         optimalSwitchCells: 5,
         wrenches: 11,
-        objects: [
-          {
-            type: "painter",
-            x: 0,
-            y: 0,
-            color: "yellow",
-            sides: [
-              "E",
-              "S"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 0,
-            orientation: "V",
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "S",
-            trains: [
-              "green",
-              "green",
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 0,
-            y: 3,
-            orientation: "H",
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "red",
-              "red",
-              "red",
-              "blue",
-              "blue",
-              "blue",
-              "yellow",
-              "yellow",
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "splitter",
-            x: 6,
-            y: 3,
-            orientation: "H",
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 0,
-            y: 6,
-            color: "blue",
-            sides: [
-              "N",
-              "E"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 6,
-            orientation: "V",
-            id: "import-7"
-          },
-          {
-            type: "painter",
-            x: 6,
-            y: 6,
-            color: "red",
-            sides: [
-              "W",
-              "N"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhPbj2Sc2OuGC04Sb2Gpiacqih2Sd04Pcb2Sa2Pav"
       },
       {
         id: "std-jamboree",
         title: "Jamboree",
         number: 8,
-        brief: "Bonus · Quebec City · 12/30 clés",
+        brief: "",
         family: "bonus-quebec-city",
         width: 7,
         height: 7,
@@ -11831,118 +1997,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 19,
         optimalSwitchCells: 9,
         wrenches: 12,
-        objects: [
-          {
-            type: "painter",
-            x: 0,
-            y: 0,
-            color: "blue",
-            sides: [
-              "E",
-              "S"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "painter",
-            x: 0,
-            y: 2,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 2,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue",
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 3,
-            orientation: "H",
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 3,
-            facings: [
-              "S",
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red",
-              "red",
-              "red",
-              "red"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 0,
-            y: 4,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 4,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue",
-              "yellow"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "painter",
-            x: 0,
-            y: 6,
-            color: "yellow",
-            sides: [
-              "N",
-              "E"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhPcj03PcoGebp6SdGfaCOmaa3PboGbbp02Pbb"
       },
       {
         id: "std-licoriceAllsorts",
         title: "Licorice Allsorts",
         number: 9,
-        brief: "Bonus · Quebec City · 13/30 clés",
+        brief: "",
         family: "bonus-quebec-city",
         width: 7,
         height: 7,
@@ -11951,141 +2012,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 23,
         optimalSwitchCells: 15,
         wrenches: 13,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 3,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 3,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 3,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 3,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 4,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 4,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "S",
-            trains: [
-              "orange"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 4,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 4,
-            facing: "S",
-            trains: [
-              "purple"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh001GbaJGbaCGbavGbaoGbahGbaa1OsaOshOsoOsvOsCOsJ0"
       }
     ]
   },
@@ -12098,7 +2025,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-sangreGrande",
         title: "Sangre Grande",
         number: 1,
-        brief: "Bonus · Regina · 7/30 clés",
+        brief: "",
         family: "bonus-regina",
         width: 7,
         height: 7,
@@ -12107,78 +2034,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 16,
         optimalSwitchCells: 7,
         wrenches: 7,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 1,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "purple",
-              "red"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8OsaOsaOsaOsaOao009GbbJ"
       },
       {
         id: "std-theVariable",
         title: "The Variable",
         number: 2,
-        brief: "Bonus · Regina · 7/30 clés",
+        brief: "",
         family: "bonus-regina",
         width: 7,
         height: 7,
@@ -12187,82 +2049,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 6,
         wrenches: 7,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "E",
-            trains: [
-              "red",
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 1,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red",
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 5,
-            facing: "W",
-            trains: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Oka3OBa9Giav3Gcbb9Ojh3OCi"
       },
       {
         id: "std-orff",
         title: "Orff",
         number: 3,
-        brief: "Bonus · Regina · 8/30 clés",
+        brief: "",
         family: "bonus-regina",
         width: 7,
         height: 7,
@@ -12271,161 +2064,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 23,
         optimalSwitchCells: 15,
         wrenches: 8,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 3,
-            orientation: "V",
-            id: "import-6"
-          },
-          {
-            type: "splitter",
-            x: 5,
-            y: 3,
-            orientation: "V",
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 6,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 6,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 6,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-12"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGeaaGeahGeah1GeahGeahGeao05Sc3Sc05OaaOahOao1OaaOahOao"
       },
       {
         id: "std-somewhere",
         title: "Somewhere",
         number: 4,
-        brief: "Bonus · Regina · 10/30 clés",
+        brief: "",
         family: "bonus-regina",
         width: 7,
         height: 7,
@@ -12434,124 +2079,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 22,
         optimalSwitchCells: 12,
         wrenches: 10,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red",
-              "orange",
-              "yellow",
-              "green",
-              "blue",
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "painter",
-            x: 6,
-            y: 0,
-            color: "red",
-            sides: [
-              "W",
-              "S"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 1,
-            color: "purple",
-            sides: [
-              "N",
-              "S"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 2,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 3,
-            color: "green",
-            sides: [
-              "N",
-              "S"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "painter",
-            x: 2,
-            y: 4,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 1,
-            y: 5,
-            color: "orange",
-            sides: [
-              "N",
-              "S"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "painter",
-            x: 0,
-            y: 6,
-            color: "red",
-            sides: [
-              "N",
-              "E"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red",
-              "orange",
-              "yellow",
-              "green",
-              "blue",
-              "purple"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcfdlt5Pax5Pfc5Pco5Pec5Pbo5Pdc5Pab5Ofdlt"
       },
       {
         id: "std-usector",
         title: "U-Sector",
         number: 5,
-        brief: "Bonus · Regina · 11/30 clés",
+        brief: "",
         family: "bonus-regina",
         width: 7,
         height: 7,
@@ -12560,127 +2094,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 27,
         optimalSwitchCells: 9,
         wrenches: 11,
-        objects: [
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "splitter",
-            x: 4,
-            y: 3,
-            orientation: "H",
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue",
-              "blue"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 5,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 5,
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 5,
-            id: "import-13"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 5,
-            id: "import-14"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh9RRRR1OaJGbav5RR2Sb2OsCGebq7RRRR"
       },
       {
         id: "std-takingTrash",
         title: "Taking Trash",
         number: 6,
-        brief: "Bonus · Regina · 11/30 clés",
+        brief: "",
         family: "bonus-regina",
         width: 7,
         height: 7,
@@ -12689,103 +2109,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 11,
         wrenches: 11,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 3,
-            orientation: "V",
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N",
-              "E"
-            ],
-            expects: [
-              "brown",
-              "brown",
-              "brown"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOja6Ojh6Ojo9Sa9Giaa6GiahGdcWQ5Giao"
       },
       {
         id: "std-theQuotient",
         title: "The Quotient",
         number: 7,
-        brief: "Bonus · Regina · 12/30 clés",
+        brief: "",
         family: "bonus-regina",
         width: 7,
         height: 7,
@@ -12794,97 +2124,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 19,
         optimalSwitchCells: 8,
         wrenches: 12,
-        objects: [
-          {
-            type: "station",
-            x: 2,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue",
-              "blue",
-              "red",
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green",
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "splitter",
-            x: 2,
-            y: 3,
-            orientation: "V",
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 4,
-            y: 3,
-            orientation: "V",
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 6,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh2Gedqa1GebD08Sc1Sc06Oav1OaJ1OaC1OaC"
       },
       {
         id: "std-trinidad",
         title: "Trinidad",
         number: 8,
-        brief: "Bonus · Regina · 13/30 clés",
+        brief: "",
         family: "bonus-regina",
         width: 7,
         height: 7,
@@ -12893,113 +2139,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 19,
         optimalSwitchCells: 9,
         wrenches: 13,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 2,
-            orientation: "H",
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "splitter",
-            x: 2,
-            y: 3,
-            orientation: "V",
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "red",
-              "yellow",
-              "blue",
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "splitter",
-            x: 4,
-            y: 3,
-            orientation: "V",
-            id: "import-6"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 4,
-            orientation: "H",
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-9"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOja5OBh0Sd3GcaC1ScGpdbpSa5Sb0Ojo5OBC"
       },
       {
         id: "std-theDenominator",
         title: "The Denominator",
         number: 9,
-        brief: "Bonus · Regina · 15/30 clés",
+        brief: "",
         family: "bonus-regina",
         width: 7,
         height: 7,
@@ -13008,117 +2154,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 23,
         optimalSwitchCells: 14,
         wrenches: 15,
-        objects: [
-          {
-            type: "splitter",
-            x: 2,
-            y: 2,
-            orientation: "V",
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 2,
-            facings: [
-              "W",
-              "E"
-            ],
-            expects: [
-              "red",
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "splitter",
-            x: 4,
-            y: 2,
-            orientation: "V",
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 5,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 5,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 6,
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 6,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 6,
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 6,
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 6,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh06ScGkbcSc08Oah1Oah2ROavROaCROavGbah"
       }
     ]
   },
@@ -13131,7 +2167,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-backToBasics",
         title: "Back To Basics",
         number: 1,
-        brief: "Bonus · St. John's · 6/30 clés",
+        brief: "",
         family: "bonus-st-john-s",
         width: 7,
         height: 7,
@@ -13140,67 +2176,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 16,
         optimalSwitchCells: 4,
         wrenches: 6,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 2,
-            facing: "N",
-            trains: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 2,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 5,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "orange",
-              "orange",
-              "green",
-              "green"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh05Obi1ROso08Osa4GcdyG"
       },
       {
         id: "std-theConstant",
         title: "The Constant",
         number: 2,
-        brief: "Bonus · St. John's · 8/30 clés",
+        brief: "",
         family: "bonus-st-john-s",
         width: 7,
         height: 7,
@@ -13209,142 +2191,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 29,
         optimalSwitchCells: 8,
         wrenches: 8,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "E",
-            trains: [
-              "red",
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 1,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 2,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 2,
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red",
-              "yellow"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 4,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 4,
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 4,
-            id: "import-13"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-14"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 5,
-            facing: "W",
-            trains: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-15"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Oka3OBa2RR1RR2GiavR1RGcbb2RR1RR2Ojh3OCi"
       },
       {
         id: "std-willow",
         title: "Willow",
         number: 3,
-        brief: "Bonus · St. John's · 9/30 clés",
+        brief: "",
         family: "bonus-st-john-s",
         width: 7,
         height: 7,
@@ -13353,45 +2206,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 10,
         optimalSwitchCells: 6,
         wrenches: 9,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue",
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "blue",
-              "red",
-              "blue",
-              "red",
-              "blue",
-              "red",
-              "blue",
-              "red"
-            ],
-            id: "import-1"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Gebo00001Ohoooo"
       },
       {
         id: "std-conquistador",
         title: "Conquistador",
         number: 4,
-        brief: "Bonus · St. John's · 12/30 clés",
+        brief: "",
         family: "bonus-st-john-s",
         width: 7,
         height: 7,
@@ -13400,109 +2221,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 10,
         wrenches: 12,
-        objects: [
-          {
-            type: "station",
-            x: 1,
-            y: 2,
-            facings: [
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 2,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "painter",
-            x: 6,
-            y: 2,
-            color: "red",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 3,
-            facings: [
-              "W",
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 3,
-            facing: "W",
-            trains: [
-              "green",
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 4,
-            facings: [
-              "S",
-              "W",
-              "E"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 4,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "painter",
-            x: 6,
-            y: 4,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh05Glao3OBCPao1GkaJ3OCG2Goaa3OBCPco0"
       },
       {
         id: "std-squier",
         title: "Squier",
         number: 5,
-        brief: "Bonus · St. John's · 12/30 clés",
+        brief: "",
         family: "bonus-st-john-s",
         width: 7,
         height: 7,
@@ -13511,46 +2236,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 14,
         optimalSwitchCells: 5,
         wrenches: 12,
-        objects: [
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 3,
-            orientation: "H",
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N",
-              "E"
-            ],
-            expects: [
-              "green",
-              "green"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh6OsC07Sb07GdbG"
       },
       {
         id: "std-oakwoodAve",
         title: "Oakwood Ave",
         number: 6,
-        brief: "Bonus · St. John's · 12/30 clés",
+        brief: "",
         family: "bonus-st-john-s",
         width: 7,
         height: 7,
@@ -13559,125 +2251,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 9,
         wrenches: 12,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 0,
-            orientation: "V",
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "orange"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "painter",
-            x: 0,
-            y: 3,
-            color: "red",
-            sides: [
-              "N",
-              "S"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "painter",
-            x: 6,
-            y: 3,
-            color: "blue",
-            sides: [
-              "N",
-              "S"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "orange"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 6,
-            orientation: "V",
-            id: "import-11"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-12"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcaJ2Sc2OBv04PacRRRRRPcc04Ojv2Sa2GiaJ"
       },
       {
         id: "std-erindale",
         title: "Erindale",
         number: 7,
-        brief: "Bonus · St. John's · 13/30 clés",
+        brief: "",
         family: "bonus-st-john-s",
         width: 7,
         height: 7,
@@ -13686,140 +2266,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 31,
         optimalSwitchCells: 14,
         wrenches: 13,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 1,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 2,
-            facing: "E",
-            trains: [
-              "orange"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "S",
-              "N"
-            ],
-            expects: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "splitter",
-            x: 4,
-            y: 3,
-            orientation: "H",
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 4,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 5,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Oaa4Gbaa1Ojv4GiaCGfbiOjh2Sd1Giah1OjC4Giav1Oso4Geao"
       }
     ]
   },
@@ -13832,7 +2279,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-sliceOfLife",
         title: "Slice of Life",
         number: 1,
-        brief: "Bonus · Toronto · 13/30 clés",
+        brief: "",
         family: "bonus-toronto",
         width: 7,
         height: 7,
@@ -13841,64 +2288,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 17,
         optimalSwitchCells: 10,
         wrenches: 13,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 0,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "splitter",
-            x: 2,
-            y: 3,
-            orientation: "V",
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 3,
-            orientation: "H",
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow",
-              "purple",
-              "purple",
-              "yellow"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh1OjC1Osa09SaSd00GbdmK"
       },
       {
         id: "std-mrMorgan",
         title: "Mr. Morgan",
         number: 2,
-        brief: "Bonus · Toronto · 13/30 clés",
+        brief: "",
         family: "bonus-toronto",
         width: 7,
         height: 7,
@@ -13907,114 +2303,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 8,
         wrenches: 13,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red",
-              "red",
-              "red",
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 0,
-            orientation: "V",
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 2,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 2,
-            color: "red",
-            sides: [
-              "W",
-              "S"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 3,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "splitter",
-            x: 2,
-            y: 4,
-            orientation: "H",
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 4,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 5,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red",
-              "red",
-              "red",
-              "red"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red",
-              "red",
-              "red"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcdaaSc04OaC1Pax5Oav5Sb1Oao4Gbdaa4Gbcaa"
       },
       {
         id: "std-chief",
         title: "Chief",
         number: 3,
-        brief: "Bonus · Toronto · 15/30 clés",
+        brief: "",
         family: "bonus-toronto",
         width: 7,
         height: 7,
@@ -14023,115 +2318,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 19,
         optimalSwitchCells: 8,
         wrenches: 15,
-        objects: [
-          {
-            type: "outlet",
-            x: 5,
-            y: 1,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 2,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 2,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "splitter",
-            x: 0,
-            y: 3,
-            orientation: "H",
-            id: "import-5"
-          },
-          {
-            type: "splitter",
-            x: 6,
-            y: 3,
-            orientation: "H",
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 5,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "E",
-            trains: [
-              "orange"
-            ],
-            id: "import-10"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh02OBh3R1RGeaaGeahSb5Sd1GiahR4GbaaOjv0"
       },
       {
         id: "std-waterfall",
         title: "Waterfall",
         number: 4,
-        brief: "Bonus · Toronto · 7/30 clés",
+        brief: "",
         family: "bonus-toronto",
         width: 7,
         height: 7,
@@ -14140,115 +2333,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 17,
         optimalSwitchCells: 10,
         wrenches: 7,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 0,
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 0,
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 1,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 1,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-10"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOsoROsoROsoROso1Oso1Oso1Oso0002Gbao"
       },
       {
         id: "std-volcano",
         title: "Volcano",
         number: 5,
-        brief: "Bonus · Toronto · 12/30 clés",
+        brief: "",
         family: "bonus-toronto",
         width: 7,
         height: 7,
@@ -14257,105 +2348,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 22,
         optimalSwitchCells: 10,
         wrenches: 12,
-        objects: [
-          {
-            type: "outlet",
-            x: 2,
-            y: 1,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 1,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 2,
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 2,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 3,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-9"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh9OBa1Oja4ROaaR4OBaROja5Osa03Gbaa"
       },
       {
         id: "std-norwich",
         title: "Norwich",
         number: 6,
-        brief: "Bonus · Toronto · 10/30 clés",
+        brief: "",
         family: "bonus-toronto",
         width: 7,
         height: 7,
@@ -14364,116 +2363,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 5,
         wrenches: 10,
-        objects: [
-          {
-            type: "painter",
-            x: 3,
-            y: 0,
-            color: "green",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 1,
-            color: "blue",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 3,
-            facing: "W",
-            trains: [
-              "red",
-              "purple",
-              "red",
-              "purple"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "S",
-              "N"
-            ],
-            expects: [
-              "green",
-              "green"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-7"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 5,
-            color: "yellow",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 6,
-            color: "purple",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-9"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Pew6Pcw6R3GcaJ2R1OEffGfbG3R6Pbw6Pfw"
       },
       {
         id: "std-threeBelow",
         title: "Three Below",
         number: 7,
-        brief: "Bonus · Toronto · 13/30 clés",
+        brief: "",
         family: "bonus-toronto",
         width: 7,
         height: 7,
@@ -14482,127 +2378,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 13,
         optimalSwitchCells: 7,
         wrenches: 13,
-        objects: [
-          {
-            type: "station",
-            x: 2,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 0,
-            facing: "S",
-            trains: [
-              "orange",
-              "orange",
-              "orange",
-              "orange"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 5,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 5,
-            id: "import-4"
-          },
-          {
-            type: "painter",
-            x: 2,
-            y: 5,
-            color: "red",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 5,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 5,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 5,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 5,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 6,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 6,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 6,
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 6,
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh2GeaJOvyyGeaC000RRPaoPboPcoRRRR3RR"
       }
     ]
   },
@@ -14615,7 +2391,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-mockingbird",
         title: "Mockingbird",
         number: 1,
-        brief: "Bonus · Uxbridge · 15/30 clés",
+        brief: "",
         family: "bonus-uxbridge",
         width: 7,
         height: 7,
@@ -14624,157 +2400,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 30,
         optimalSwitchCells: 16,
         wrenches: 15,
-        objects: [
-          {
-            type: "station",
-            x: 1,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-4"
-          },
-          {
-            type: "splitter",
-            x: 2,
-            y: 2,
-            orientation: "V",
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "splitter",
-            x: 2,
-            y: 3,
-            orientation: "H",
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "green",
-              "blue",
-              "orange",
-              "blue"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "splitter",
-            x: 2,
-            y: 4,
-            orientation: "V",
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 5,
-            id: "import-11"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 6,
-            id: "import-13"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-14"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-15"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh1GiavR2GiavGeao2R6Sc4RRSb3OEEx2Sa6R5GiaCR2GiaCGbao"
       },
       {
         id: "std-drummerBoy",
         title: "Drummer Boy",
         number: 2,
-        brief: "Bonus · Uxbridge · 12/30 clés",
+        brief: "",
         family: "bonus-uxbridge",
         width: 7,
         height: 7,
@@ -14783,162 +2415,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 12,
         wrenches: 12,
-        objects: [
-          {
-            type: "painter",
-            x: 0,
-            y: 0,
-            color: "red",
-            sides: [
-              "S",
-              "E"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "splitter",
-            x: 5,
-            y: 0,
-            orientation: "V",
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue",
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "splitter",
-            x: 5,
-            y: 2,
-            orientation: "V",
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue",
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 3,
-            color: "yellow",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "splitter",
-            x: 5,
-            y: 4,
-            orientation: "V",
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red",
-              "red"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 5,
-            id: "import-11"
-          },
-          {
-            type: "painter",
-            x: 0,
-            y: 6,
-            color: "blue",
-            sides: [
-              "E",
-              "N"
-            ],
-            id: "import-12"
-          },
-          {
-            type: "splitter",
-            x: 5,
-            y: 6,
-            orientation: "V",
-            id: "import-13"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red",
-              "red"
-            ],
-            id: "import-14"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhPap4ScGibq6R5SaGibqOjh4PbwGiah5ScGiba6RPch4SaGiba"
       },
       {
         id: "std-forestAve",
         title: "Forest Ave",
         number: 3,
-        brief: "Bonus · Uxbridge · 12/30 clés",
+        brief: "",
         family: "bonus-uxbridge",
         width: 7,
         height: 7,
@@ -14947,180 +2430,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 25,
         optimalSwitchCells: 17,
         wrenches: 12,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 1,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 2,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 2,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 3,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 4,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 5,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 5,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-12"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-13"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-14"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcaC5OBoGcaC5OBoGcaC5OBoGcaC2Pbo2OBhGcaC5OBoGcaC5OBoGcaC5OBo"
       },
       {
         id: "std-parachute",
         title: "Parachute",
         number: 4,
-        brief: "Bonus · Uxbridge · 13/30 clés",
+        brief: "",
         family: "bonus-uxbridge",
         width: 7,
         height: 7,
@@ -15129,153 +2445,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 26,
         optimalSwitchCells: 14,
         wrenches: 13,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 1,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 2,
-            y: 2,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 2,
-            color: "red",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "painter",
-            x: 2,
-            y: 4,
-            color: "green",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 4,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 5,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "purple"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "purple"
-            ],
-            id: "import-12"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOjJ5OBJGcah5GiaC2Pco1Pao5R5Peo1Pbo2Gcaa5GiaoOjJ5OBJ"
       },
       {
         id: "std-theQuest",
         title: "The Quest",
         number: 5,
-        brief: "Bonus · Uxbridge · 13/30 clés",
+        brief: "",
         family: "bonus-uxbridge",
         width: 7,
         height: 7,
@@ -15284,117 +2460,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 22,
         optimalSwitchCells: 15,
         wrenches: 13,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 0,
-            y: 1,
-            orientation: "H",
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 6,
-            y: 2,
-            color: "green",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "splitter",
-            x: 6,
-            y: 4,
-            orientation: "H",
-            id: "import-5"
-          },
-          {
-            type: "splitter",
-            x: 0,
-            y: 5,
-            orientation: "H",
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-9"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGeah4GeaoGeaJSb02Peo03SdSb6Gbaa4GbaoOaJ"
       },
       {
         id: "std-kes",
         title: "Kes",
         number: 6,
-        brief: "Bonus · Uxbridge · 15/30 clés",
+        brief: "",
         family: "bonus-uxbridge",
         width: 7,
         height: 7,
@@ -15403,196 +2475,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 15,
         wrenches: 15,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "painter",
-            x: 0,
-            y: 3,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 1,
-            y: 3,
-            color: "red",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "painter",
-            x: 2,
-            y: 3,
-            color: "red",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 3,
-            color: "red",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 3,
-            color: "red",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 3,
-            color: "red",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "painter",
-            x: 6,
-            y: 3,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 6,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 6,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-12"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-13"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-14"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 6,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-15"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-16"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGeah2Geaa2Geao04PcoPaoPaoPaoPaoPaoPbo04GbahOaJOaJOaJOaJOaJGbao"
       }
     ]
   },
@@ -15605,7 +2488,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-exhibitionStation",
         title: "Exhibition Station",
         number: 1,
-        brief: "Bonus · Vancouver · 20/30 clés",
+        brief: "",
         family: "bonus-vancouver",
         width: 7,
         height: 7,
@@ -15614,133 +2497,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 25,
         optimalSwitchCells: 12,
         wrenches: 20,
-        objects: [
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 2,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue",
-              "purple"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 2,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange",
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "S",
-            trains: [
-              "orange",
-              "orange"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "S",
-            trains: [
-              "purple",
-              "purple"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 5,
-            id: "import-10"
-          },
-          {
-            type: "painter",
-            x: 0,
-            y: 6,
-            color: "yellow",
-            sides: [
-              "E",
-              "N"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 6,
-            id: "import-12"
-          },
-          {
-            type: "painter",
-            x: 6,
-            y: 6,
-            color: "blue",
-            sides: [
-              "W",
-              "N"
-            ],
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh9RRR4GebtRGebw5R3Oty2R2OtO3R3Pbh2R2Pcv"
       },
       {
         id: "std-transmogrify",
         title: "Transmogrify",
         number: 2,
-        brief: "Bonus · Vancouver · 20/30 clés",
+        brief: "",
         family: "bonus-vancouver",
         width: 7,
         height: 7,
@@ -15749,137 +2512,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 22,
         optimalSwitchCells: 10,
         wrenches: 20,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 1,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 2,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 4,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 5,
-            id: "import-9"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 5,
-            color: "orange",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "painter",
-            x: 6,
-            y: 5,
-            color: "purple",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOjC3GcaJ2OjC3Giav2OjC3GcaJ2OjC3Giav6R6RPdoPfo"
       },
       {
         id: "std-magicCarpet",
         title: "Magic Carpet",
         number: 3,
-        brief: "Bonus · Vancouver · 20/30 clés",
+        brief: "",
         family: "bonus-vancouver",
         width: 7,
         height: 7,
@@ -15888,141 +2527,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 26,
         optimalSwitchCells: 13,
         wrenches: 20,
-        objects: [
-          {
-            type: "outlet",
-            x: 4,
-            y: 1,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 2,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 2,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 3,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 3,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 4,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 5,
-            id: "import-11"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 5,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-12"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W",
-              "N"
-            ],
-            expects: [
-              "red",
-              "yellow",
-              "blue",
-              "green"
-            ],
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh01OBaR4OBhROsa3OBCROsh3OBoROsC4ROso0Gjdbs"
       },
       {
         id: "std-dropOff",
         title: "Drop Off",
         number: 4,
-        brief: "Bonus · Vancouver · 15/30 clés",
+        brief: "",
         family: "bonus-vancouver",
         width: 7,
         height: 7,
@@ -16031,91 +2542,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 19,
         optimalSwitchCells: 15,
         wrenches: 15,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 2,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red",
-              "red",
-              "red",
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 2,
-            orientation: "V",
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 2,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 4,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow",
-              "yellow",
-              "yellow",
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "splitter",
-            x: 1,
-            y: 4,
-            orientation: "V",
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-6"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh04GcdaaSc4OBa6GiavGcdiiSa4OBh0"
       },
       {
         id: "std-doppelganger",
         title: "Doppelganger",
         number: 5,
-        brief: "Bonus · Vancouver · 20/30 clés",
+        brief: "",
         family: "bonus-vancouver",
         width: 7,
         height: 7,
@@ -16124,137 +2557,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 26,
         optimalSwitchCells: 18,
         wrenches: 20,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 2,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 2,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 2,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 4,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh04Oja1Oja1Giaa1OBaOjC1Giah1Ojh1GiaCOjo1Ojo1Giao1OBo0"
       }
     ]
   },
@@ -16267,7 +2570,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-circleSquare",
         title: "Circle Square",
         number: 1,
-        brief: "Bonus · Whitehorse · 25/30 clés",
+        brief: "",
         family: "bonus-whitehorse",
         width: 7,
         height: 7,
@@ -16276,90 +2579,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 25,
         optimalSwitchCells: 11,
         wrenches: 25,
-        objects: [
-          {
-            type: "outlet",
-            x: 2,
-            y: 2,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 2,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red",
-              "yellow",
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 3,
-            orientation: "H",
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red",
-              "yellow",
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 4,
-            facing: "W",
-            trains: [
-              "orange"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 4,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-6"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh06OBo1OjC2Gccbo2Sd2Gicbo2OBv1Oja0"
       },
       {
         id: "std-indusblue",
         title: "Indusblue",
         number: 2,
-        brief: "Bonus · Whitehorse · 25/30 clés",
+        brief: "",
         family: "bonus-whitehorse",
         width: 7,
         height: 7,
@@ -16368,117 +2594,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 23,
         optimalSwitchCells: 11,
         wrenches: 25,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 0,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "brown",
-              "brown",
-              "brown",
-              "brown",
-              "brown",
-              "brown",
-              "brown",
-              "brown"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOjh2Osh2OBh04Ojh2GphWWWW2OBh04Ojh2Oao2OBh"
       },
       {
         id: "std-bramblewoodLane",
         title: "Bramblewood Lane",
         number: 3,
-        brief: "Bonus · Whitehorse · 30/30 clés",
+        brief: "",
         family: "bonus-whitehorse",
         width: 7,
         height: 7,
@@ -16487,130 +2609,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 26,
         optimalSwitchCells: 10,
         wrenches: 30,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 1,
-            color: "blue",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red",
-              "red"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 5,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 5,
-            id: "import-9"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 5,
-            color: "yellow",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue",
-              "blue"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 6,
-            id: "import-12"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcbi2R3Osa2R1Pcw4R3Oka9R3Oaa2R1Pbw1Gcbq2R"
       },
       {
         id: "std-turing",
         title: "Turing",
         number: 4,
-        brief: "Bonus · Whitehorse · 25/30 clés",
+        brief: "",
         family: "bonus-whitehorse",
         width: 7,
         height: 7,
@@ -16619,84 +2624,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 17,
         optimalSwitchCells: 10,
         wrenches: 25,
-        objects: [
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S",
-              "W"
-            ],
-            expects: [
-              "green",
-              "green",
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 2,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "splitter",
-            x: 3,
-            y: 3,
-            orientation: "H",
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 4,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow",
-              "yellow",
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "blue",
-              "blue",
-              "blue"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh6GmcGC0Pbo3Ojh2Sd6Gbcih06Ocqo"
       },
       {
         id: "std-focusPocus",
         title: "Focus Pocus",
         number: 5,
-        brief: "Bonus · Whitehorse · 20/30 clés",
+        brief: "",
         family: "bonus-whitehorse",
         width: 7,
         height: 7,
@@ -16705,81 +2639,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 27,
         optimalSwitchCells: 11,
         wrenches: 20,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 2,
-            facing: "S",
-            trains: [
-              "red",
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 2,
-            facing: "S",
-            trains: [
-              "blue",
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 2,
-            facing: "S",
-            trains: [
-              "blue",
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 4,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "orange",
-              "orange"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 4,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "purple",
-              "purple"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 4,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green",
-              "green"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh05Otb1Oto1Otp9Gbby1GbbO1GbbG0"
       }
     ]
   },
@@ -16792,7 +2652,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-greenLine",
         title: "Green Line",
         number: 1,
-        brief: "Express · British Columbia · 1/30 clés",
+        brief: "",
         family: "express-british-columbia",
         width: 7,
         height: 7,
@@ -16801,37 +2661,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 3,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh002OjC3GiaC00"
       },
       {
         id: "std-theThree",
         title: "The Three",
         number: 2,
-        brief: "Express · British Columbia · 1/30 clés",
+        brief: "",
         family: "express-british-columbia",
         width: 7,
         height: 7,
@@ -16840,81 +2676,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 10,
         optimalSwitchCells: 2,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 0,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 1,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 5,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 5,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Osh5Osa1Oso005Gbaa1Gbao5Gbah"
       },
       {
         id: "std-pureMagic",
         title: "Pure Magic",
         number: 3,
-        brief: "Express · British Columbia · 1/30 clés",
+        brief: "",
         family: "express-british-columbia",
         width: 7,
         height: 7,
@@ -16923,59 +2691,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 9,
         optimalSwitchCells: 1,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 0,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3OsC07OjC5GiaC07GbaC"
       },
       {
         id: "std-twoLiner",
         title: "Two Liner",
         number: 4,
-        brief: "Express · British Columbia · 1/30 clés",
+        brief: "",
         family: "express-british-columbia",
         width: 7,
         height: 7,
@@ -16984,59 +2706,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 6,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 1,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 3,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 5,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh0GiaC01OaC3Geaa01Oja0"
       },
       {
         id: "std-theLittleOne",
         title: "The Little One",
         number: 5,
-        brief: "Express · British Columbia · 1/30 clés",
+        brief: "",
         family: "express-british-columbia",
         width: 7,
         height: 7,
@@ -17045,31 +2721,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 6,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 3,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-1"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh004OaJ6GeaJ0"
       }
     ]
   },
@@ -17082,7 +2734,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-aHardPlace",
         title: "A Hard Place",
         number: 1,
-        brief: "Express · Alberta · 1/30 clés",
+        brief: "",
         family: "express-alberta",
         width: 7,
         height: 7,
@@ -17091,43 +2743,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 7,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh001Oja2R2Giaa00"
       },
       {
         id: "std-youDid",
         title: "You Did",
         number: 2,
-        brief: "Express · Alberta · 1/30 clés",
+        brief: "",
         family: "express-alberta",
         width: 7,
         height: 7,
@@ -17136,131 +2758,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 25,
         optimalSwitchCells: 2,
         wrenches: 1,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 1,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 5,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 5,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 5,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 5,
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 5,
-            id: "import-13"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 5,
-            id: "import-14"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-15"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcah6RRRRRR1Ojh09Giaa1RRRRRR6OBa"
       },
       {
         id: "std-traveller",
         title: "Traveller",
         number: 3,
-        brief: "Express · Alberta · 1/30 clés",
+        brief: "",
         family: "express-alberta",
         width: 7,
         height: 7,
@@ -17269,74 +2773,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 4,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 5,
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W",
-              "N"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOjo2R8R2R9R7R3R0Gjao"
       },
       {
         id: "std-inTheMiddle",
         title: "In The Middle",
         number: 4,
-        brief: "Express · Alberta · 1/30 clés",
+        brief: "",
         family: "express-alberta",
         width: 7,
         height: 7,
@@ -17345,59 +2788,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 2,
         wrenches: 1,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 2,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 5,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8OaJ7Ojh05Giah7GeaJ"
       },
       {
         id: "std-foray",
         title: "Foray",
         number: 5,
-        brief: "Express · Alberta · 2/30 clés",
+        brief: "",
         family: "express-alberta",
         width: 7,
         height: 7,
@@ -17406,73 +2803,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 16,
         optimalSwitchCells: 2,
         wrenches: 2,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "yellow",
-              "red",
-              "blue",
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOjh5OBa07Gpdhs07Ojo5OBC"
       },
       {
         id: "std-noTouching",
         title: "No Touching",
         number: 6,
-        brief: "Express · Alberta · 2/30 clés",
+        brief: "",
         family: "express-alberta",
         width: 7,
         height: 7,
@@ -17481,59 +2818,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 10,
         optimalSwitchCells: 2,
         wrenches: 2,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Osa07Gcah5OBh07Gbaa"
       },
       {
         id: "std-twoForTwo",
         title: "Two For Two",
         number: 7,
-        brief: "Express · Alberta · 1/30 clés",
+        brief: "",
         family: "express-alberta",
         width: 7,
         height: 7,
@@ -17542,93 +2833,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 15,
         optimalSwitchCells: 0,
         wrenches: 1,
-        objects: [
-          {
-            type: "obstacle",
-            x: 6,
-            y: 0,
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 4,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 5,
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green",
-              "green"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 6,
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "green",
-              "green"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh6RR1R8R2R2R5R3R2R4GbbG2R2ObG"
       }
     ]
   },
@@ -17641,7 +2846,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-bluesy",
         title: "Bluesy",
         number: 1,
-        brief: "Express · Saskatchewan · 2/30 clés",
+        brief: "",
         family: "express-saskatchewan",
         width: 7,
         height: 7,
@@ -17650,50 +2855,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 1,
         wrenches: 2,
-        objects: [
-          {
-            type: "station",
-            x: 1,
-            y: 1,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 5,
-            facing: "N",
-            trains: [
-              "blue",
-              "blue"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Giao3Gcao005Obq0"
       },
       {
         id: "std-lantern",
         title: "Lantern",
         number: 2,
-        brief: "Express · Saskatchewan · 2/30 clés",
+        brief: "",
         family: "express-saskatchewan",
         width: 7,
         height: 7,
@@ -17702,50 +2870,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 6,
         optimalSwitchCells: 1,
         wrenches: 2,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 1,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "S",
-            trains: [
-              "orange",
-              "green"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh0Geav03GbaC6Otz0"
       },
       {
         id: "std-boomBah",
         title: "Boom Bah",
         number: 3,
-        brief: "Express · Saskatchewan · 3/30 clés",
+        brief: "",
         family: "express-saskatchewan",
         width: 7,
         height: 7,
@@ -17754,77 +2885,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 10,
         optimalSwitchCells: 2,
         wrenches: 3,
-        objects: [
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "S",
-            trains: [
-              "yellow",
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "N",
-            trains: [
-              "red",
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh6Geaa04Oth2Gpbi2Obb04Gbaa"
       },
       {
         id: "std-redGreen",
         title: "Red Green",
         number: 4,
-        brief: "Express · Saskatchewan · 3/30 clés",
+        brief: "",
         family: "express-saskatchewan",
         width: 7,
         height: 7,
@@ -17833,70 +2900,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 3,
         wrenches: 3,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red",
-              "green",
-              "green",
-              "red"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGeaa1GeaC1Geaa1GeaC0008OdeC"
       }
     ]
   },
@@ -17909,7 +2913,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-yellowTriangle",
         title: "Yellow Triangle",
         number: 1,
-        brief: "Express · Manitoba · 3/30 clés",
+        brief: "",
         family: "express-manitoba",
         width: 7,
         height: 7,
@@ -17918,47 +2922,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 9,
         optimalSwitchCells: 2,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 0,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOsh1Osh3Geah0000"
       },
       {
         id: "std-purpeller",
         title: "Purpeller",
         number: 2,
-        brief: "Express · Manitoba · 3/30 clés",
+        brief: "",
         family: "express-manitoba",
         width: 7,
         height: 7,
@@ -17967,83 +2937,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 13,
         optimalSwitchCells: 3,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 0,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "W",
-            trains: [
-              "purple"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 5,
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 5,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 6,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 6,
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOsJ4RR6R00OBJR5GeaJRR"
       },
       {
         id: "std-reflection",
         title: "Reflection",
         number: 3,
-        brief: "Express · Manitoba · 3/30 clés",
+        brief: "",
         family: "express-manitoba",
         width: 7,
         height: 7,
@@ -18052,81 +2952,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 16,
         optimalSwitchCells: 6,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S",
-              "W"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N",
-              "E"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOsa5Gmao7Osa09Oao7Gdaa5Oao"
       },
       {
         id: "std-combinellow",
         title: "Combinellow",
         number: 4,
-        brief: "Express · Manitoba · 3/30 clés",
+        brief: "",
         family: "express-manitoba",
         width: 7,
         height: 7,
@@ -18135,121 +2967,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 14,
         optimalSwitchCells: 3,
         wrenches: 3,
-        objects: [
-          {
-            type: "obstacle",
-            x: 0,
-            y: 0,
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 5,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 6,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 6,
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 6,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 6,
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 6,
-            id: "import-12"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 6,
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhR5GeahR6Ojh6R6Ojh6R6RROahROahRR"
       },
       {
         id: "std-colourize",
         title: "Colourize",
         number: 5,
-        brief: "Express · Manitoba · 3/30 clés",
+        brief: "",
         family: "express-manitoba",
         width: 7,
         height: 7,
@@ -18258,48 +2982,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 14,
         optimalSwitchCells: 1,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W",
-              "N"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-2"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOsa7Oao0009GjaJ"
       },
       {
         id: "std-weightedTop",
         title: "Weighted Top",
         number: 6,
-        brief: "Express · Manitoba · 3/30 clés",
+        brief: "",
         family: "express-manitoba",
         width: 7,
         height: 7,
@@ -18308,61 +2997,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 13,
         optimalSwitchCells: 4,
         wrenches: 3,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 3,
-            facing: "W",
-            trains: [
-              "blue",
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3GeaC09OCqROki09GbaC"
       }
     ]
   },
@@ -18375,7 +3010,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-embrace",
         title: "Embrace",
         number: 1,
-        brief: "Express · Ontario · 3/30 clés",
+        brief: "",
         family: "express-ontario",
         width: 7,
         height: 7,
@@ -18384,59 +3019,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 2,
         wrenches: 3,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOso2GeaJ00001GbaJ2Oaa"
       },
       {
         id: "std-peeGee",
         title: "Pee Gee",
         number: 2,
-        brief: "Express · Ontario · 4/30 clés",
+        brief: "",
         family: "express-ontario",
         width: 7,
         height: 7,
@@ -18445,91 +3034,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 20,
         optimalSwitchCells: 6,
         wrenches: 4,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 2,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 4,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-6"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOjh5OBo7GcaJ02GiaCGcaJ03Ojo5OBa"
       },
       {
         id: "std-autumn",
         title: "Autumn",
         number: 3,
-        brief: "Express · Ontario · 4/30 clés",
+        brief: "",
         family: "express-ontario",
         width: 7,
         height: 7,
@@ -18538,57 +3049,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 6,
         wrenches: 4,
-        objects: [
-          {
-            type: "outlet",
-            x: 2,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 6,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh2Osa1Geav0009Oah1Oav"
       },
       {
         id: "std-unscathed",
         title: "Unscathed",
         number: 4,
-        brief: "Express · Ontario · 4/30 clés",
+        brief: "",
         family: "express-ontario",
         width: 7,
         height: 7,
@@ -18597,95 +3064,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 4,
         wrenches: 4,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 1,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 5,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-9"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh7Gcaa6Ojo6RRR1RRROja6Gcao0"
       },
       {
         id: "std-challenger",
         title: "Challenger",
         number: 5,
-        brief: "Express · Ontario · 5/30 clés",
+        brief: "",
         family: "express-ontario",
         width: 7,
         height: 7,
@@ -18694,61 +3079,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 3,
         wrenches: 5,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue",
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Oto07GcaC5Giav07Obi"
       },
       {
         id: "std-pleaseWait",
         title: "Please Wait",
         number: 6,
-        brief: "Express · Ontario · 5/30 clés",
+        brief: "",
         family: "express-ontario",
         width: 7,
         height: 7,
@@ -18757,95 +3094,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 23,
         optimalSwitchCells: 5,
         wrenches: 5,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 2,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 4,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 5,
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 6,
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8OBaRRRR6R6R6R6R5GiaJROao"
       }
     ]
   },
@@ -18858,7 +3107,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-berlin",
         title: "Berlin",
         number: 1,
-        brief: "Express · Quebec · 5/30 clés",
+        brief: "",
         family: "express-quebec",
         width: 7,
         height: 7,
@@ -18867,117 +3116,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 21,
         optimalSwitchCells: 4,
         wrenches: 5,
-        objects: [
-          {
-            type: "station",
-            x: 1,
-            y: 1,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 1,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 1,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 5,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 5,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8GeaJ1Geaa1GeaC8RRR1RRR8OaC1OaJ1Oaa"
       },
       {
         id: "std-golem",
         title: "Golem",
         number: 2,
-        brief: "Express · Quebec · 5/30 clés",
+        brief: "",
         family: "express-quebec",
         width: 7,
         height: 7,
@@ -18986,63 +3131,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 16,
         optimalSwitchCells: 4,
         wrenches: 5,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 2,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 3,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh07Oah5OBCRGcaC5Oso0"
       },
       {
         id: "std-sunburst",
         title: "Sunburst",
         number: 3,
-        brief: "Express · Quebec · 5/30 clés",
+        brief: "",
         family: "express-quebec",
         width: 7,
         height: 7,
@@ -19051,70 +3146,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 13,
         optimalSwitchCells: 7,
         wrenches: 5,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 1,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S",
-              "W",
-              "N",
-              "E"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 3,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 5,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh0Osh01Ojh1Gpah1OBh01Oah0"
       },
       {
         id: "std-peaShooter",
         title: "Pea Shooter",
         number: 4,
-        brief: "Express · Quebec · 6/30 clés",
+        brief: "",
         family: "express-quebec",
         width: 7,
         height: 7,
@@ -19123,68 +3161,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 3,
         wrenches: 6,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 3,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 3,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green",
-              "green"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh001OaoOaoOshOsh2GibG00"
       },
       {
         id: "std-scarab",
         title: "Scarab",
         number: 5,
-        brief: "Express · Quebec · 6/30 clés",
+        brief: "",
         family: "express-quebec",
         width: 7,
         height: 7,
@@ -19193,97 +3176,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 21,
         optimalSwitchCells: 7,
         wrenches: 6,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 2,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 3,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGeaC5GeaC0Oso4Ojh3OBa4Oah0Gbav5Gbav"
       }
     ]
   },
@@ -19296,7 +3189,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-prancing",
         title: "Prancing",
         number: 1,
-        brief: "Express · New Brunswick · 6/30 clés",
+        brief: "",
         family: "express-new-brunswick",
         width: 7,
         height: 7,
@@ -19305,89 +3198,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 25,
         optimalSwitchCells: 8,
         wrenches: 6,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 1,
-            facing: "E",
-            trains: [
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "W",
-              "E"
-            ],
-            expects: [
-              "purple",
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-6"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOjo5OBa5OjJ01GkbN01OBC5Ojh5OBo"
       },
       {
         id: "std-boxSeven",
         title: "Box Seven",
         number: 2,
-        brief: "Express · New Brunswick · 7/30 clés",
+        brief: "",
         family: "express-new-brunswick",
         width: 7,
         height: 7,
@@ -19396,121 +3213,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 14,
         optimalSwitchCells: 4,
         wrenches: 7,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "red",
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "E",
-            trains: [
-              "blue",
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 2,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 4,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 4,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-11"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 5,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-12"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOkb6Okq6RRR4RRRR3RRR4GcaC6GcaJ"
       },
       {
         id: "std-sapling",
         title: "Sapling",
         number: 3,
-        brief: "Express · New Brunswick · 7/30 clés",
+        brief: "",
         family: "express-new-brunswick",
         width: 7,
         height: 7,
@@ -19519,66 +3228,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 8,
         wrenches: 7,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "red",
-              "blue",
-              "red",
-              "blue",
-              "red",
-              "blue"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcaa5Giao0005Gcaa5OGccc"
       },
       {
         id: "std-matchUp",
         title: "Match Up",
         number: 4,
-        brief: "Express · New Brunswick · 8/30 clés",
+        brief: "",
         family: "express-new-brunswick",
         width: 7,
         height: 7,
@@ -19587,82 +3243,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 6,
         wrenches: 8,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 3,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 3,
-            facing: "S",
-            trains: [
-              "red",
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGeaJ5Geav07OBoOta06GbaJ5Oah"
       },
       {
         id: "std-beingGreen",
         title: "Being Green",
         number: 5,
-        brief: "Express · New Brunswick · 7/30 clés",
+        brief: "",
         family: "express-new-brunswick",
         width: 7,
         height: 7,
@@ -19671,151 +3258,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 25,
         optimalSwitchCells: 10,
         wrenches: 7,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 1,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 4,
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 4,
-            id: "import-12"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-13"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 5,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-14"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 5,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-15"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh8Oao3GbaC1OaoR3RGbaCRR3RROshR3RGeaC1Osh3GeaC"
       },
       {
         id: "std-casualty",
         title: "Casualty",
         number: 6,
-        brief: "Express · New Brunswick · 8/30 clés",
+        brief: "",
         family: "express-new-brunswick",
         width: 7,
         height: 7,
@@ -19824,96 +3273,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 15,
         optimalSwitchCells: 8,
         wrenches: 8,
-        objects: [
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 2,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple",
-              "purple"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh4Geah9Oja5OBoGcaJ5GibOOja5OBo01Oah"
       }
     ]
   },
@@ -19926,7 +3286,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-niner",
         title: "Niner",
         number: 1,
-        brief: "Express · Prince Edward Island · 8/30 clés",
+        brief: "",
         family: "express-prince-edward-island",
         width: 7,
         height: 7,
@@ -19935,87 +3295,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 14,
         optimalSwitchCells: 4,
         wrenches: 8,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 2,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "painter",
-            x: 2,
-            y: 3,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 3,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 3,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-6"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh07Oaa3GcaC1PboRPco1GiaC3Osa0"
       },
       {
         id: "std-teamwork",
         title: "Teamwork",
         number: 2,
-        brief: "Express · Prince Edward Island · 8/30 clés",
+        brief: "",
         family: "express-prince-edward-island",
         width: 7,
         height: 7,
@@ -20024,75 +3310,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 16,
         optimalSwitchCells: 4,
         wrenches: 8,
-        objects: [
-          {
-            type: "painter",
-            x: 3,
-            y: 0,
-            color: "purple",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 1,
-            facings: [
-              "W",
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 5,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 6,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 6,
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Pfw6GkaJ007OaC5OBoROja"
       },
       {
         id: "std-returnPolicing",
         title: "Return Policing",
         number: 3,
-        brief: "Express · Prince Edward Island · 8/30 clés",
+        brief: "",
         family: "express-prince-edward-island",
         width: 7,
         height: 7,
@@ -20101,90 +3325,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 4,
         wrenches: 8,
-        objects: [
-          {
-            type: "obstacle",
-            x: 6,
-            y: 0,
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-2"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 3,
-            color: "blue",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 5,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 6,
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue",
-              "blue",
-              "blue",
-              "blue"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red",
-              "red",
-              "red",
-              "red"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh6R5R5R5Pcw5R5R5R4GidqqOdaa"
       },
       {
         id: "std-formatic",
         title: "Formatic",
         number: 4,
-        brief: "Express · Prince Edward Island · 8/30 clés",
+        brief: "",
         family: "express-prince-edward-island",
         width: 7,
         height: 7,
@@ -20193,65 +3340,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 10,
         optimalSwitchCells: 5,
         wrenches: 8,
-        objects: [
-          {
-            type: "painter",
-            x: 2,
-            y: 3,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 3,
-            facing: "N",
-            trains: [
-              "red",
-              "red",
-              "red",
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 3,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 4,
-            facings: [
-              "S",
-              "W",
-              "E"
-            ],
-            expects: [
-              "green",
-              "green"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh003PboOdaaPco5GobG0"
       },
       {
         id: "std-rainbowArrow",
         title: "Rainbow Arrow",
         number: 5,
-        brief: "Express · Prince Edward Island · 9/30 clés",
+        brief: "",
         family: "express-prince-edward-island",
         width: 7,
         height: 7,
@@ -20260,120 +3355,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 16,
         optimalSwitchCells: 12,
         wrenches: 9,
-        objects: [
-          {
-            type: "painter",
-            x: 3,
-            y: 1,
-            color: "red",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 1,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 2,
-            color: "yellow",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "purple",
-              "purple",
-              "purple",
-              "purple"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 4,
-            color: "green",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 5,
-            color: "blue",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 5,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-9"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh0Paw2Giao3Pbw2GiaC3R2OEOO3Pew2Giah3Pcw2Giaa"
       }
     ]
   },
@@ -20386,7 +3368,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-oneWay",
         title: "One Way",
         number: 1,
-        brief: "Express · Nova Scotia · 8/30 clés",
+        brief: "",
         family: "express-nova-scotia",
         width: 7,
         height: 7,
@@ -20395,79 +3377,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 12,
         optimalSwitchCells: 6,
         wrenches: 8,
-        objects: [
-          {
-            type: "outlet",
-            x: 6,
-            y: 1,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "painter",
-            x: 2,
-            y: 3,
-            color: "red",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 3,
-            color: "yellow",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 5,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh03OBo7GcaC1PawPbw2OBo03OBo"
       },
       {
         id: "std-roundabout",
         title: "Roundabout",
         number: 2,
-        brief: "Express · Nova Scotia · 9/30 clés",
+        brief: "",
         family: "express-nova-scotia",
         width: 7,
         height: 7,
@@ -20476,88 +3392,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 21,
         optimalSwitchCells: 5,
         wrenches: 9,
-        objects: [
-          {
-            type: "outlet",
-            x: 3,
-            y: 1,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green",
-              "green",
-              "purple",
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 3,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 5,
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 5,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 6,
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh0Oah01OBa1GedGO1Ojo3R5R1Oso3R"
       },
       {
         id: "std-chromaShift",
         title: "Chromashift",
         number: 3,
-        brief: "Express · Nova Scotia · 9/30 clés",
+        brief: "",
         family: "express-nova-scotia",
         width: 7,
         height: 7,
@@ -20566,111 +3407,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 22,
         optimalSwitchCells: 7,
         wrenches: 9,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 2,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 2,
-            color: "red",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 2,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "W",
-            trains: [
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 3,
-            facings: [
-              "W",
-              "E"
-            ],
-            expects: [
-              "red",
-              "red"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 3,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 4,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 4,
-            color: "red",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 4,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh05OaC1Paw1Oao2OBC1Gkba1Ojo2OsC1Paw1Oso0"
       },
       {
         id: "std-balsam",
         title: "Balsam",
         number: 4,
-        brief: "Express · Nova Scotia · 9/30 clés",
+        brief: "",
         family: "express-nova-scotia",
         width: 7,
         height: 7,
@@ -20679,45 +3422,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 12,
         optimalSwitchCells: 6,
         wrenches: 9,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "purple",
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 3,
-            facing: "S",
-            trains: [
-              "red",
-              "red",
-              "red",
-              "red",
-              "blue",
-              "blue",
-              "blue",
-              "blue"
-            ],
-            id: "import-1"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh07GbbO6Ozaaqq00"
       },
       {
         id: "std-boomerang",
         title: "Boomerang",
         number: 5,
-        brief: "Express · Nova Scotia · 9/30 clés",
+        brief: "",
         family: "express-nova-scotia",
         width: 7,
         height: 7,
@@ -20726,68 +3437,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 12,
         optimalSwitchCells: 6,
         wrenches: 9,
-        objects: [
-          {
-            type: "painter",
-            x: 5,
-            y: 0,
-            color: "yellow",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 1,
-            color: "green",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "painter",
-            x: 5,
-            y: 2,
-            color: "blue",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "S",
-            trains: [
-              "red",
-              "red",
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow",
-              "green",
-              "blue"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh5Pbw6Pew6Pcw7Ouaa00Gbclo"
       }
     ]
   },
@@ -20800,7 +3450,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-taxing",
         title: "Taxing",
         number: 1,
-        brief: "Express · Newfoundland · 8/30 clés",
+        brief: "",
         family: "express-newfoundland",
         width: 7,
         height: 7,
@@ -20809,81 +3459,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 20,
         optimalSwitchCells: 6,
         wrenches: 8,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S",
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 5,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N",
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOjo5GmaCOsh0003OaoGdaC5OBh"
       },
       {
         id: "std-dousingTheFlame",
         title: "Dousing The Flame",
         number: 2,
-        brief: "Express · Newfoundland · 9/30 clés",
+        brief: "",
         family: "express-newfoundland",
         width: 7,
         height: 7,
@@ -20892,110 +3474,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 19,
         optimalSwitchCells: 9,
         wrenches: 9,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 0,
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 1,
-            facing: "S",
-            trains: [
-              "red"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 5,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-9"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhOsaROsaGeaoOsaROsa1Osa3Osa005Pco0"
       },
       {
         id: "std-duplex",
         title: "Duplex",
         number: 3,
-        brief: "Express · Newfoundland · 9/30 clés",
+        brief: "",
         family: "express-newfoundland",
         width: 7,
         height: 7,
@@ -21004,135 +3489,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 11,
         wrenches: 9,
-        objects: [
-          {
-            type: "obstacle",
-            x: 0,
-            y: 0,
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 1,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 1,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 2,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 0,
-            y: 5,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 6,
-            y: 5,
-            id: "import-11"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-12"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhR5ROjo5OBhR5OBhOjo5ROjo5OBhR5RGcaC5GiaC"
       },
       {
         id: "std-pals",
         title: "Pals",
         number: 4,
-        brief: "Express · Newfoundland · 9/30 clés",
+        brief: "",
         family: "express-newfoundland",
         width: 7,
         height: 7,
@@ -21141,74 +3504,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 21,
         optimalSwitchCells: 10,
         wrenches: 9,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green",
-              "orange"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "purple",
-              "orange"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 3,
-            facing: "W",
-            trains: [
-              "yellow",
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red",
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 5,
-            facing: "S",
-            trains: [
-              "blue",
-              "blue"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcbF5GibM05OCi3Oka01Otq0"
       },
       {
         id: "std-refresh",
         title: "Refresh",
         number: 5,
-        brief: "Express · Newfoundland · 10/30 clés",
+        brief: "",
         family: "express-newfoundland",
         width: 7,
         height: 7,
@@ -21217,97 +3519,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 11,
         optimalSwitchCells: 8,
         wrenches: 10,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 2,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 2,
-            color: "red",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 2,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 3,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 4,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 4,
-            color: "blue",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "W",
-            trains: [
-              "yellow"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh04GcaJ2Paw2OBhGcaJ5OBhGcaJ2Pcw2OBh0"
       }
     ]
   },
@@ -21320,7 +3532,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-partnership",
         title: "Partnership",
         number: 1,
-        brief: "Express · Bonus: Yukon · 8/30 clés",
+        brief: "",
         family: "express-bonus-yukon",
         width: 7,
         height: 7,
@@ -21329,75 +3541,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 23,
         optimalSwitchCells: 7,
         wrenches: 8,
-        objects: [
-          {
-            type: "station",
-            x: 1,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 6,
-            facing: "W",
-            trains: [
-              "blue",
-              "blue",
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 6,
-            facing: "E",
-            trains: [
-              "red",
-              "red",
-              "yellow"
-            ],
-            id: "import-4"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh1GiaC1GeaJ1Gcav0007ODqh3Olah"
       },
       {
         id: "std-reciprocate",
         title: "Reciprocate",
         number: 2,
-        brief: "Express · Bonus: Yukon · 10/30 clés",
+        brief: "",
         family: "express-bonus-yukon",
         width: 7,
         height: 7,
@@ -21406,129 +3556,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 16,
         wrenches: 10,
-        objects: [
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 2,
-            facing: "N",
-            trains: [
-              "orange"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "purple"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "purple"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "S",
-            trains: [
-              "green"
-            ],
-            id: "import-10"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh04OavGbaJ3GbaCOavOjJ2R2OBJOsCGeaJ3GeavOsC0"
       },
       {
         id: "std-impact",
         title: "Impact",
         number: 3,
-        brief: "Express · Bonus: Yukon · 9/30 clés",
+        brief: "",
         family: "express-bonus-yukon",
         width: 7,
         height: 7,
@@ -21537,71 +3571,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 12,
         optimalSwitchCells: 2,
         wrenches: 9,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple",
-              "purple",
-              "purple",
-              "purple"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red",
-              "red",
-              "red",
-              "red"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "blue",
-              "blue",
-              "blue",
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "purple",
-              "purple",
-              "purple",
-              "purple"
-            ],
-            id: "import-3"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3GedOO07Omaa5OEqq07GbdOO"
       },
       {
         id: "std-moonbeams",
         title: "Moonbeams",
         number: 4,
-        brief: "Express · Bonus: Yukon · 10/30 clés",
+        brief: "",
         family: "express-bonus-yukon",
         width: 7,
         height: 7,
@@ -21610,83 +3586,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 19,
         optimalSwitchCells: 4,
         wrenches: 10,
-        objects: [
-          {
-            type: "painter",
-            x: 2,
-            y: 0,
-            color: "green",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "painter",
-            x: 4,
-            y: 0,
-            color: "blue",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 1,
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 4,
-            facing: "S",
-            trains: [
-              "purple",
-              "purple",
-              "purple",
-              "purple"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green",
-              "blue",
-              "blue",
-              "green"
-            ],
-            id: "import-6"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh2Pew1Pcw4RRR07OvOO3GedEs0"
       },
       {
         id: "std-sibilant",
         title: "Sibilant",
         number: 5,
-        brief: "Express · Bonus: Yukon · 10/30 clés",
+        brief: "",
         family: "express-bonus-yukon",
         width: 7,
         height: 7,
@@ -21695,119 +3601,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 20,
         optimalSwitchCells: 9,
         wrenches: 10,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 2,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green",
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 4,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green",
-              "green"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 6,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 6,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 6,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-9"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcaC3OsoOsoOso7GcbG03GcbG03GcaC3OahOahOah"
       }
     ]
   },
@@ -21820,7 +3614,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-downUnder",
         title: "Down Under",
         number: 1,
-        brief: "Express · Bonus: Northwest Territories · 10/30 clés",
+        brief: "",
         family: "express-bonus-northwest-territories",
         width: 7,
         height: 7,
@@ -21829,125 +3623,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 20,
         optimalSwitchCells: 11,
         wrenches: 10,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 2,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 2,
-            facing: "N",
-            trains: [
-              "purple"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 2,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 2,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 2,
-            facing: "N",
-            trains: [
-              "yellow"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 1,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "purple"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 5,
-            y: 4,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-9"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh05OaaOaJOaoOaCOah9GeahGeaCGeaoGeaJGeaa0"
       },
       {
         id: "std-snowracer",
         title: "Snowracer",
         number: 2,
-        brief: "Express · Bonus: Northwest Territories · 5/30 clés",
+        brief: "",
         family: "express-bonus-northwest-territories",
         width: 7,
         height: 7,
@@ -21956,129 +3638,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 24,
         optimalSwitchCells: 5,
         wrenches: 5,
-        objects: [
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "red"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 1,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 4,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 4,
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 5,
-            facing: "E",
-            trains: [
-              "yellow"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 5,
-            id: "import-12"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh6Giaa2R3Giah3RR1Giao1R3R1Ojo1RR3Ojh3R2Oja"
       },
       {
         id: "std-rightOfPassage",
         title: "Right of Passage",
         number: 3,
-        brief: "Express · Bonus: Northwest Territories · 9/30 clés",
+        brief: "",
         family: "express-bonus-northwest-territories",
         width: 7,
         height: 7,
@@ -22087,90 +3653,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 19,
         optimalSwitchCells: 9,
         wrenches: 9,
-        objects: [
-          {
-            type: "outlet",
-            x: 1,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green",
-              "purple"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 0,
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 0,
-            facing: "S",
-            trains: [
-              "blue"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 2,
-            facing: "N",
-            trains: [
-              "green"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 4,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-7"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh1OsoRGebHROso01OaC03Osh03Oaa"
       },
       {
         id: "std-lamport",
         title: "Lamport",
         number: 4,
-        brief: "Express · Bonus: Northwest Territories · 10/30 clés",
+        brief: "",
         family: "express-bonus-northwest-territories",
         width: 7,
         height: 7,
@@ -22179,165 +3668,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 20,
         optimalSwitchCells: 6,
         wrenches: 10,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 0,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 0,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 0,
-            facing: "S",
-            trains: [
-              "yellow"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-5"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 1,
-            id: "import-6"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 3,
-            id: "import-7"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 3,
-            id: "import-8"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 3,
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 5,
-            id: "import-10"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 5,
-            id: "import-11"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-12"
-          },
-          {
-            type: "outlet",
-            x: 1,
-            y: 6,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-13"
-          },
-          {
-            type: "outlet",
-            x: 3,
-            y: 6,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-14"
-          },
-          {
-            type: "outlet",
-            x: 5,
-            y: 6,
-            facing: "N",
-            trains: [
-              "blue"
-            ],
-            id: "import-15"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-16"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGeaCOsh1Osh1OshGeaC2R1R0R1R1R0R1R2GbaCOao1Oao1OaoGbaC"
       },
       {
         id: "std-midland",
         title: "Midland",
         number: 5,
-        brief: "Express · Bonus: Northwest Territories · 10/30 clés",
+        brief: "",
         family: "express-bonus-northwest-territories",
         width: 7,
         height: 7,
@@ -22346,152 +3683,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 17,
         optimalSwitchCells: 12,
         wrenches: 10,
-        objects: [
-          {
-            type: "station",
-            x: 2,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 2,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 3,
-            color: "yellow",
-            sides: [
-              "N",
-              "S"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 3,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "E",
-            trains: [
-              "red"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 4,
-            facing: "W",
-            trains: [
-              "red"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "station",
-            x: 2,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "station",
-            x: 4,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-12"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh2GeahGeahGeah9Oja5OBaOja2Pbc2OBaOja5OBa9GbahGbahGbah"
       }
     ]
   },
@@ -22504,7 +3696,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         id: "std-entanglement",
         title: "Entanglement",
         number: 1,
-        brief: "Express · Bonus: Nunavut · 11/30 clés",
+        brief: "",
         family: "express-bonus-nunavut",
         width: 7,
         height: 7,
@@ -22513,109 +3705,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 20,
         optimalSwitchCells: 7,
         wrenches: 11,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 1,
-            y: 0,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 0,
-            id: "import-2"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "S"
-            ],
-            expects: [
-              "orange"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 0,
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 5,
-            y: 0,
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 6,
-            y: 0,
-            facing: "S",
-            trains: [
-              "purple",
-              "purple",
-              "purple",
-              "purple"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "painter",
-            x: 0,
-            y: 4,
-            color: "blue",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "painter",
-            x: 1,
-            y: 5,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "painter",
-            x: 2,
-            y: 6,
-            color: "red",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-9"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGeaCRRGeavRROvOO001Pco7Pbo7Paw"
       },
       {
         id: "std-dufferinGate",
         title: "Dufferin Gate",
         number: 2,
-        brief: "Express · Bonus: Nunavut · 10/30 clés",
+        brief: "",
         family: "express-bonus-nunavut",
         width: 7,
         height: 7,
@@ -22624,153 +3720,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 17,
         optimalSwitchCells: 5,
         wrenches: 10,
-        objects: [
-          {
-            type: "station",
-            x: 0,
-            y: 0,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 0,
-            color: "yellow",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 0,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 1,
-            color: "yellow",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 2,
-            color: "yellow",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 3,
-            facing: "E",
-            trains: [
-              "red",
-              "red",
-              "red",
-              "red"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 3,
-            color: "blue",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 4,
-            color: "yellow",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 5,
-            color: "yellow",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 0,
-            y: 6,
-            facings: [
-              "E"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 6,
-            color: "yellow",
-            sides: [
-              "W",
-              "E"
-            ],
-            id: "import-10"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "W"
-            ],
-            expects: [
-              "blue"
-            ],
-            id: "import-11"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hhGcao2Pbw2Giah3Pbw6Pbw3Omaa2Pcw6Pbw6Pbw3Gcah2Pbw2Giao"
       },
       {
         id: "std-jumpingJoy",
         title: "Jumping Joy",
         number: 3,
-        brief: "Express · Bonus: Nunavut · 8/30 clés",
+        brief: "",
         family: "express-bonus-nunavut",
         width: 7,
         height: 7,
@@ -22779,104 +3735,13 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 18,
         optimalSwitchCells: 6,
         wrenches: 8,
-        objects: [
-          {
-            type: "station",
-            x: 3,
-            y: 0,
-            facings: [
-              "W",
-              "E"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-0"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 2,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-1"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 2,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-2"
-          },
-          {
-            type: "obstacle",
-            x: 2,
-            y: 3,
-            id: "import-3"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 3,
-            color: "yellow",
-            sides: [
-              "S",
-              "N"
-            ],
-            id: "import-4"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 3,
-            id: "import-5"
-          },
-          {
-            type: "outlet",
-            x: 2,
-            y: 4,
-            facing: "W",
-            trains: [
-              "blue"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 4,
-            y: 4,
-            facing: "E",
-            trains: [
-              "blue"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "station",
-            x: 3,
-            y: 6,
-            facings: [
-              "W",
-              "E"
-            ],
-            expects: [
-              "green"
-            ],
-            id: "import-8"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh3Gkah02OBo1Ojo4RPboR4OBo1Ojo02GkaC"
       },
       {
         id: "std-sidewinder",
         title: "Sidewinder",
         number: 4,
-        brief: "Express · Bonus: Nunavut · 10/30 clés",
+        brief: "",
         family: "express-bonus-nunavut",
         width: 7,
         height: 7,
@@ -22885,133 +3750,7 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         optimalCells: 27,
         optimalSwitchCells: 10,
         wrenches: 10,
-        objects: [
-          {
-            type: "obstacle",
-            x: 2,
-            y: 1,
-            id: "import-0"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 1,
-            id: "import-1"
-          },
-          {
-            type: "obstacle",
-            x: 4,
-            y: 1,
-            id: "import-2"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 2,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-3"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 2,
-            id: "import-4"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 2,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-5"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 3,
-            color: "yellow",
-            sides: [
-              "S",
-              "W"
-            ],
-            id: "import-6"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 4,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-7"
-          },
-          {
-            type: "painter",
-            x: 3,
-            y: 4,
-            color: "red",
-            sides: [
-              "N",
-              "E"
-            ],
-            id: "import-8"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 4,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-9"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 5,
-            id: "import-10"
-          },
-          {
-            type: "outlet",
-            x: 0,
-            y: 6,
-            facing: "N",
-            trains: [
-              "red"
-            ],
-            id: "import-11"
-          },
-          {
-            type: "obstacle",
-            x: 3,
-            y: 6,
-            id: "import-12"
-          },
-          {
-            type: "station",
-            x: 6,
-            y: 6,
-            facings: [
-              "N"
-            ],
-            expects: [
-              "yellow"
-            ],
-            id: "import-13"
-          }
-        ],
-        examplePaths: []
+        puzzleString: "hh9RRR2Oaa2R2Gbah3Pbr3Oaa2Pab2Gbah3R3Oaa2R2Gbah"
       }
     ]
   }

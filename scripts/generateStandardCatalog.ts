@@ -3,7 +3,7 @@
 // Exécuté une fois via `npx tsx scripts/generateStandardCatalog.ts`.
 import fs from "node:fs";
 import { decodePuzzleString } from "../src/levels/puzzleCodec";
-import type { LevelDefinition } from "../src/levels/types";
+import type { LevelSource } from "../src/levels/types";
 
 function parseCsvLine(line: string): string[] {
   const fields: string[] = [];
@@ -78,10 +78,13 @@ for (const row of rows) {
 }
 
 let failures = 0;
-const familyDefs: { id: string; title: string; playable: true; levels: LevelDefinition[] }[] = [];
+const familyDefs: { id: string; title: string; playable: true; levels: LevelSource[] }[] = [];
 for (const family of families.values()) {
   const familyId = slugify(`${family.catalog}-${family.title}`);
-  const levels: LevelDefinition[] = family.levels.map((row) => {
+  const levels: LevelSource[] = family.levels.map((row) => {
+    // Validation uniquement : on vérifie que le puzzleString décode proprement,
+    // mais on ne stocke jamais le résultat décodé — seul le puzzleString est
+    // écrit dans le catalogue, décodé à la demande via hydrateLevel().
     const decoded = decodePuzzleString(row.puzzleString);
     if (decoded.warnings.length > 0 || decoded.objects.length === 0) {
       failures++;
@@ -92,7 +95,7 @@ for (const family of families.values()) {
       id: `std-${row.slug}`,
       title: row.name,
       number: row.puzzleOrder,
-      brief: `${family.catalog} · ${family.title} · ${row.wrenches}/30 clés`,
+      brief: "",
       family: familyId,
       width: 7,
       height: 7,
@@ -101,8 +104,7 @@ for (const family of families.values()) {
       optimalCells: row.optimalCells,
       optimalSwitchCells: row.optimalSwitchCells,
       wrenches: row.wrenches,
-      objects: decoded.objects,
-      examplePaths: [],
+      puzzleString: row.puzzleString,
     };
   });
   familyDefs.push({ id: familyId, title: family.title, playable: true, levels });
@@ -118,6 +120,9 @@ console.log(`${familyDefs.length} familles, ${totalLevels} niveaux décodés san
 
 const header_comment = `// Généré automatiquement depuis trainyard_standard_levels.csv (extraction officielle
 // trainyard.ca, catalogues Regular/Bonus/Express, ${totalLevels} niveaux, ${familyDefs.length} familles).
+// Catalogue compact : chaque niveau ne porte que son puzzleString + métadonnées,
+// jamais les objets décodés (voir hydrateLevel() dans hydrate.ts, appelé à la
+// demande lorsqu'un niveau devient actif).
 // Ne pas éditer à la main : régénérer via scripts/generateStandardCatalog.ts.
 import type { LevelFamily } from "./types";
 

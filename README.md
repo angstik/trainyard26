@@ -1,67 +1,58 @@
-# Signal Nocturne — v1.0 (build statique)
+# Signal Nocturne
 
-Version 100 % statique de Signal Nocturne, destinée à la publication sur un
-dépôt GitHub public et à un hébergement type GitHub Pages. Aucune dépendance
-serveur : pas de Worker, pas de base de données, pas d'authentification.
+Un puzzle de circuits ferroviaires : tracez des voies pour amener chaque
+train jusqu'à la bonne gare, en jouant avec les couleurs, les peintures et
+les aiguillages. 233 niveaux répartis en 36 familles, du plus simple au plus
+retors.
 
-Le dossier [`../signal-nocturne-v27`](../signal-nocturne-v27) — la version de
-travail sur socle Next.js/vinext/Cloudflare — n'a pas été modifié. Ce dossier
-`v1.0` est une reconstruction indépendante, portant le même moteur de jeu, la
-même UI et le même contenu (niveaux, textes, audio, documentation), sur un
-socle Vite + React classique sans rendu serveur.
+**Jouer : [https://angstik.github.io/trainyard26/](https://angstik.github.io/trainyard26/)**
 
-## Ce qui a été repris à l'identique (aucun changement de comportement)
+## Origine du projet
 
-- `src/App.tsx` — copie de `app/page.tsx` (uniquement la directive `"use
-  client"` retirée, inutile hors Next.js ; le composant racine est renommé
-  `Home` → `App`).
-- `src/levels/*.ts`, `src/rail-motion.ts` — copies strictement identiques
-  (contenu des niveaux non touché).
-- `src/index.css` — copie de `app/globals.css`.
-- `public/audio/`, `public/favicon.svg`, `public/icon-*.svg` — copies
-  identiques.
+Signal Nocturne est un hommage à **[Trainyard](https://trainyard.ca)**, le
+jeu original créé par Matt Rix, sorti en 2010 sur iOS puis Android. Le
+principe de jeu (tracer des voies, mélanger les couleurs de trains, gérer les
+peintures et les aiguillages) est directement inspiré de cette œuvre.
 
-> La documentation (`public/docs/`, `public/documentation.html`) a été
-> retirée de cette version publique (elle reste disponible dans
-> `signal-nocturne-v27`, côté dépôt privé).
+Le catalogue de niveaux intégré (Regular, Bonus, Express) reprend les
+puzzles officiels du jeu original, tels que documentés publiquement sur
+[trainyard.ca](https://trainyard.ca/solutions) et via le travail de
+préservation mené par [Arya Elfakyn](https://elfakyn.com/projects/trainyard-game-preservation)
+avec l'autorisation de Matt Rix.
 
-## Ce qui a été adapté (uniquement pour la portabilité statique)
+## Installer l'application
 
-- **`public/manifest.webmanifest`** : `start_url`/`scope`/icônes passés en
-  chemins relatifs (`./`) au lieu d'absolus (`/`), pour fonctionner sous un
-  sous-chemin GitHub Pages (`https://<user>.github.io/<repo>/`) sans
-  configuration. Libellés `v27` retirés (version affichée devient générique).
-- **`public/sw.js`** : mêmes règles de cache que la version v27, mais
-  résolues via `self.registration.scope` au lieu de chemins absolus, pour la
-  même raison de portabilité. Nom de cache renommé `signal-nocturne-v1.0`.
-- **`vite.config.ts`** : `base: "./"` — build à assets relatifs, portable
-  quel que soit le sous-répertoire de publication.
-- Remplacement du socle Next.js (`next.config.ts`, `worker/`, `db/`,
-  `.openai/`, `chatgpt-auth.ts`, polices `next/font`) par un projet Vite
-  minimal : `index.html`, `src/main.tsx`, `vite.config.ts`, `tsconfig*.json`,
-  `eslint.config.js`. Les polices `next/font` (Geist) n'étaient pas utilisées
-  dans `globals.css` (police réelle : `"Arial Narrow", "Roboto Condensed",
-  system-ui`) : leur retrait n'a aucun impact visuel.
+Signal Nocturne est une PWA (Progressive Web App) : elle s'installe comme une
+application native, sans passer par un store, et fonctionne hors-ligne une
+fois installée.
 
-## Développement local
+**Sur iPhone / iPad (Safari)**
+1. Ouvrez le lien ci-dessus dans Safari
+2. Appuyez sur l'icône Partager (le carré avec la flèche vers le haut)
+3. Choisissez **« Sur l'écran d'accueil »**
+4. Confirmez avec **Ajouter**
 
-```bash
-npm ci
-npm run dev       # serveur de dev Vite
-npm run build     # build statique -> dist/
-npm run preview   # sert dist/ localement pour vérification
-```
+**Sur Android (Chrome)**
+1. Ouvrez le lien ci-dessus dans Chrome
+2. Ouvrez le menu (⋮) en haut à droite
+3. Choisissez **« Installer l'application »** (ou **« Ajouter à l'écran d'accueil »**)
 
-## Déploiement
+**Sur ordinateur (Chrome, Edge…)**
+1. Ouvrez le lien ci-dessus
+2. Cliquez sur l'icône d'installation dans la barre d'adresse (⊕ ou écran avec flèche)
 
-Le workflow `.github/workflows/deploy-pages.yml` build ce dossier et publie
-`dist/` sur GitHub Pages à chaque push sur `main`. Il est écrit pour un dépôt
-public **dédié** dont la racine est ce dossier (pas de préfixe `application/`
-dans les chemins). Prérequis côté dépôt : activer Pages → Source = "GitHub
-Actions" dans les paramètres du dépôt.
+L'application elle-même propose ces instructions au premier lancement dans un
+navigateur.
 
-Ce dossier reste synchronisé depuis le dépôt privé (monorepo) via
-`git subtree push` — voir la procédure de synchronisation dans la
-documentation du dépôt privé. Le dépôt public ne reçoit que ce sous-arbre
-(fichiers + historique de ce dossier uniquement), jamais le reste du
-monorepo.
+## Un problème, une question, un besoin ?
+
+Ce projet est jeune et encore en évolution active. Pour tout souci
+d'utilisation, toute question, toute demande d'accès plus large, ou tout bug
+rencontré : ouvrez une [issue sur ce dépôt](../../issues/new) — c'est le
+meilleur moyen de me faire remonter l'information.
+
+## Licence
+
+Le code de l'application est publié sous licence MIT (voir
+[`LICENSE`](./LICENSE)). Le catalogue de niveaux et les effets sonores sont
+soumis à des conditions distinctes, détaillées dans ce même fichier.

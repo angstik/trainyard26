@@ -3,7 +3,8 @@ import { DEFAULT_LEVEL, LEVEL_FAMILIES } from "./levels/catalog";
 import { analyzeObjects, isImplicitInfrastructureLink, TRAIN_COLORS } from "./levels/feasibility";
 import { decodePuzzleString, encodeLevelToPuzzleString } from "./levels/puzzleCodec";
 import { parseLevelImport, type LevelIdentity } from "./levels/importFormats";
-import type { Direction, LevelDefinition, LevelFamily, LevelObject, TrainColor } from "./levels/types";
+import type { Direction, LevelDefinition, LevelFamily, LevelObject, LevelSource, TrainColor } from "./levels/types";
+import { hydrateLevel } from "./levels/hydrate";
 import { sampleRailCenterline } from "./rail-motion";
 
 type Point = [number, number];
@@ -49,7 +50,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.15";
+const APP_VERSION = "1.16";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -688,7 +689,8 @@ export default function App() {
     setReceived(empty.received);
   }
 
-  function loadLevel(level: LevelDefinition) {
+  function loadLevel(source: LevelSource) {
+    const level = hydrateLevel(source);
     if (activeLevel.id !== level.id) persistAttempt(false);
     setActiveLevel(level);
     setEdges(new Set(level.savedEdges ?? []));
@@ -773,7 +775,7 @@ export default function App() {
     }
   }
 
-  function resumeLevel(level: LevelDefinition) {
+  function resumeLevel(level: LevelSource) {
     const saved = levelProgress[level.id];
     loadLevel(level);
     if (!saved) return;
@@ -1897,7 +1899,7 @@ export default function App() {
                             <div key={level.id} className={`library-level-row ${activeLevel.id === level.id ? "current" : ""}`}>
                               <button className="library-level-open" onClick={() => { loadLevel(level); setEditorDialog(null); }}>
                                 <span>{level.number.toString().padStart(2, "0")}</span>
-                                <div><b>{level.title}</b><small>{level.brief}</small></div>
+                                <div><b>{level.title}</b></div>
                               </button>
                               {level.wrenches != null
                                 ? <b className="difficulty-stat" style={{ color: difficultyColor(level.wrenches) }}>{difficultyScale(level.wrenches)}/10</b>
