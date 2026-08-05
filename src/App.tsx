@@ -50,7 +50,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.17";
+const APP_VERSION = "1.19";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -1869,17 +1869,17 @@ export default function App() {
                       return <button key={item.id} className={!item.playable ? "wip-family" : ""} onClick={() => selectLibraryFamily(item.id)}>
                         <div className="family-main">
                           <b>{item.title}</b>
-                          <small>{item.playable ? `${completed}/${item.levels.length} réussis` : "WIP · ÉDITEUR UNIQUEMENT"}</small>
+                          {!item.playable && <small>WIP · ÉDITEUR UNIQUEMENT</small>}
                         </div>
                         <div className="family-side">
                           {item.playable && (
                             <div className="family-synthesis">
                               <span style={{ color: progressColor(completionRate) }}>{Math.round(completionRate * 100)}% réalisé</span>
                               <span>{avgQuality != null ? `${Math.round(avgQuality * 100)}% qualité` : "— qualité"}</span>
-                              {diffMin != null && <span>{diffMin === diffMax ? `${diffMin}` : `${diffMin}–${diffMax}`}</span>}
+                              {diffMin != null && <span>{diffMin === diffMax ? `${diffMin} ⭐` : `${diffMin} ⭐ – ${diffMax} ⭐`}</span>}
                             </div>
                           )}
-                          <span className="family-count">{item.levels.length}</span>
+                          <span className="family-count">{completed}/{item.levels.length}</span>
                         </div>
                         <i>→</i>
                       </button>;

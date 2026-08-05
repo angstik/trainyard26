@@ -549,7 +549,7 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .library-family-index b { color:#d8c28d; letter-spacing:.09em; }
 .library-family-index small { color:var(--muted); font-size:8px; letter-spacing:.1em; }
 .family-synthesis { display:flex; flex-wrap:wrap; justify-content:flex-end; gap:7px; font-size:8px; letter-spacing:.04em; color:var(--muted); white-space:nowrap; }
-.family-count { width:30px; height:30px; display:grid; place-items:center; border:1px solid #53646c; color:var(--cyan); }
+.family-count { min-width:40px; height:30px; padding:0 6px; display:grid; place-items:center; border:1px solid #53646c; color:var(--cyan); font-size:11px; white-space:nowrap; }
 .library-family-index i { color:#d8c28d; font-size:20px; font-style:normal; text-align:center; }
 .library-back { width:max-content; padding:8px 12px; border:1px solid #425660; background:#0c151a; color:#9fb2ba; font-size:8px; letter-spacing:.1em; cursor:pointer; }
 .library-family-heading { display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; border-bottom:1px solid #2c414b; }
