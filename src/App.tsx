@@ -50,7 +50,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.19";
+const APP_VERSION = "1.20";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -1378,11 +1378,7 @@ export default function App() {
             const connectors = Array.from(new Set<Direction>([entry, exit, inheritedExit]));
             replaceCellConnectors(cell, connectors);
             delete nextModes[key];
-            const toe = isStraightRoute(existingRoute)
-              ? sharedSide
-              : isStraightRoute(swipeRoute)
-                ? entry
-                : sharedSide;
+            const toe = sharedSide;
             const activeExit = toe === entry ? exit : entry;
             nextToes[key] = toe;
             const geometry = switchGeometry(connectors, toe);
