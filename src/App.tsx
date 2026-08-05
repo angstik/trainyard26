@@ -50,7 +50,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.20";
+const APP_VERSION = "1.21";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -73,6 +73,25 @@ const MIXES: Record<string, TrainColor> = {
   "purple+yellow": "brown",
   "purple+red": "pink",
   "blue+green": "cyan",
+  // Marron : absorbe toute couleur sauf le blanc (reste marron).
+  "brown+red": "brown",
+  "blue+brown": "brown",
+  "brown+yellow": "brown",
+  "brown+orange": "brown",
+  "brown+green": "brown",
+  "brown+purple": "brown",
+  "brown+pink": "brown",
+  "brown+cyan": "brown",
+  // Blanc : cède aux couleurs primaires (devient la primaire), domine sur les autres (reste blanc).
+  "red+white": "red",
+  "blue+white": "blue",
+  "white+yellow": "yellow",
+  "orange+white": "white",
+  "green+white": "white",
+  "purple+white": "white",
+  "brown+white": "white",
+  "pink+white": "white",
+  "cyan+white": "white",
 };
 const SPLITS: Partial<Record<TrainColor, [TrainColor, TrainColor]>> = {
   red: ["red", "red"], blue: ["blue", "blue"], yellow: ["yellow", "yellow"],
@@ -484,6 +503,9 @@ export default function App() {
   const [movingObjectId, setMovingObjectId] = useState<string | null>(null);
   const [moveGhostCell, setMoveGhostCell] = useState<Point | null>(null);
   const simRef = useRef<SimData>(createEmptySim(DEFAULT_LEVEL.objects));
+  const prevTrainsRef = useRef<MovingTrain[]>([]);
+  const nextTrainsRef = useRef<MovingTrain[]>([]);
+  const tickTimeRef = useRef<number>(Date.now());
   const mutedRef = useRef(true);
   const activeAudioRef = useRef<Set<HTMLAudioElement>>(new Set());
   const explosionId = useRef(0);
@@ -678,6 +700,8 @@ export default function App() {
     setRunning(false);
     setPaused(false);
     setTrains([]);
+    prevTrainsRef.current = [];
+    nextTrainsRef.current = [];
     setExplosions([]);
     setColorBursts([]);
     setResult("idle");
@@ -711,6 +735,8 @@ export default function App() {
     setRunning(false);
     setPaused(false);
     setTrains([]);
+    prevTrainsRef.current = [];
+    nextTrainsRef.current = [];
     setExplosions([]);
     setColorBursts([]);
     setResult("idle");
@@ -904,6 +930,9 @@ export default function App() {
     persistAttempt(false);
     const clean = createEmptySim(objects, switchPositions);
     simRef.current = clean;
+    prevTrainsRef.current = [];
+    nextTrainsRef.current = [];
+    tickTimeRef.current = Date.now();
     setDisplaySwitchPositions({ ...switchPositions });
     setTrains([]);
     setExplosions([]);
@@ -1147,7 +1176,9 @@ export default function App() {
       }
 
       sim.trains = sim.failed ? [] : resolved;
-      setTrains([...sim.trains]);
+      prevTrainsRef.current = nextTrainsRef.current;
+      nextTrainsRef.current = [...sim.trains];
+      tickTimeRef.current = Date.now();
       setDisplaySwitchPositions({ ...sim.switches });
       setEmitted({ ...sim.emitted });
       setReceived({ ...sim.received });
@@ -1171,6 +1202,33 @@ export default function App() {
   // The interval deliberately restarts when the editable topology changes.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running, paused, speed, outlets, stations, objects, edges, junctionModes, switchToes]);
+
+  // Rendu interpolé indépendant du tick physique (25ms / ~40 im/s) : chaque
+  // image recalcule, par la même formule pour tous les trains, une position
+  // intermédiaire entre le tick précédent et le tick suivant. Élimine toute
+  // dérive entre trains (plus de transition CSS retargetée indépendamment
+  // par le navigateur pour chaque loco) et affiche au taux de rafraîchissement
+  // de l'écran plutôt qu'à 40 im/s fixes.
+  useEffect(() => {
+    if (!running || paused) return;
+    const TICK_MS = 25;
+    let frame: number;
+    const render = () => {
+      const alpha = Math.min(1, Math.max(0, (Date.now() - tickTimeRef.current) / TICK_MS));
+      const previousById = new Map(prevTrainsRef.current.map((item) => [item.id, item]));
+      setTrains(nextTrainsRef.current.map((train) => {
+        const previous = previousById.get(train.id);
+        const sameSegment = previous
+          && previous.cell[0] === train.cell[0] && previous.cell[1] === train.cell[1]
+          && previous.next[0] === train.next[0] && previous.next[1] === train.next[1];
+        if (!sameSegment) return train;
+        return { ...train, progress: previous.progress + (train.progress - previous.progress) * alpha };
+      }));
+      frame = window.requestAnimationFrame(render);
+    };
+    frame = window.requestAnimationFrame(render);
+    return () => window.cancelAnimationFrame(frame);
+  }, [running, paused]);
 
   function cellFromPointer(clientX: number, clientY: number): Point | null {
     const rect = boardRef.current?.getBoundingClientRect();

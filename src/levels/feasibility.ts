@@ -14,6 +14,25 @@ const MIX_RECIPES: [TrainColor, TrainColor, TrainColor][] = [
   ["purple", "yellow", "brown"],
   ["purple", "red", "pink"],
   ["blue", "green", "cyan"],
+  // Marron : absorbe toute couleur sauf le blanc (reste marron).
+  ["brown", "red", "brown"],
+  ["brown", "blue", "brown"],
+  ["brown", "yellow", "brown"],
+  ["brown", "orange", "brown"],
+  ["brown", "green", "brown"],
+  ["brown", "purple", "brown"],
+  ["brown", "pink", "brown"],
+  ["brown", "cyan", "brown"],
+  // Blanc : cède aux primaires, domine sur les autres.
+  ["white", "red", "red"],
+  ["white", "blue", "blue"],
+  ["white", "yellow", "yellow"],
+  ["white", "orange", "white"],
+  ["white", "green", "white"],
+  ["white", "purple", "white"],
+  ["white", "brown", "white"],
+  ["white", "pink", "white"],
+  ["white", "cyan", "white"],
 ];
 
 const SPLIT_RECIPES: Partial<Record<TrainColor, [TrainColor, TrainColor]>> = {
