@@ -25,10 +25,14 @@ type ColorBurst = { id: number; x: number; y: number; color: TrainColor; kind: "
 type SoundKind = "unmute" | "switch" | "brake" | "explosion" | "split" | "paint" | "station" | "pass";
 type LevelProgress = {
   minimumRails: number | null;
+  occupiedCells: number | null;
+  doubleCells: number | null;
   lastRails: number;
   completed: boolean;
   lastTimeMs: number;
   bestTimeMs: number | null;
+  /** Durée de réflexion cumulée sur ce niveau, reprise à chaque retour. */
+  thinkingMs: number;
   edges: string[];
   junctionModes: Record<string, JunctionMode>;
   switchToes: Record<string, Direction>;
@@ -45,7 +49,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.13";
+const APP_VERSION = "1.15";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -247,6 +251,15 @@ function metricColor(value: number, target: number) {
 function difficultyColor(wrenches: number) {
   const progress = Math.min(1, Math.max(0, wrenches / 30));
   return `hsl(${125 - progress * 125} 72% 52%)`;
+}
+
+function difficultyScale(wrenches: number) {
+  return Math.min(10, Math.max(1, Math.ceil(wrenches / 3)));
+}
+
+function progressColor(ratio: number) {
+  const clamped = Math.min(1, Math.max(0, ratio));
+  return `hsl(${clamped * 130} 68% 50%)`;
 }
 
 function createEmptySim(objects: LevelObject[], switches: Record<string, number> = {}): SimData {
@@ -502,15 +515,26 @@ export default function App() {
     [families, mode],
   );
   const activeLevelIndex = navigableLevels.findIndex((level) => level.id === activeLevel.id);
+  const artifactCells = useMemo(() => new Set(objects.map((object) => pointKey([object.x, object.y]))), [objects]);
   const trackCells = useMemo(() => {
     const cells = new Set<string>();
-    edges.forEach((edge) => edge.split("|").forEach((cell) => cells.add(cell)));
+    edges.forEach((edge) => edge.split("|").forEach((cell) => { if (!artifactCells.has(cell)) cells.add(cell); }));
     return cells.size;
-  }, [edges]);
-  const railCount = edges.size;
+  }, [edges, artifactCells]);
+  const switchCells = useMemo(() => {
+    const perCell = new Map<string, number>();
+    edges.forEach((edge) => edge.split("|").forEach((cell) => {
+      if (artifactCells.has(cell)) return;
+      perCell.set(cell, (perCell.get(cell) ?? 0) + 1);
+    }));
+    let count = 0;
+    perCell.forEach((degree) => { if (degree >= 3) count++; });
+    return count;
+  }, [edges, artifactCells]);
+  const totalSegments = trackCells + switchCells;
   const feasibility = useMemo(() => analyzeObjects(objects, GRID, GRID), [objects]);
   const invalidObjectIds = useMemo(() => new Set(feasibility.structuralIssues.map((issue) => issue.objectId)), [feasibility.structuralIssues]);
-  const railMetricColor = metricColor(railCount, railLimit);
+  const railMetricColor = metricColor(totalSegments, railLimit);
 
   useEffect(() => {
     if (running || result !== "idle") return;
@@ -665,6 +689,7 @@ export default function App() {
   }
 
   function loadLevel(level: LevelDefinition) {
+    if (activeLevel.id !== level.id) persistAttempt(false);
     setActiveLevel(level);
     setEdges(new Set(level.savedEdges ?? []));
     setJunctionModes(level.junctionModes ?? {});
@@ -675,7 +700,7 @@ export default function App() {
     objectsHistoryRef.current = [];
     setObjectsHistoryLength(0);
     setGesture([]);
-    setTotalElapsedMs(0);
+    setTotalElapsedMs(levelProgress[level.id]?.thinkingMs ?? 0);
     setObjects(level.objects);
     setRailLimit(level.railLimit);
     setFamily(level.family);
@@ -763,16 +788,19 @@ export default function App() {
   function persistAttempt(success: boolean) {
     setLevelProgress((current) => {
       const previous = current[activeLevel.id];
+      const previousMinimum = previous?.minimumRails ?? Number.POSITIVE_INFINITY;
+      const isNewBest = success && totalSegments < previousMinimum;
       const nextEntry: LevelProgress = {
-        minimumRails: success
-          ? Math.min(previous?.minimumRails ?? Number.POSITIVE_INFINITY, railCount)
-          : previous?.minimumRails ?? null,
-        lastRails: railCount,
+        minimumRails: success ? Math.min(previousMinimum, totalSegments) : previous?.minimumRails ?? null,
+        occupiedCells: isNewBest ? trackCells : previous?.occupiedCells ?? null,
+        doubleCells: isNewBest ? switchCells : previous?.doubleCells ?? null,
+        lastRails: totalSegments,
         completed: previous?.completed === true || previous?.minimumRails != null || success,
         lastTimeMs: editingElapsedMs,
         bestTimeMs: success
           ? Math.min(previous?.bestTimeMs ?? Number.POSITIVE_INFINITY, editingElapsedMs)
           : previous?.bestTimeMs ?? null,
+        thinkingMs: totalElapsedMs,
         edges: [...edges],
         junctionModes: { ...junctionModes },
         switchToes: { ...switchToes },
@@ -1671,7 +1699,7 @@ export default function App() {
         </div>
         <div className="status-strip">
           <span><small>ÉTAT</small><b className={result}>{paused ? "PAUSE" : status}</b></span>
-          <span><small>RAILS</small><b style={{ color: railMetricColor }}>{railCount} / {railLimit}</b></span>
+          <span><small>RAILS</small><b style={{ color: railMetricColor }}>{totalSegments} / {railLimit}</b></span>
           <span><small>CASES</small><b>{trackCells}</b></span>
           <span><small>TEMPS PLAN</small><b>{formatTime(editingElapsedMs)}</b></span>
         </div>
@@ -1715,12 +1743,10 @@ export default function App() {
           <div className="board-wrap">
           <div className="board-heading">
             <button className="board-level-arrow" aria-label="Niveau précédent" title="Niveau précédent" disabled={running || activeLevelIndex <= 0} onClick={() => changeLevel(-1)}>←</button>
-            {mode === "play" && <div className="game-hud" aria-label={`Version ${APP_VERSION}, ${railCount} rails sur ${railLimit}, optimum ${activeLevel.optimalRails ?? "inconnu"}, ${trackCells} cases, temps ${formatTime(totalElapsedMs)}`}>
-              <span><small>RAILS / LIMITE</small><strong style={{ color: railMetricColor }}>{railCount}/{railLimit}</strong></span>
-              {activeLevel.optimalRails != null && (
-                <span><small>RAILS / OPTIMUM</small><strong style={{ color: metricColor(railCount, activeLevel.optimalRails) }}>{railCount}/{activeLevel.optimalRails}</strong></span>
-              )}
-              <span><small>CASES</small><strong>{trackCells}</strong></span>
+            {mode === "play" && <div className="game-hud" aria-label={`Version ${APP_VERSION}, ${totalSegments} rails sur ${railLimit}, ${trackCells} cases sur ${activeLevel.optimalCells ?? "objectif inconnu"}, ${switchCells} croisements sur ${activeLevel.optimalSwitchCells ?? "objectif inconnu"}, temps ${formatTime(totalElapsedMs)}`}>
+              <span><small>RAILS / LIMITE</small><strong style={{ color: railMetricColor }}>{totalSegments}/{railLimit}</strong></span>
+              <span><small>CASES / CIBLE</small><strong style={{ color: activeLevel.optimalCells != null ? metricColor(trackCells, activeLevel.optimalCells) : undefined }}>{trackCells}{activeLevel.optimalCells != null ? `/${activeLevel.optimalCells}` : ""}</strong></span>
+              <span><small>CROISEMENTS / CIBLE</small><strong style={{ color: activeLevel.optimalSwitchCells != null ? metricColor(switchCells, activeLevel.optimalSwitchCells) : undefined }}>{switchCells}{activeLevel.optimalSwitchCells != null ? `/${activeLevel.optimalSwitchCells}` : ""}</strong></span>
               <span><small>TEMPS</small><strong>{formatTime(totalElapsedMs)}</strong></span>
             </div>}
             <button className="board-level-arrow" aria-label="Niveau suivant" title="Niveau suivant" disabled={running || activeLevelIndex < 0 || activeLevelIndex >= navigableLevels.length - 1} onClick={() => changeLevel(1)}>→</button>
@@ -1823,12 +1849,34 @@ export default function App() {
                   <button className="library-io-trigger" onClick={() => setEditorDialog("io")}><span className="tool-glyph">⇄</span> IMPORTER / EXPORTER UN NIVEAU</button>
                   {!libraryFamily && <div className="library-family-index">
                     {visibleFamilies.map((item) => {
-                      const completed = item.levels.filter((level) => {
+                      const completedLevels = item.levels.filter((level) => {
                         const progress = levelProgress[level.id];
                         return progress?.completed ?? (progress?.minimumRails != null);
-                      }).length;
+                      });
+                      const completed = completedLevels.length;
+                      const completionRate = item.levels.length ? completed / item.levels.length : 0;
+                      const qualityScores = completedLevels
+                        .map((level) => {
+                          const progress = levelProgress[level.id];
+                          return progress?.minimumRails && level.optimalRails ? Math.min(1, level.optimalRails / progress.minimumRails) : null;
+                        })
+                        .filter((value): value is number => value != null);
+                      const avgQuality = qualityScores.length ? qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length : null;
+                      const difficulties = item.levels.map((level) => level.wrenches != null ? difficultyScale(level.wrenches) : null).filter((value): value is number => value != null);
+                      const diffMin = difficulties.length ? Math.min(...difficulties) : null;
+                      const diffMax = difficulties.length ? Math.max(...difficulties) : null;
                       return <button key={item.id} className={!item.playable ? "wip-family" : ""} onClick={() => selectLibraryFamily(item.id)}>
-                        <div><b>{item.title}</b><small>{item.playable ? `${completed}/${item.levels.length} RÉUSSIS` : "WIP · ÉDITEUR UNIQUEMENT"}</small></div>
+                        <div>
+                          <b>{item.title}</b>
+                          <small>{item.playable ? `${completed}/${item.levels.length} réussis` : "WIP · ÉDITEUR UNIQUEMENT"}</small>
+                          {item.playable && (
+                            <div className="family-synthesis">
+                              <span style={{ color: progressColor(completionRate) }}>{Math.round(completionRate * 100)}% réalisé</span>
+                              <span style={{ color: avgQuality != null ? progressColor(avgQuality) : undefined }}>{avgQuality != null ? `${Math.round(avgQuality * 100)}% qualité` : "— qualité"}</span>
+                              {diffMin != null && <span>{diffMin === diffMax ? `${diffMin}/10` : `${diffMin}–${diffMax}/10`}</span>}
+                            </div>
+                          )}
+                        </div>
                         <span>{item.levels.length}</span><i>→</i>
                       </button>;
                     })}
@@ -1852,7 +1900,7 @@ export default function App() {
                                 <div><b>{level.title}</b><small>{level.brief}</small></div>
                               </button>
                               {level.wrenches != null
-                                ? <b className="difficulty-stat" style={{ color: difficultyColor(level.wrenches) }}>{Math.round((level.wrenches / 30) * 100)}%</b>
+                                ? <b className="difficulty-stat" style={{ color: difficultyColor(level.wrenches) }}>{difficultyScale(level.wrenches)}/10</b>
                                 : <b className="difficulty-stat">—</b>}
                               <b className={`completion-stat ${completed ? "ok" : "ko"}`}>{completed ? "OK" : "KO"}</b>
                               <b
@@ -1891,7 +1939,7 @@ export default function App() {
               <button onClick={createFamily}>＋</button>
             </div>
             <label>Limite de rails<input type="number" min="1" max="49" value={railLimit} onChange={(event) => setRailLimit(Math.max(1, Number(event.target.value)))} /></label>
-            <div className="budget"><span>Rails / cases occupées</span><b style={{ color: railMetricColor }}>{railCount} / {railLimit} · {trackCells}</b></div>
+            <div className="budget"><span>Rails (X+Y) / cases occupées</span><b style={{ color: railMetricColor }}>{totalSegments} / {railLimit} · {trackCells}</b></div>
             <div className={`feasibility ${feasibility.feasible ? "ok" : "mismatch"}`}>
               <h3>FAISABILITÉ DES COULEURS</h3>
               <div className="feasibility-total"><span>Total remise / attendu</span><b>{feasibility.producedTotal} / {feasibility.expectedTotal}</b></div>

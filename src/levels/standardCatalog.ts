@@ -19,6 +19,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 6,
         optimalRails: 3,
+        optimalCells: 3,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -56,6 +58,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 10,
         optimalRails: 5,
+        optimalCells: 5,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -115,6 +119,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 24,
         optimalRails: 12,
+        optimalCells: 12,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -218,6 +224,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 20,
         optimalRails: 10,
+        optimalCells: 9,
+        optimalSwitchCells: 1,
         wrenches: 1,
         objects: [
           {
@@ -277,6 +285,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 14,
         optimalRails: 7,
+        optimalCells: 7,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -314,6 +324,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 32,
         optimalRails: 16,
+        optimalCells: 16,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -380,6 +392,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 14,
         optimalRails: 7,
+        optimalCells: 7,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -423,6 +437,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 18,
         optimalRails: 9,
+        optimalCells: 9,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -496,6 +512,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 46,
         optimalRails: 23,
+        optimalCells: 23,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -605,6 +623,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 26,
+        optimalCells: 24,
+        optimalSwitchCells: 2,
         wrenches: 1,
         objects: [
           {
@@ -736,6 +756,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 22,
         optimalRails: 11,
+        optimalCells: 11,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -822,6 +844,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 40,
+        optimalCells: 25,
+        optimalSwitchCells: 15,
         wrenches: 1,
         objects: [
           {
@@ -991,6 +1015,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 26,
         optimalRails: 13,
+        optimalCells: 11,
+        optimalSwitchCells: 2,
         wrenches: 1,
         objects: [
           {
@@ -1050,6 +1076,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 30,
         optimalRails: 15,
+        optimalCells: 11,
+        optimalSwitchCells: 4,
         wrenches: 2,
         objects: [
           {
@@ -1131,6 +1159,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 16,
         optimalRails: 8,
+        optimalCells: 8,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -1204,6 +1234,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 16,
         optimalRails: 8,
+        optimalCells: 8,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -1253,6 +1285,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 10,
         optimalRails: 5,
+        optimalCells: 5,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -1292,6 +1326,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 24,
         optimalRails: 12,
+        optimalCells: 10,
+        optimalSwitchCells: 2,
         wrenches: 2,
         objects: [
           {
@@ -1358,6 +1394,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 14,
         optimalRails: 7,
+        optimalCells: 6,
+        optimalSwitchCells: 1,
         wrenches: 2,
         objects: [
           {
@@ -1408,6 +1446,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 14,
         optimalRails: 7,
+        optimalCells: 6,
+        optimalSwitchCells: 1,
         wrenches: 2,
         objects: [
           {
@@ -1458,6 +1498,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 34,
         optimalRails: 17,
+        optimalCells: 15,
+        optimalSwitchCells: 2,
         wrenches: 2,
         objects: [
           {
@@ -1554,6 +1596,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 14,
         optimalRails: 7,
+        optimalCells: 6,
+        optimalSwitchCells: 1,
         wrenches: 2,
         objects: [
           {
@@ -1604,6 +1648,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 38,
         optimalRails: 19,
+        optimalCells: 18,
+        optimalSwitchCells: 1,
         wrenches: 2,
         objects: [
           {
@@ -1684,6 +1730,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 48,
         optimalRails: 24,
+        optimalCells: 23,
+        optimalSwitchCells: 1,
         wrenches: 2,
         objects: [
           {
@@ -1834,6 +1882,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 34,
         optimalRails: 17,
+        optimalCells: 15,
+        optimalSwitchCells: 2,
         wrenches: 3,
         objects: [
           {
@@ -1990,6 +2040,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 16,
         optimalRails: 8,
+        optimalCells: 7,
+        optimalSwitchCells: 1,
         wrenches: 3,
         objects: [
           {
@@ -2037,6 +2089,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 10,
         optimalRails: 5,
+        optimalCells: 4,
+        optimalSwitchCells: 1,
         wrenches: 3,
         objects: [
           {
@@ -2084,6 +2138,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 30,
         optimalRails: 15,
+        optimalCells: 12,
+        optimalSwitchCells: 3,
         wrenches: 3,
         objects: [
           {
@@ -2131,6 +2187,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 24,
         optimalRails: 12,
+        optimalCells: 10,
+        optimalSwitchCells: 2,
         wrenches: 3,
         objects: [
           {
@@ -2194,6 +2252,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 28,
         optimalRails: 14,
+        optimalCells: 11,
+        optimalSwitchCells: 3,
         wrenches: 3,
         objects: [
           {
@@ -2241,6 +2301,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 32,
         optimalRails: 16,
+        optimalCells: 12,
+        optimalSwitchCells: 4,
         wrenches: 3,
         objects: [
           {
@@ -2298,6 +2360,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 12,
         optimalRails: 6,
+        optimalCells: 5,
+        optimalSwitchCells: 1,
         wrenches: 3,
         objects: [
           {
@@ -2345,6 +2409,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 30,
         optimalRails: 15,
+        optimalCells: 12,
+        optimalSwitchCells: 3,
         wrenches: 3,
         objects: [
           {
@@ -2392,6 +2458,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 18,
         optimalRails: 9,
+        optimalCells: 8,
+        optimalSwitchCells: 1,
         wrenches: 3,
         objects: [
           {
@@ -2449,6 +2517,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 20,
         optimalRails: 10,
+        optimalCells: 9,
+        optimalSwitchCells: 1,
         wrenches: 3,
         objects: [
           {
@@ -2496,6 +2566,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 18,
         optimalRails: 9,
+        optimalCells: 7,
+        optimalSwitchCells: 2,
         wrenches: 3,
         objects: [
           {
@@ -2555,6 +2627,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 25,
+        optimalCells: 24,
+        optimalSwitchCells: 1,
         wrenches: 3,
         objects: [
           {
@@ -2674,6 +2748,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 34,
         optimalRails: 17,
+        optimalCells: 15,
+        optimalSwitchCells: 2,
         wrenches: 3,
         objects: [
           {
@@ -2789,6 +2865,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 36,
         optimalRails: 18,
+        optimalCells: 15,
+        optimalSwitchCells: 3,
         wrenches: 3,
         objects: [
           {
@@ -2857,6 +2935,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 44,
         optimalRails: 22,
+        optimalCells: 16,
+        optimalSwitchCells: 6,
         wrenches: 4,
         objects: [
           {
@@ -2945,6 +3025,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 26,
+        optimalCells: 20,
+        optimalSwitchCells: 6,
         wrenches: 3,
         objects: [
           {
@@ -3090,6 +3172,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 46,
         optimalRails: 23,
+        optimalCells: 20,
+        optimalSwitchCells: 3,
         wrenches: 3,
         objects: [
           {
@@ -3197,6 +3281,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 48,
         optimalRails: 24,
+        optimalCells: 18,
+        optimalSwitchCells: 6,
         wrenches: 4,
         objects: [
           {
@@ -3282,6 +3368,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 28,
         optimalRails: 14,
+        optimalCells: 10,
+        optimalSwitchCells: 4,
         wrenches: 4,
         objects: [
           {
@@ -3351,6 +3439,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 36,
         optimalRails: 18,
+        optimalCells: 14,
+        optimalSwitchCells: 4,
         wrenches: 4,
         objects: [
           {
@@ -3408,6 +3498,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 48,
         optimalRails: 24,
+        optimalCells: 20,
+        optimalSwitchCells: 4,
         wrenches: 4,
         objects: [
           {
@@ -3511,6 +3603,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 46,
         optimalRails: 23,
+        optimalCells: 20,
+        optimalSwitchCells: 3,
         wrenches: 4,
         objects: [
           {
@@ -3600,6 +3694,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 40,
         optimalRails: 20,
+        optimalCells: 17,
+        optimalSwitchCells: 3,
         wrenches: 4,
         objects: [
           {
@@ -3682,6 +3778,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 44,
         optimalRails: 22,
+        optimalCells: 18,
+        optimalSwitchCells: 4,
         wrenches: 4,
         objects: [
           {
@@ -3785,6 +3883,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 25,
+        optimalCells: 18,
+        optimalSwitchCells: 7,
         wrenches: 4,
         objects: [
           {
@@ -3884,6 +3984,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 25,
+        optimalCells: 21,
+        optimalSwitchCells: 4,
         wrenches: 5,
         objects: [
           {
@@ -4001,6 +4103,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 24,
         optimalRails: 12,
+        optimalCells: 8,
+        optimalSwitchCells: 4,
         wrenches: 7,
         objects: [
           {
@@ -4044,6 +4148,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 44,
         optimalRails: 22,
+        optimalCells: 15,
+        optimalSwitchCells: 7,
         wrenches: 6,
         objects: [
           {
@@ -4114,6 +4220,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 36,
         optimalRails: 18,
+        optimalCells: 14,
+        optimalSwitchCells: 4,
         wrenches: 7,
         objects: [
           {
@@ -4181,6 +4289,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 28,
+        optimalCells: 21,
+        optimalSwitchCells: 7,
         wrenches: 5,
         objects: [
           {
@@ -4297,6 +4407,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 28,
+        optimalCells: 22,
+        optimalSwitchCells: 6,
         wrenches: 7,
         objects: [
           {
@@ -4409,6 +4521,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 28,
         optimalRails: 14,
+        optimalCells: 11,
+        optimalSwitchCells: 3,
         wrenches: 5,
         objects: [
           {
@@ -4477,6 +4591,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 33,
+        optimalCells: 26,
+        optimalSwitchCells: 7,
         wrenches: 6,
         objects: [
           {
@@ -4627,6 +4743,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 38,
         optimalRails: 19,
+        optimalCells: 13,
+        optimalSwitchCells: 6,
         wrenches: 6,
         objects: [
           {
@@ -4722,6 +4840,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 33,
+        optimalCells: 23,
+        optimalSwitchCells: 10,
         wrenches: 6,
         objects: [
           {
@@ -4839,6 +4959,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 38,
         optimalRails: 19,
+        optimalCells: 12,
+        optimalSwitchCells: 7,
         wrenches: 7,
         objects: [
           {
@@ -4928,6 +5050,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 22,
         optimalRails: 11,
+        optimalCells: 9,
+        optimalSwitchCells: 2,
         wrenches: 2,
         objects: [
           {
@@ -4976,6 +5100,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 28,
         optimalRails: 14,
+        optimalCells: 13,
+        optimalSwitchCells: 1,
         wrenches: 4,
         objects: [
           {
@@ -5034,6 +5160,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 32,
         optimalRails: 16,
+        optimalCells: 14,
+        optimalSwitchCells: 2,
         wrenches: 5,
         objects: [
           {
@@ -5151,6 +5279,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 38,
         optimalRails: 19,
+        optimalCells: 15,
+        optimalSwitchCells: 4,
         wrenches: 6,
         objects: [
           {
@@ -5234,6 +5364,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 48,
         optimalRails: 24,
+        optimalCells: 19,
+        optimalSwitchCells: 5,
         wrenches: 7,
         objects: [
           {
@@ -5359,6 +5491,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 32,
         optimalRails: 16,
+        optimalCells: 14,
+        optimalSwitchCells: 2,
         wrenches: 4,
         objects: [
           {
@@ -5429,6 +5563,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 46,
         optimalRails: 23,
+        optimalCells: 18,
+        optimalSwitchCells: 5,
         wrenches: 7,
         objects: [
           {
@@ -5552,6 +5688,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 36,
         optimalRails: 18,
+        optimalCells: 13,
+        optimalSwitchCells: 5,
         wrenches: 7,
         objects: [
           {
@@ -5623,6 +5761,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 30,
         optimalRails: 15,
+        optimalCells: 12,
+        optimalSwitchCells: 3,
         wrenches: 7,
         objects: [
           {
@@ -5710,6 +5850,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 44,
         optimalRails: 22,
+        optimalCells: 17,
+        optimalSwitchCells: 5,
         wrenches: 7,
         objects: [
           {
@@ -5787,6 +5929,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 25,
+        optimalCells: 17,
+        optimalSwitchCells: 8,
         wrenches: 8,
         objects: [
           {
@@ -5874,6 +6018,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 34,
+        optimalCells: 26,
+        optimalSwitchCells: 8,
         wrenches: 10,
         objects: [
           {
@@ -5982,6 +6128,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 32,
         optimalRails: 16,
+        optimalCells: 12,
+        optimalSwitchCells: 4,
         wrenches: 3,
         objects: [
           {
@@ -6038,6 +6186,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 22,
         optimalRails: 11,
+        optimalCells: 9,
+        optimalSwitchCells: 2,
         wrenches: 4,
         objects: [
           {
@@ -6114,6 +6264,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 30,
         optimalRails: 15,
+        optimalCells: 12,
+        optimalSwitchCells: 3,
         wrenches: 4,
         objects: [
           {
@@ -6194,6 +6346,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 24,
         optimalRails: 12,
+        optimalCells: 11,
+        optimalSwitchCells: 1,
         wrenches: 5,
         objects: [
           {
@@ -6280,6 +6434,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 25,
+        optimalCells: 20,
+        optimalSwitchCells: 5,
         wrenches: 6,
         objects: [
           {
@@ -6346,6 +6502,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 44,
         optimalRails: 22,
+        optimalCells: 18,
+        optimalSwitchCells: 4,
         wrenches: 7,
         objects: [
           {
@@ -6479,6 +6637,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 36,
         optimalRails: 18,
+        optimalCells: 15,
+        optimalSwitchCells: 3,
         wrenches: 8,
         objects: [
           {
@@ -6547,6 +6707,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 46,
         optimalRails: 23,
+        optimalCells: 16,
+        optimalSwitchCells: 7,
         wrenches: 9,
         objects: [
           {
@@ -6601,6 +6763,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 40,
         optimalRails: 20,
+        optimalCells: 14,
+        optimalSwitchCells: 6,
         wrenches: 10,
         objects: [
           {
@@ -6673,6 +6837,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 16,
         optimalRails: 8,
+        optimalCells: 7,
+        optimalSwitchCells: 1,
         wrenches: 4,
         objects: [
           {
@@ -6747,6 +6913,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 34,
         optimalRails: 17,
+        optimalCells: 12,
+        optimalSwitchCells: 5,
         wrenches: 5,
         objects: [
           {
@@ -6820,6 +6988,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 30,
         optimalRails: 15,
+        optimalCells: 13,
+        optimalSwitchCells: 2,
         wrenches: 6,
         objects: [
           {
@@ -6924,6 +7094,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 28,
+        optimalCells: 20,
+        optimalSwitchCells: 8,
         wrenches: 7,
         objects: [
           {
@@ -6979,6 +7151,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 26,
+        optimalCells: 22,
+        optimalSwitchCells: 4,
         wrenches: 8,
         objects: [
           {
@@ -7096,6 +7270,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 48,
         optimalRails: 24,
+        optimalCells: 17,
+        optimalSwitchCells: 7,
         wrenches: 9,
         objects: [
           {
@@ -7199,6 +7375,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 40,
         optimalRails: 20,
+        optimalCells: 16,
+        optimalSwitchCells: 4,
         wrenches: 10,
         objects: [
           {
@@ -7304,6 +7482,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 32,
+        optimalCells: 20,
+        optimalSwitchCells: 12,
         wrenches: 10,
         objects: [
           {
@@ -7422,6 +7602,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 32,
         optimalRails: 16,
+        optimalCells: 11,
+        optimalSwitchCells: 5,
         wrenches: 8,
         objects: [
           {
@@ -7475,6 +7657,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 34,
+        optimalCells: 24,
+        optimalSwitchCells: 10,
         wrenches: 6,
         objects: [
           {
@@ -7644,6 +7828,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 28,
+        optimalCells: 18,
+        optimalSwitchCells: 10,
         wrenches: 7,
         objects: [
           {
@@ -7834,6 +8020,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 36,
         optimalRails: 18,
+        optimalCells: 13,
+        optimalSwitchCells: 5,
         wrenches: 8,
         objects: [
           {
@@ -7912,6 +8100,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 25,
+        optimalCells: 18,
+        optimalSwitchCells: 7,
         wrenches: 8,
         objects: [
           {
@@ -8032,6 +8222,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 27,
+        optimalCells: 21,
+        optimalSwitchCells: 6,
         wrenches: 6,
         objects: [
           {
@@ -8183,6 +8375,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 30,
+        optimalCells: 18,
+        optimalSwitchCells: 12,
         wrenches: 11,
         objects: [
           {
@@ -8299,6 +8493,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 34,
+        optimalCells: 24,
+        optimalSwitchCells: 10,
         wrenches: 9,
         objects: [
           {
@@ -8390,6 +8586,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 37,
+        optimalCells: 25,
+        optimalSwitchCells: 12,
         wrenches: 11,
         objects: [
           {
@@ -8532,6 +8730,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 28,
+        optimalCells: 22,
+        optimalSwitchCells: 6,
         wrenches: 10,
         objects: [
           {
@@ -8699,6 +8899,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 43,
+        optimalCells: 26,
+        optimalSwitchCells: 17,
         wrenches: 10,
         objects: [
           {
@@ -8860,6 +9062,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 30,
         optimalRails: 15,
+        optimalCells: 12,
+        optimalSwitchCells: 3,
         wrenches: 6,
         objects: [
           {
@@ -9014,6 +9218,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 25,
+        optimalCells: 17,
+        optimalSwitchCells: 8,
         wrenches: 8,
         objects: [
           {
@@ -9087,6 +9293,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 30,
+        optimalCells: 24,
+        optimalSwitchCells: 6,
         wrenches: 11,
         objects: [
           {
@@ -9210,6 +9418,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 26,
+        optimalCells: 18,
+        optimalSwitchCells: 8,
         wrenches: 11,
         objects: [
           {
@@ -9315,6 +9525,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 48,
         optimalRails: 24,
+        optimalCells: 16,
+        optimalSwitchCells: 8,
         wrenches: 11,
         objects: [
           {
@@ -9447,6 +9659,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 30,
+        optimalCells: 22,
+        optimalSwitchCells: 8,
         wrenches: 8,
         objects: [
           {
@@ -9552,6 +9766,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 27,
+        optimalCells: 17,
+        optimalSwitchCells: 10,
         wrenches: 9,
         objects: [
           {
@@ -9667,6 +9883,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 36,
+        optimalCells: 24,
+        optimalSwitchCells: 12,
         wrenches: 12,
         objects: [
           {
@@ -9750,6 +9968,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 29,
+        optimalCells: 24,
+        optimalSwitchCells: 5,
         wrenches: 6,
         objects: [
           {
@@ -9827,6 +10047,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 48,
         optimalRails: 24,
+        optimalCells: 19,
+        optimalSwitchCells: 5,
         wrenches: 8,
         objects: [
           {
@@ -9948,6 +10170,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 30,
+        optimalCells: 21,
+        optimalSwitchCells: 9,
         wrenches: 11,
         objects: [
           {
@@ -10091,6 +10315,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 40,
         optimalRails: 20,
+        optimalCells: 13,
+        optimalSwitchCells: 7,
         wrenches: 11,
         objects: [
           {
@@ -10238,6 +10464,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 40,
         optimalRails: 20,
+        optimalCells: 15,
+        optimalSwitchCells: 5,
         wrenches: 11,
         objects: [
           {
@@ -10329,6 +10557,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 41,
+        optimalCells: 24,
+        optimalSwitchCells: 17,
         wrenches: 12,
         objects: [
           {
@@ -10478,6 +10708,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 36,
+        optimalCells: 24,
+        optimalSwitchCells: 12,
         wrenches: 13,
         objects: [
           {
@@ -10639,6 +10871,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 34,
+        optimalCells: 24,
+        optimalSwitchCells: 10,
         wrenches: 13,
         objects: [
           {
@@ -10785,6 +11019,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 44,
         optimalRails: 22,
+        optimalCells: 13,
+        optimalSwitchCells: 9,
         wrenches: 7,
         objects: [
           {
@@ -10870,6 +11106,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 30,
+        optimalCells: 22,
+        optimalSwitchCells: 8,
         wrenches: 8,
         objects: [
           {
@@ -11009,6 +11247,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 38,
+        optimalCells: 30,
+        optimalSwitchCells: 8,
         wrenches: 7,
         objects: [
           {
@@ -11108,6 +11348,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 27,
+        optimalCells: 16,
+        optimalSwitchCells: 11,
         wrenches: 10,
         objects: [
           {
@@ -11198,6 +11440,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 30,
+        optimalCells: 19,
+        optimalSwitchCells: 11,
         wrenches: 11,
         objects: [
           {
@@ -11345,6 +11589,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 35,
+        optimalCells: 23,
+        optimalSwitchCells: 12,
         wrenches: 11,
         objects: [
           {
@@ -11469,6 +11715,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 36,
         optimalRails: 18,
+        optimalCells: 13,
+        optimalSwitchCells: 5,
         wrenches: 11,
         objects: [
           {
@@ -11580,6 +11828,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 28,
+        optimalCells: 19,
+        optimalSwitchCells: 9,
         wrenches: 12,
         objects: [
           {
@@ -11698,6 +11948,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 38,
+        optimalCells: 23,
+        optimalSwitchCells: 15,
         wrenches: 13,
         objects: [
           {
@@ -11852,6 +12104,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 46,
         optimalRails: 23,
+        optimalCells: 16,
+        optimalSwitchCells: 7,
         wrenches: 7,
         objects: [
           {
@@ -11930,6 +12184,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 48,
         optimalRails: 24,
+        optimalCells: 18,
+        optimalSwitchCells: 6,
         wrenches: 7,
         objects: [
           {
@@ -12012,6 +12268,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 38,
+        optimalCells: 23,
+        optimalSwitchCells: 15,
         wrenches: 8,
         objects: [
           {
@@ -12173,6 +12431,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 34,
+        optimalCells: 22,
+        optimalSwitchCells: 12,
         wrenches: 10,
         objects: [
           {
@@ -12297,6 +12557,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 36,
+        optimalCells: 27,
+        optimalSwitchCells: 9,
         wrenches: 11,
         objects: [
           {
@@ -12424,6 +12686,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 29,
+        optimalCells: 18,
+        optimalSwitchCells: 11,
         wrenches: 11,
         objects: [
           {
@@ -12527,6 +12791,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 27,
+        optimalCells: 19,
+        optimalSwitchCells: 8,
         wrenches: 12,
         objects: [
           {
@@ -12624,6 +12890,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 28,
+        optimalCells: 19,
+        optimalSwitchCells: 9,
         wrenches: 13,
         objects: [
           {
@@ -12737,6 +13005,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 37,
+        optimalCells: 23,
+        optimalSwitchCells: 14,
         wrenches: 15,
         objects: [
           {
@@ -12867,6 +13137,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 40,
         optimalRails: 20,
+        optimalCells: 16,
+        optimalSwitchCells: 4,
         wrenches: 6,
         objects: [
           {
@@ -12934,6 +13206,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 37,
+        optimalCells: 29,
+        optimalSwitchCells: 8,
         wrenches: 8,
         objects: [
           {
@@ -13076,6 +13350,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 32,
         optimalRails: 16,
+        optimalCells: 10,
+        optimalSwitchCells: 6,
         wrenches: 9,
         objects: [
           {
@@ -13121,6 +13397,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 28,
+        optimalCells: 18,
+        optimalSwitchCells: 10,
         wrenches: 12,
         objects: [
           {
@@ -13230,6 +13508,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 38,
         optimalRails: 19,
+        optimalCells: 14,
+        optimalSwitchCells: 5,
         wrenches: 12,
         objects: [
           {
@@ -13276,6 +13556,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 33,
+        optimalCells: 24,
+        optimalSwitchCells: 9,
         wrenches: 12,
         objects: [
           {
@@ -13401,6 +13683,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 45,
+        optimalCells: 31,
+        optimalSwitchCells: 14,
         wrenches: 13,
         objects: [
           {
@@ -13554,6 +13838,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 27,
+        optimalCells: 17,
+        optimalSwitchCells: 10,
         wrenches: 13,
         objects: [
           {
@@ -13618,6 +13904,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 32,
+        optimalCells: 24,
+        optimalSwitchCells: 8,
         wrenches: 13,
         objects: [
           {
@@ -13732,6 +14020,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 27,
+        optimalCells: 19,
+        optimalSwitchCells: 8,
         wrenches: 15,
         objects: [
           {
@@ -13847,6 +14137,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 27,
+        optimalCells: 17,
+        optimalSwitchCells: 10,
         wrenches: 7,
         objects: [
           {
@@ -13962,6 +14254,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 32,
+        optimalCells: 22,
+        optimalSwitchCells: 10,
         wrenches: 12,
         objects: [
           {
@@ -14067,6 +14361,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 46,
         optimalRails: 23,
+        optimalCells: 18,
+        optimalSwitchCells: 5,
         wrenches: 10,
         objects: [
           {
@@ -14183,6 +14479,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 40,
         optimalRails: 20,
+        optimalCells: 13,
+        optimalSwitchCells: 7,
         wrenches: 13,
         objects: [
           {
@@ -14323,6 +14621,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 46,
+        optimalCells: 30,
+        optimalSwitchCells: 16,
         wrenches: 15,
         objects: [
           {
@@ -14480,6 +14780,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 36,
+        optimalCells: 24,
+        optimalSwitchCells: 12,
         wrenches: 12,
         objects: [
           {
@@ -14642,6 +14944,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 42,
+        optimalCells: 25,
+        optimalSwitchCells: 17,
         wrenches: 12,
         objects: [
           {
@@ -14822,6 +15126,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 40,
+        optimalCells: 26,
+        optimalSwitchCells: 14,
         wrenches: 13,
         objects: [
           {
@@ -14975,6 +15281,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 37,
+        optimalCells: 22,
+        optimalSwitchCells: 15,
         wrenches: 13,
         objects: [
           {
@@ -15092,6 +15400,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 39,
+        optimalCells: 24,
+        optimalSwitchCells: 15,
         wrenches: 15,
         objects: [
           {
@@ -15301,6 +15611,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 37,
+        optimalCells: 25,
+        optimalSwitchCells: 12,
         wrenches: 20,
         objects: [
           {
@@ -15434,6 +15746,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 32,
+        optimalCells: 22,
+        optimalSwitchCells: 10,
         wrenches: 20,
         objects: [
           {
@@ -15571,6 +15885,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 39,
+        optimalCells: 26,
+        optimalSwitchCells: 13,
         wrenches: 20,
         objects: [
           {
@@ -15712,6 +16028,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 34,
+        optimalCells: 19,
+        optimalSwitchCells: 15,
         wrenches: 15,
         objects: [
           {
@@ -15803,6 +16121,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 44,
+        optimalCells: 26,
+        optimalSwitchCells: 18,
         wrenches: 20,
         objects: [
           {
@@ -15953,6 +16273,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 36,
+        optimalCells: 25,
+        optimalSwitchCells: 11,
         wrenches: 25,
         objects: [
           {
@@ -16043,6 +16365,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 34,
+        optimalCells: 23,
+        optimalSwitchCells: 11,
         wrenches: 25,
         objects: [
           {
@@ -16160,6 +16484,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 36,
+        optimalCells: 26,
+        optimalSwitchCells: 10,
         wrenches: 30,
         objects: [
           {
@@ -16290,6 +16616,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 27,
+        optimalCells: 17,
+        optimalSwitchCells: 10,
         wrenches: 25,
         objects: [
           {
@@ -16374,6 +16702,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 38,
+        optimalCells: 27,
+        optimalSwitchCells: 11,
         wrenches: 20,
         objects: [
           {
@@ -16468,6 +16798,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 6,
         optimalRails: 3,
+        optimalCells: 3,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -16505,6 +16837,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 24,
         optimalRails: 12,
+        optimalCells: 10,
+        optimalSwitchCells: 2,
         wrenches: 1,
         objects: [
           {
@@ -16586,6 +16920,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 20,
         optimalRails: 10,
+        optimalCells: 9,
+        optimalSwitchCells: 1,
         wrenches: 1,
         objects: [
           {
@@ -16645,6 +16981,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 12,
         optimalRails: 6,
+        optimalCells: 6,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -16704,6 +17042,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 12,
         optimalRails: 6,
+        optimalCells: 6,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -16748,6 +17088,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 14,
         optimalRails: 7,
+        optimalCells: 7,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -16791,6 +17133,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 27,
+        optimalCells: 25,
+        optimalSwitchCells: 2,
         wrenches: 1,
         objects: [
           {
@@ -16922,6 +17266,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 22,
         optimalRails: 11,
+        optimalCells: 11,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -16996,6 +17342,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 26,
         optimalRails: 13,
+        optimalCells: 11,
+        optimalSwitchCells: 2,
         wrenches: 1,
         objects: [
           {
@@ -17055,6 +17403,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 36,
         optimalRails: 18,
+        optimalCells: 16,
+        optimalSwitchCells: 2,
         wrenches: 2,
         objects: [
           {
@@ -17128,6 +17478,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 24,
         optimalRails: 12,
+        optimalCells: 10,
+        optimalSwitchCells: 2,
         wrenches: 2,
         objects: [
           {
@@ -17187,6 +17539,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 30,
         optimalRails: 15,
+        optimalCells: 15,
+        optimalSwitchCells: 0,
         wrenches: 1,
         objects: [
           {
@@ -17293,6 +17647,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 24,
         optimalRails: 12,
+        optimalCells: 11,
+        optimalSwitchCells: 1,
         wrenches: 2,
         objects: [
           {
@@ -17343,6 +17699,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 14,
         optimalRails: 7,
+        optimalCells: 6,
+        optimalSwitchCells: 1,
         wrenches: 2,
         objects: [
           {
@@ -17393,6 +17751,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 24,
         optimalRails: 12,
+        optimalCells: 10,
+        optimalSwitchCells: 2,
         wrenches: 3,
         objects: [
           {
@@ -17470,6 +17830,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 28,
         optimalRails: 14,
+        optimalCells: 11,
+        optimalSwitchCells: 3,
         wrenches: 3,
         objects: [
           {
@@ -17553,6 +17915,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 22,
         optimalRails: 11,
+        optimalCells: 9,
+        optimalSwitchCells: 2,
         wrenches: 3,
         objects: [
           {
@@ -17600,6 +17964,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 32,
         optimalRails: 16,
+        optimalCells: 13,
+        optimalSwitchCells: 3,
         wrenches: 3,
         objects: [
           {
@@ -17683,6 +18049,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 44,
         optimalRails: 22,
+        optimalCells: 16,
+        optimalSwitchCells: 6,
         wrenches: 3,
         objects: [
           {
@@ -17764,6 +18132,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 34,
         optimalRails: 17,
+        optimalCells: 14,
+        optimalSwitchCells: 3,
         wrenches: 3,
         objects: [
           {
@@ -17885,6 +18255,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 30,
         optimalRails: 15,
+        optimalCells: 14,
+        optimalSwitchCells: 1,
         wrenches: 3,
         objects: [
           {
@@ -17933,6 +18305,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 34,
         optimalRails: 17,
+        optimalCells: 13,
+        optimalSwitchCells: 4,
         wrenches: 3,
         objects: [
           {
@@ -18007,6 +18381,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 26,
         optimalRails: 13,
+        optimalCells: 11,
+        optimalSwitchCells: 2,
         wrenches: 3,
         objects: [
           {
@@ -18066,6 +18442,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 26,
+        optimalCells: 20,
+        optimalSwitchCells: 6,
         wrenches: 4,
         objects: [
           {
@@ -18157,6 +18535,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 34,
         optimalRails: 17,
+        optimalCells: 11,
+        optimalSwitchCells: 6,
         wrenches: 4,
         objects: [
           {
@@ -18214,6 +18594,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 30,
         optimalRails: 15,
+        optimalCells: 11,
+        optimalSwitchCells: 4,
         wrenches: 4,
         objects: [
           {
@@ -18309,6 +18691,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 28,
         optimalRails: 14,
+        optimalCells: 11,
+        optimalSwitchCells: 3,
         wrenches: 5,
         objects: [
           {
@@ -18370,6 +18754,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 28,
+        optimalCells: 23,
+        optimalSwitchCells: 5,
         wrenches: 5,
         objects: [
           {
@@ -18478,6 +18864,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 25,
+        optimalCells: 21,
+        optimalSwitchCells: 4,
         wrenches: 5,
         objects: [
           {
@@ -18595,6 +18983,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 40,
         optimalRails: 20,
+        optimalCells: 16,
+        optimalSwitchCells: 4,
         wrenches: 5,
         objects: [
           {
@@ -18658,6 +19048,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 40,
         optimalRails: 20,
+        optimalCells: 13,
+        optimalSwitchCells: 7,
         wrenches: 5,
         objects: [
           {
@@ -18728,6 +19120,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 28,
         optimalRails: 14,
+        optimalCells: 11,
+        optimalSwitchCells: 3,
         wrenches: 6,
         objects: [
           {
@@ -18796,6 +19190,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 28,
+        optimalCells: 21,
+        optimalSwitchCells: 7,
         wrenches: 6,
         objects: [
           {
@@ -18906,6 +19302,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 33,
+        optimalCells: 25,
+        optimalSwitchCells: 8,
         wrenches: 6,
         objects: [
           {
@@ -18995,6 +19393,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 36,
         optimalRails: 18,
+        optimalCells: 14,
+        optimalSwitchCells: 4,
         wrenches: 7,
         objects: [
           {
@@ -19116,6 +19516,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 26,
+        optimalCells: 18,
+        optimalSwitchCells: 8,
         wrenches: 7,
         objects: [
           {
@@ -19182,6 +19584,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 48,
         optimalRails: 24,
+        optimalCells: 18,
+        optimalSwitchCells: 6,
         wrenches: 8,
         objects: [
           {
@@ -19264,6 +19668,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 35,
+        optimalCells: 25,
+        optimalSwitchCells: 10,
         wrenches: 7,
         objects: [
           {
@@ -19415,6 +19821,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 46,
         optimalRails: 23,
+        optimalCells: 15,
+        optimalSwitchCells: 8,
         wrenches: 8,
         objects: [
           {
@@ -19524,6 +19932,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 36,
         optimalRails: 18,
+        optimalCells: 14,
+        optimalSwitchCells: 4,
         wrenches: 8,
         objects: [
           {
@@ -19611,6 +20021,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 40,
         optimalRails: 20,
+        optimalCells: 16,
+        optimalSwitchCells: 4,
         wrenches: 8,
         objects: [
           {
@@ -19686,6 +20098,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 30,
         optimalRails: 15,
+        optimalCells: 11,
+        optimalSwitchCells: 4,
         wrenches: 8,
         objects: [
           {
@@ -19776,6 +20190,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 30,
         optimalRails: 15,
+        optimalCells: 10,
+        optimalSwitchCells: 5,
         wrenches: 8,
         objects: [
           {
@@ -19841,6 +20257,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 28,
+        optimalCells: 16,
+        optimalSwitchCells: 12,
         wrenches: 9,
         objects: [
           {
@@ -19974,6 +20392,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 36,
         optimalRails: 18,
+        optimalCells: 12,
+        optimalSwitchCells: 6,
         wrenches: 8,
         objects: [
           {
@@ -20053,6 +20473,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 26,
+        optimalCells: 21,
+        optimalSwitchCells: 5,
         wrenches: 9,
         objects: [
           {
@@ -20141,6 +20563,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 29,
+        optimalCells: 22,
+        optimalSwitchCells: 7,
         wrenches: 9,
         objects: [
           {
@@ -20252,6 +20676,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 36,
         optimalRails: 18,
+        optimalCells: 12,
+        optimalSwitchCells: 6,
         wrenches: 9,
         objects: [
           {
@@ -20297,6 +20723,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 36,
         optimalRails: 18,
+        optimalCells: 12,
+        optimalSwitchCells: 6,
         wrenches: 9,
         objects: [
           {
@@ -20378,6 +20806,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 26,
+        optimalCells: 20,
+        optimalSwitchCells: 6,
         wrenches: 8,
         objects: [
           {
@@ -20459,6 +20889,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 28,
+        optimalCells: 19,
+        optimalSwitchCells: 9,
         wrenches: 9,
         objects: [
           {
@@ -20569,6 +21001,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 29,
+        optimalCells: 18,
+        optimalSwitchCells: 11,
         wrenches: 9,
         objects: [
           {
@@ -20704,6 +21138,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 31,
+        optimalCells: 21,
+        optimalSwitchCells: 10,
         wrenches: 9,
         objects: [
           {
@@ -20778,6 +21214,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 38,
         optimalRails: 19,
+        optimalCells: 11,
+        optimalSwitchCells: 8,
         wrenches: 10,
         objects: [
           {
@@ -20888,6 +21326,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 30,
+        optimalCells: 23,
+        optimalSwitchCells: 7,
         wrenches: 8,
         objects: [
           {
@@ -20963,6 +21403,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 40,
+        optimalCells: 24,
+        optimalSwitchCells: 16,
         wrenches: 10,
         objects: [
           {
@@ -21092,6 +21534,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 28,
         optimalRails: 14,
+        optimalCells: 12,
+        optimalSwitchCells: 2,
         wrenches: 9,
         objects: [
           {
@@ -21163,6 +21607,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 46,
         optimalRails: 23,
+        optimalCells: 19,
+        optimalSwitchCells: 4,
         wrenches: 10,
         objects: [
           {
@@ -21246,6 +21692,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 29,
+        optimalCells: 20,
+        optimalSwitchCells: 9,
         wrenches: 10,
         objects: [
           {
@@ -21378,6 +21826,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 31,
+        optimalCells: 20,
+        optimalSwitchCells: 11,
         wrenches: 10,
         objects: [
           {
@@ -21503,6 +21953,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 29,
+        optimalCells: 24,
+        optimalSwitchCells: 5,
         wrenches: 5,
         objects: [
           {
@@ -21632,6 +22084,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 28,
+        optimalCells: 19,
+        optimalSwitchCells: 9,
         wrenches: 9,
         objects: [
           {
@@ -21722,6 +22176,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 26,
+        optimalCells: 20,
+        optimalSwitchCells: 6,
         wrenches: 10,
         objects: [
           {
@@ -21887,6 +22343,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 29,
+        optimalCells: 17,
+        optimalSwitchCells: 12,
         wrenches: 10,
         objects: [
           {
@@ -22052,6 +22510,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 27,
+        optimalCells: 20,
+        optimalSwitchCells: 7,
         wrenches: 11,
         objects: [
           {
@@ -22161,6 +22621,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 44,
         optimalRails: 22,
+        optimalCells: 17,
+        optimalSwitchCells: 5,
         wrenches: 10,
         objects: [
           {
@@ -22314,6 +22776,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 48,
         optimalRails: 24,
+        optimalCells: 18,
+        optimalSwitchCells: 6,
         wrenches: 8,
         objects: [
           {
@@ -22418,6 +22882,8 @@ export const STANDARD_FAMILIES: LevelFamily[] = [
         height: 7,
         railLimit: 49,
         optimalRails: 37,
+        optimalCells: 27,
+        optimalSwitchCells: 10,
         wrenches: 10,
         objects: [
           {

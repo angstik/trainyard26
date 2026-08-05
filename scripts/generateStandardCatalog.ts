@@ -44,7 +44,8 @@ const col = (fields: string[], name: string) => fields[header.indexOf(name)];
 
 type Row = {
   catalog: string; family: string; familyOrder: number; puzzleOrder: number;
-  name: string; slug: string; puzzleString: string; wrenches: number; optimalRails: number;
+  name: string; slug: string; puzzleString: string; wrenches: number;
+  optimalRails: number; optimalCells: number; optimalSwitchCells: number;
 };
 
 const rows: Row[] = [];
@@ -61,6 +62,8 @@ for (let i = 1; i < lines.length; i++) {
     puzzleString: col(fields, "puzzle_string"),
     wrenches: Number(col(fields, "wrenches")),
     optimalRails: Number(col(fields, "best_total_track_segments")),
+    optimalCells: Number(col(fields, "best_track_cells")),
+    optimalSwitchCells: Number(col(fields, "best_additional_segments")),
   });
 }
 
@@ -95,6 +98,8 @@ for (const family of families.values()) {
       height: 7,
       railLimit,
       optimalRails: row.optimalRails,
+      optimalCells: row.optimalCells,
+      optimalSwitchCells: row.optimalSwitchCells,
       wrenches: row.wrenches,
       objects: decoded.objects,
       examplePaths: [],

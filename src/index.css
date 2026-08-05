@@ -547,6 +547,7 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .library-family-index > button > div { min-width:0; display:grid; gap:4px; }
 .library-family-index b { color:#d8c28d; letter-spacing:.09em; }
 .library-family-index small { color:var(--muted); font-size:8px; letter-spacing:.1em; }
+.family-synthesis { display:flex; flex-wrap:wrap; gap:8px; margin-top:2px; font-size:8px; letter-spacing:.04em; color:var(--muted); }
 .library-family-index span { width:30px; height:30px; display:grid; place-items:center; border:1px solid #53646c; color:var(--cyan); }
 .library-family-index i { color:#d8c28d; font-size:20px; font-style:normal; text-align:center; }
 .library-back { width:max-content; padding:8px 12px; border:1px solid #425660; background:#0c151a; color:#9fb2ba; font-size:8px; letter-spacing:.1em; cursor:pointer; }
