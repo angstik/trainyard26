@@ -50,7 +50,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.16";
+const APP_VERSION = "1.17";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -1745,8 +1745,7 @@ export default function App() {
           <div className="board-wrap">
           <div className="board-heading">
             <button className="board-level-arrow" aria-label="Niveau précédent" title="Niveau précédent" disabled={running || activeLevelIndex <= 0} onClick={() => changeLevel(-1)}>←</button>
-            {mode === "play" && <div className="game-hud" aria-label={`Version ${APP_VERSION}, ${totalSegments} rails sur ${railLimit}, ${trackCells} cases sur ${activeLevel.optimalCells ?? "objectif inconnu"}, ${switchCells} croisements sur ${activeLevel.optimalSwitchCells ?? "objectif inconnu"}, temps ${formatTime(totalElapsedMs)}`}>
-              <span><small>RAILS / LIMITE</small><strong style={{ color: railMetricColor }}>{totalSegments}/{railLimit}</strong></span>
+            {mode === "play" && <div className="game-hud" aria-label={`${trackCells} cases sur ${activeLevel.optimalCells ?? "objectif inconnu"}, ${switchCells} croisements sur ${activeLevel.optimalSwitchCells ?? "objectif inconnu"}, temps ${formatTime(totalElapsedMs)}`}>
               <span><small>CASES / CIBLE</small><strong style={{ color: activeLevel.optimalCells != null ? metricColor(trackCells, activeLevel.optimalCells) : undefined }}>{trackCells}{activeLevel.optimalCells != null ? `/${activeLevel.optimalCells}` : ""}</strong></span>
               <span><small>CROISEMENTS / CIBLE</small><strong style={{ color: activeLevel.optimalSwitchCells != null ? metricColor(switchCells, activeLevel.optimalSwitchCells) : undefined }}>{switchCells}{activeLevel.optimalSwitchCells != null ? `/${activeLevel.optimalSwitchCells}` : ""}</strong></span>
               <span><small>TEMPS</small><strong>{formatTime(totalElapsedMs)}</strong></span>
@@ -1868,18 +1867,21 @@ export default function App() {
                       const diffMin = difficulties.length ? Math.min(...difficulties) : null;
                       const diffMax = difficulties.length ? Math.max(...difficulties) : null;
                       return <button key={item.id} className={!item.playable ? "wip-family" : ""} onClick={() => selectLibraryFamily(item.id)}>
-                        <div>
+                        <div className="family-main">
                           <b>{item.title}</b>
                           <small>{item.playable ? `${completed}/${item.levels.length} réussis` : "WIP · ÉDITEUR UNIQUEMENT"}</small>
+                        </div>
+                        <div className="family-side">
                           {item.playable && (
                             <div className="family-synthesis">
                               <span style={{ color: progressColor(completionRate) }}>{Math.round(completionRate * 100)}% réalisé</span>
-                              <span style={{ color: avgQuality != null ? progressColor(avgQuality) : undefined }}>{avgQuality != null ? `${Math.round(avgQuality * 100)}% qualité` : "— qualité"}</span>
-                              {diffMin != null && <span>{diffMin === diffMax ? `${diffMin}/10` : `${diffMin}–${diffMax}/10`}</span>}
+                              <span>{avgQuality != null ? `${Math.round(avgQuality * 100)}% qualité` : "— qualité"}</span>
+                              {diffMin != null && <span>{diffMin === diffMax ? `${diffMin}` : `${diffMin}–${diffMax}`}</span>}
                             </div>
                           )}
+                          <span className="family-count">{item.levels.length}</span>
                         </div>
-                        <span>{item.levels.length}</span><i>→</i>
+                        <i>→</i>
                       </button>;
                     })}
                   </div>}
@@ -1887,10 +1889,22 @@ export default function App() {
                     <button className="library-back" onClick={() => selectLibraryFamily(null)}>← TOUTES LES FAMILLES</button>
                     <section className={!libraryFamily.playable ? "wip-family" : ""}>
                       <div className="library-family-heading">
+                        <button
+                          className="family-nav-arrow"
+                          aria-label="Famille précédente"
+                          disabled={visibleFamilies.findIndex((f) => f.id === libraryFamily.id) <= 0}
+                          onClick={() => selectLibraryFamily(visibleFamilies[visibleFamilies.findIndex((f) => f.id === libraryFamily.id) - 1]?.id ?? null)}
+                        >←</button>
                         <div><b>{libraryFamily.title}</b><small>{libraryFamily.playable ? "TABLEAUX JOUABLES" : "WIP · ÉDITEUR UNIQUEMENT"}</small></div>
                         <span>{libraryFamily.levels.length}</span>
+                        <button
+                          className="family-nav-arrow"
+                          aria-label="Famille suivante"
+                          disabled={visibleFamilies.findIndex((f) => f.id === libraryFamily.id) >= visibleFamilies.length - 1}
+                          onClick={() => selectLibraryFamily(visibleFamilies[visibleFamilies.findIndex((f) => f.id === libraryFamily.id) + 1]?.id ?? null)}
+                        >→</button>
                       </div>
-                      <div className="library-progress-heading"><span>Niveau</span><span>Diff.</span><span>OK</span><span>Mini/Opt.</span><span>Dernier</span><span>Tableau</span></div>
+                      <div className="library-progress-heading"><span>Niveau</span><span>Diff.</span><span>OK</span><span>Mini/Opt.</span><span>Aig./Cible</span><span>Tableau</span></div>
                       <div className="library-levels">
                         {libraryFamily.levels.map((level) => {
                           const progress = levelProgress[level.id];
@@ -1902,7 +1916,7 @@ export default function App() {
                                 <div><b>{level.title}</b></div>
                               </button>
                               {level.wrenches != null
-                                ? <b className="difficulty-stat" style={{ color: difficultyColor(level.wrenches) }}>{difficultyScale(level.wrenches)}/10</b>
+                                ? <b className="difficulty-stat" style={{ color: difficultyColor(level.wrenches) }}>{difficultyScale(level.wrenches)}</b>
                                 : <b className="difficulty-stat">—</b>}
                               <b className={`completion-stat ${completed ? "ok" : "ko"}`}>{completed ? "OK" : "KO"}</b>
                               <b
@@ -1911,7 +1925,12 @@ export default function App() {
                               >
                                 {progress?.minimumRails ?? "—"}{level.optimalRails ? `/${level.optimalRails}` : ""}
                               </b>
-                              <b className="rail-stat">{progress?.lastRails ?? "—"}</b>
+                              <b
+                                className="rail-stat"
+                                style={progress?.doubleCells != null && level.optimalSwitchCells != null ? { color: metricColor(progress.doubleCells, level.optimalSwitchCells) } : undefined}
+                              >
+                                {progress?.doubleCells ?? "—"}{level.optimalSwitchCells != null ? `/${level.optimalSwitchCells}` : ""}
+                              </b>
                               <button
                                 className="resume-board"
                                 disabled={!progress?.edges.length}
