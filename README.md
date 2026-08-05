@@ -53,6 +53,6 @@ meilleur moyen de me faire remonter l'information.
 
 ## Licence
 
-Le code de l'application est publié sous licence MIT (voir
-[`LICENSE`](./LICENSE)). Le catalogue de niveaux et les effets sonores sont
-soumis à des conditions distinctes, détaillées dans ce même fichier.
+Le code de l'application et les effets sonores sont publiés sous licence MIT
+(voir [`LICENSE`](./LICENSE)). Le catalogue de niveaux est soumis à des
+conditions distinctes, détaillées dans ce même fichier.
