@@ -50,7 +50,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.21";
+const APP_VERSION = "1.23";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -379,16 +379,18 @@ function SteamLoco({ train, future }: { train: MovingTrain; future?: Point }) {
   const y = ((front[1] + rear[1]) / 2) * (100 / GRID);
   const displayAngle = Math.atan2(front[0] - rear[0], rear[1] - front[1]) * 180 / Math.PI;
   return (
-    <div className={`loco ${train.color}`} style={{ left: `${x}%`, top: `${y}%`, transform: `rotate(${displayAngle}deg)` }}>
-      <span className="cowcatcher" />
-      <span className="front-plate" />
-      <span className="wheel left-one" /><span className="wheel right-one" />
-      <span className="wheel left-two" /><span className="wheel right-two" />
-      <span className="side-rod left" /><span className="side-rod right" />
-      <span className="boiler"><i /><i /></span>
-      <span className="chimney" />
-      <span className="cab"><i /><i /></span>
-      <span className="lamp" />
+    <div className="loco-anchor" style={{ transform: `translate(${x}%, ${y}%)` }}>
+      <div className={`loco ${train.color}`} style={{ transform: `rotate(${displayAngle}deg)` }}>
+        <span className="cowcatcher" />
+        <span className="front-plate" />
+        <span className="wheel left-one" /><span className="wheel right-one" />
+        <span className="wheel left-two" /><span className="wheel right-two" />
+        <span className="side-rod left" /><span className="side-rod right" />
+        <span className="boiler"><i /><i /></span>
+        <span className="chimney" />
+        <span className="cab"><i /><i /></span>
+        <span className="lamp" />
+      </div>
     </div>
   );
 }

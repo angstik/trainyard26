@@ -226,7 +226,7 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
   font-size:10px; line-height:1; pointer-events:none; opacity:.8;
 }
 
-.object, .obstacle, .switch-control, .loco { position: absolute; width: 14.285%; height: 14.285%; z-index: 5; }
+.object, .obstacle, .switch-control { position: absolute; width: 14.285%; height: 14.285%; z-index: 5; }
 .object, .obstacle { pointer-events:none; border:0; padding:0; background:transparent; }
 .workspace.editor .object, .workspace.editor .obstacle { pointer-events:auto; cursor:pointer; }
 .workspace.editor .invalid-object { outline:3px solid #ff4f45; outline-offset:-3px; filter:drop-shadow(0 0 13px #ff3b30); }
@@ -310,10 +310,20 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .switch-control { transform:scale(.48); border:2px solid var(--cyan); border-radius:50%; background:#0b1e24; color:var(--cyan); box-shadow:0 0 16px #159caf; cursor:pointer; }
 .switch-control span { font-size:29px; display:block; transition:.2s; }.switch-control.blue span { transform:scaleX(-1); }
 
+/* Ancrage de la taille du plateau : les pourcentages de translate() se
+   réfèrent à la taille de l'élément lui-même, donc un conteneur pleine
+   taille rend le déplacement relatif au plateau. Anime uniquement
+   `transform` (composité), jamais left/top (layout + paint par image). */
+.loco-anchor {
+  position:absolute; left:0; top:0; width:100%; height:100%;
+  z-index:9; pointer-events:none; will-change:transform;
+}
 .loco {
-  transform-origin:50% 50%; z-index:9; width:8.8%; height:12.2%; margin:1.05% 0 0 2.75%;
+  position:absolute; left:0; top:0;
+  transform-origin:50% 50%; width:8.8%; height:12.2%; margin:1.05% 0 0 2.75%;
   --loco-color:var(--white);
   pointer-events:none;
+  will-change:transform;
 }
 .loco::before { content:""; position:absolute; left:7%; right:7%; top:14%; bottom:5%; background:linear-gradient(90deg,#0b0e10,#353d40 18%,#171b1d 50%,#353d40 82%,#080a0b); border:1px solid #846a3d; border-radius:24% 24% 8% 8%; box-shadow:0 5px 4px #000; }
 .loco .boiler { position:absolute; left:25%; right:25%; top:17%; bottom:29%; border-radius:48% 48% 34% 34%; background:linear-gradient(90deg,#080b0c 0,#465053 42%,#171d20 70%,#050708 100%); border:2px solid #a8894e; box-shadow:inset 0 0 0 2px #0d1113; }

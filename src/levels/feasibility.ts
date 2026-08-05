@@ -95,10 +95,6 @@ function splitterOutputs(orientation: "H" | "V"): Direction[] {
   return orientation === "H" ? ["N", "S"] : ["E", "W"];
 }
 
-function samePoint(one: GridPoint, two: GridPoint) {
-  return one[0] === two[0] && one[1] === two[1];
-}
-
 function directionBetween(one: GridPoint, two: GridPoint): Direction {
   if (two[1] < one[1]) return "N";
   if (two[0] > one[0]) return "E";
@@ -106,25 +102,41 @@ function directionBetween(one: GridPoint, two: GridPoint): Direction {
   return "W";
 }
 
+/** Un artefact peut-il laisser sortir un train vers `direction` ? */
+function canExitToward(object: LevelObject | undefined, direction: Direction): boolean {
+  if (!object) return false;
+  switch (object.type) {
+    case "outlet": return object.facing === direction;
+    case "painter": return object.sides.includes(direction);
+    case "splitter": return splitterOutputs(object.orientation).includes(direction);
+    // Une gare est terminale, un obstacle ne laisse rien passer.
+    case "station": case "obstacle": return false;
+  }
+}
+
+/** Un artefact peut-il accueillir un train arrivant par son côté `side` ? */
+function canEnterFrom(object: LevelObject | undefined, side: Direction): boolean {
+  if (!object) return false;
+  switch (object.type) {
+    case "station": return object.facings.includes(side);
+    case "painter": return object.sides.includes(side);
+    case "splitter": return splitterInputs(object.orientation).includes(side);
+    // Une remise n'est qu'une source, un obstacle bloque tout.
+    case "outlet": case "obstacle": return false;
+  }
+}
+
+/**
+ * Deux artefacts adjacents sont reliés d'office (sans rail) dès lors que le
+ * côté de sortie de l'un fait face au côté d'entrée de l'autre — quels que
+ * soient leurs types (remise→peintre, peintre→peintre, splitter→gare, etc.).
+ */
 export function isImplicitInfrastructureLink(objects: LevelObject[], from: GridPoint, current: GridPoint) {
   const fromObject = objects.find((object) => object.x === from[0] && object.y === from[1]);
   const currentObject = objects.find((object) => object.x === current[0] && object.y === current[1]);
+  if (!fromObject || !currentObject) return false;
   const travelDirection = directionBetween(from, current);
-
-  if (fromObject?.type === "outlet" && samePoint(add(from[0], from[1], fromObject.facing), current)) {
-    if (currentObject?.type === "painter") return currentObject.sides.includes(OPPOSITE[travelDirection]);
-    if (currentObject?.type === "splitter") {
-      return splitterInputs(currentObject.orientation).includes(OPPOSITE[travelDirection]);
-    }
-  }
-
-  if (currentObject?.type === "station" && currentObject.facings.some((facing) => samePoint(add(current[0], current[1], facing), from))) {
-    if (fromObject?.type === "painter") return fromObject.sides.includes(travelDirection);
-    if (fromObject?.type === "splitter") {
-      return splitterOutputs(fromObject.orientation).includes(travelDirection);
-    }
-  }
-  return false;
+  return canExitToward(fromObject, travelDirection) && canEnterFrom(currentObject, OPPOSITE[travelDirection]);
 }
 
 function structuralChecks(objects: LevelObject[], width: number, height: number): StructuralIssue[] {
@@ -160,28 +172,23 @@ function structuralChecks(objects: LevelObject[], width: number, height: number)
         }
         const occupant = at(frontX, frontY);
         if (!occupant) continue;
+        // Un artefact frontal est acceptable s'il forme une liaison implicite
+        // valide avec celui-ci (côtés qui se font face), dans le sens qui
+        // convient : une remise émet vers lui, une gare reçoit de lui.
+        const linked = object.type === "outlet"
+          ? canEnterFrom(occupant, OPPOSITE[facing])
+          : canExitToward(occupant, OPPOSITE[facing]);
+        if (!linked) {
+          report(object, `${label} ${object.id} : côté incompatible avec l’artefact devant l’entrée ${facing}`);
+          continue;
+        }
         if (occupant.type === "painter") {
-          if (!occupant.sides.includes(OPPOSITE[facing])) {
-            report(object, `${label} ${object.id} : mauvais côté du painter frontal (${facing})`);
-            continue;
-          }
           const beyondSide = occupant.sides.find((side) => side !== OPPOSITE[facing])!;
           const [beyondX, beyondY] = add(frontX, frontY, beyondSide);
           if (!inBounds(beyondX, beyondY, width, height) || at(beyondX, beyondY)?.type === "obstacle") {
             report(object, `${label} ${object.id} : painter frontal (${facing}) sans passage libre dans l’axe`);
           }
-          continue;
         }
-        if (occupant.type === "splitter") {
-          const compatible = object.type === "outlet"
-            ? splitterInputs(occupant.orientation).includes(OPPOSITE[facing])
-            : splitterOutputs(occupant.orientation).includes(OPPOSITE[facing]);
-          if (!compatible) {
-            report(object, `${label} ${object.id} : mauvais côté du splitter frontal (${facing})`);
-          }
-          continue;
-        }
-        report(object, `${label} ${object.id} : case devant l’entrée ${facing} occupée`);
       }
     }
 
