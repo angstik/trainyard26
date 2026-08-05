@@ -45,7 +45,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.12";
+const APP_VERSION = "1.13";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -242,6 +242,11 @@ function metricColor(value: number, target: number) {
   }
   const overflow = Math.min(1, (value - target) / Math.max(4, target * 0.35));
   return `hsl(${35 - overflow * 35} 88% ${63 - overflow * 7}%)`;
+}
+
+function difficultyColor(wrenches: number) {
+  const progress = Math.min(1, Math.max(0, wrenches / 30));
+  return `hsl(${125 - progress * 125} 72% 52%)`;
 }
 
 function createEmptySim(objects: LevelObject[], switches: Record<string, number> = {}): SimData {
@@ -1662,7 +1667,7 @@ export default function App() {
       })()}      <header>
         <div className="brand">
           <span className="sigil">✣<small className="version-tag">v{APP_VERSION}</small></span>
-          <div><b>SIGNAL NOCTURNE</b><small>NIVEAU {activeLevel.number.toString().padStart(2, "0")}</small></div>
+          <div><b>SIGNAL<br />NOCTURNE</b><small>NIVEAU {activeLevel.number.toString().padStart(2, "0")}</small></div>
         </div>
         <div className="status-strip">
           <span><small>ÉTAT</small><b className={result}>{paused ? "PAUSE" : status}</b></span>
@@ -1677,6 +1682,8 @@ export default function App() {
           <button className={mode === "editor" ? "active" : ""} onClick={() => changeMode("editor")}>ÉDITEUR</button>
         </nav>
       </header>
+
+      <div className="level-name-line"><b>{activeLevel.title}</b></div>
 
       <section className={`workspace ${mode}`}>
         {mode === "editor" && (
@@ -1705,12 +1712,14 @@ export default function App() {
         )}
 
         <div className="board-column">
-          <div className="level-name-line"><b>{activeLevel.title}</b></div>
           <div className="board-wrap">
           <div className="board-heading">
             <button className="board-level-arrow" aria-label="Niveau précédent" title="Niveau précédent" disabled={running || activeLevelIndex <= 0} onClick={() => changeLevel(-1)}>←</button>
-            {mode === "play" && <div className="game-hud" aria-label={`Version ${APP_VERSION}, ${railCount} rails sur ${railLimit}, ${trackCells} cases, temps ${formatTime(totalElapsedMs)}`}>
-              <span><small>RAILS</small><strong style={{ color: railMetricColor }}>{railCount}/{railLimit}</strong></span>
+            {mode === "play" && <div className="game-hud" aria-label={`Version ${APP_VERSION}, ${railCount} rails sur ${railLimit}, optimum ${activeLevel.optimalRails ?? "inconnu"}, ${trackCells} cases, temps ${formatTime(totalElapsedMs)}`}>
+              <span><small>RAILS / LIMITE</small><strong style={{ color: railMetricColor }}>{railCount}/{railLimit}</strong></span>
+              {activeLevel.optimalRails != null && (
+                <span><small>RAILS / OPTIMUM</small><strong style={{ color: metricColor(railCount, activeLevel.optimalRails) }}>{railCount}/{activeLevel.optimalRails}</strong></span>
+              )}
               <span><small>CASES</small><strong>{trackCells}</strong></span>
               <span><small>TEMPS</small><strong>{formatTime(totalElapsedMs)}</strong></span>
             </div>}
@@ -1831,7 +1840,7 @@ export default function App() {
                         <div><b>{libraryFamily.title}</b><small>{libraryFamily.playable ? "TABLEAUX JOUABLES" : "WIP · ÉDITEUR UNIQUEMENT"}</small></div>
                         <span>{libraryFamily.levels.length}</span>
                       </div>
-                      <div className="library-progress-heading"><span>Niveau</span><span>OK</span><span>Mini</span><span>Dernier</span><span>Tableau</span></div>
+                      <div className="library-progress-heading"><span>Niveau</span><span>Diff.</span><span>OK</span><span>Mini/Opt.</span><span>Dernier</span><span>Tableau</span></div>
                       <div className="library-levels">
                         {libraryFamily.levels.map((level) => {
                           const progress = levelProgress[level.id];
@@ -1842,8 +1851,16 @@ export default function App() {
                                 <span>{level.number.toString().padStart(2, "0")}</span>
                                 <div><b>{level.title}</b><small>{level.brief}</small></div>
                               </button>
+                              {level.wrenches != null
+                                ? <b className="difficulty-stat" style={{ color: difficultyColor(level.wrenches) }}>{Math.round((level.wrenches / 30) * 100)}%</b>
+                                : <b className="difficulty-stat">—</b>}
                               <b className={`completion-stat ${completed ? "ok" : "ko"}`}>{completed ? "OK" : "KO"}</b>
-                              <b className="rail-stat">{progress?.minimumRails ?? "—"}</b>
+                              <b
+                                className="rail-stat"
+                                style={progress?.minimumRails != null && level.optimalRails ? { color: metricColor(progress.minimumRails, level.optimalRails) } : undefined}
+                              >
+                                {progress?.minimumRails ?? "—"}{level.optimalRails ? `/${level.optimalRails}` : ""}
+                              </b>
                               <b className="rail-stat">{progress?.lastRails ?? "—"}</b>
                               <button
                                 className="resume-board"

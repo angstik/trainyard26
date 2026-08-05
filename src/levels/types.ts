@@ -19,6 +19,10 @@ export type LevelDefinition = {
   width: number;
   height: number;
   railLimit: number;
+  /** Meilleur nombre de segments de rail connu (catalogue officiel trainyard.ca), si disponible. */
+  optimalRails?: number;
+  /** Difficulté officielle (1 à 30 "clés"), si disponible. */
+  wrenches?: number;
   objects: LevelObject[];
   examplePaths: [number, number][][];
   savedEdges?: string[];
