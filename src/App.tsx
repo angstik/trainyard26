@@ -50,7 +50,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.25";
+const APP_VERSION = "1.26";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -510,6 +510,7 @@ export default function App() {
   const prevTrainsRef = useRef<MovingTrain[]>([]);
   const nextTrainsRef = useRef<MovingTrain[]>([]);
   const tickTimeRef = useRef<number>(Date.now());
+  const tickIntervalRef = useRef<number>(25);
   const mutedRef = useRef(true);
   const activeAudioRef = useRef<Set<HTMLAudioElement>>(new Set());
   const explosionId = useRef(0);
@@ -1194,7 +1195,14 @@ export default function App() {
 
       prevTrainsRef.current = nextTrainsRef.current;
       nextTrainsRef.current = [...sim.trains];
-      tickTimeRef.current = Date.now();
+      const nowMs = Date.now();
+      // Durée réelle du tick : setInterval(25) dérive (charge, throttling
+      // navigateur). Supposer 25 ms fait saturer l'interpolation avant
+      // l'arrivée du tick suivant — tous les trains se figent brièvement
+      // puis sautent, simultanément. Bornée pour absorber les pauses longues
+      // (onglet en arrière-plan) sans étirer l'interpolation.
+      tickIntervalRef.current = Math.min(120, Math.max(8, nowMs - tickTimeRef.current));
+      tickTimeRef.current = nowMs;
       setDisplaySwitchPositions({ ...sim.switches });
       setEmitted({ ...sim.emitted });
       setReceived({ ...sim.received });
@@ -1227,18 +1235,30 @@ export default function App() {
   // de l'écran plutôt qu'à 40 im/s fixes.
   useEffect(() => {
     if (!running || paused) return;
-    const TICK_MS = 25;
     let frame: number;
     const render = () => {
-      const alpha = Math.min(1, Math.max(0, (Date.now() - tickTimeRef.current) / TICK_MS));
+      const alpha = Math.min(1, Math.max(0, (Date.now() - tickTimeRef.current) / tickIntervalRef.current));
       const previousById = new Map(prevTrainsRef.current.map((item) => [item.id, item]));
       setTrains(nextTrainsRef.current.map((train) => {
         const previous = previousById.get(train.id);
-        const sameSegment = previous
-          && previous.cell[0] === train.cell[0] && previous.cell[1] === train.cell[1]
+        if (!previous) return train;
+        const sameSegment = previous.cell[0] === train.cell[0] && previous.cell[1] === train.cell[1]
           && previous.next[0] === train.next[0] && previous.next[1] === train.next[1];
-        if (!sameSegment) return train;
-        return { ...train, progress: previous.progress + (train.progress - previous.progress) * alpha };
+        if (sameSegment) {
+          return { ...train, progress: previous.progress + (train.progress - previous.progress) * alpha };
+        }
+        // Le train a franchi une limite de case pendant ce tick. On interpole
+        // en abscisse curviligne (distance parcourue) plutôt que de sauter
+        // directement à la position de fin : tant que la distance couverte
+        // reste sur l'ancien segment on l'y affiche, ensuite on bascule sur
+        // le nouveau. Le mouvement reste continu au passage d'un rail à
+        // l'autre.
+        const remainingOnPrevious = 1 - previous.progress;
+        const travelled = (remainingOnPrevious + train.progress) * alpha;
+        if (travelled < remainingOnPrevious) {
+          return { ...previous, progress: previous.progress + travelled };
+        }
+        return { ...train, progress: Math.min(train.progress, travelled - remainingOnPrevious) };
       }));
       frame = window.requestAnimationFrame(render);
     };
