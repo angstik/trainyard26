@@ -50,7 +50,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.24";
+const APP_VERSION = "1.25";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -334,6 +334,7 @@ function TrackGraphic({ directions, mode = "cross", switchToe, switchIndex = 0, 
         {paths.map((d, i) => <path key={`sleepers-${i}`} className="rail-sleepers" d={d} />)}
         {paths.map((d, i) => <path key={`outer-${i}`} className="rail-outer" d={d} />)}
         {paths.map((d, i) => <path key={`inner-${i}`} className="rail-inner" d={d} />)}
+        {paths.map((d, i) => <path key={`sleepers-mid-${i}`} className="rail-sleepers-mid" d={d} />)}
         {directions.length === 4 && mode === "cross" && (
           <g className="cross-upper">
             <path className="cross-gap" d={paths[1]} />
@@ -341,6 +342,7 @@ function TrackGraphic({ directions, mode = "cross", switchToe, switchIndex = 0, 
             <path className="rail-sleepers" d={paths[1]} />
             <path className="rail-outer" d={paths[1]} />
             <path className="rail-inner" d={paths[1]} />
+            <path className="rail-sleepers-mid" d={paths[1]} />
           </g>
         )}
         {directions.length === 3 && <circle className="rail-joint" cx="50" cy="50" r="4" />}
