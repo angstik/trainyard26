@@ -1,4 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+// Source unique du numéro de version : le fichier VERSION à la racine du
+// projet, également lisible directement dans le dépôt. Évite toute dérive
+// entre le fichier et le numéro affiché dans l'application.
+import versionFile from "../VERSION?raw";
 import { DEFAULT_LEVEL, LEVEL_FAMILIES } from "./levels/catalog";
 import { analyzeObjects, isImplicitInfrastructureLink, TRAIN_COLORS } from "./levels/feasibility";
 import { decodePuzzleString, encodeLevelToPuzzleString } from "./levels/puzzleCodec";
@@ -20,6 +24,14 @@ type MovingTrain = {
   progress: number;
   angle: number;
   fromAngle: number;
+  /**
+   * Uniquement pour le rendu : case suivant `next`, connue de façon
+   * autoritative parce que la décision d'aiguillage a déjà été prise par la
+   * simulation. Évite de la recalculer depuis l'état d'aiguillage courant,
+   * qui a déjà été incrémenté par ce même passage et désignerait donc la
+   * branche du passage suivant.
+   */
+  renderFuture?: Point;
 };
 type Explosion = { id: number; x: number; y: number; reason: string };
 type ColorBurst = { id: number; x: number; y: number; color: TrainColor; kind: "paint" | "mix" | "split" | "cross" };
@@ -50,7 +62,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.20";
+const APP_VERSION = versionFile.trim();
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -73,6 +85,25 @@ const MIXES: Record<string, TrainColor> = {
   "purple+yellow": "brown",
   "purple+red": "pink",
   "blue+green": "cyan",
+  // Marron : absorbe toute couleur sauf le blanc (reste marron).
+  "brown+red": "brown",
+  "blue+brown": "brown",
+  "brown+yellow": "brown",
+  "brown+orange": "brown",
+  "brown+green": "brown",
+  "brown+purple": "brown",
+  "brown+pink": "brown",
+  "brown+cyan": "brown",
+  // Blanc : cède aux couleurs primaires (devient la primaire), domine sur les autres (reste blanc).
+  "red+white": "red",
+  "blue+white": "blue",
+  "white+yellow": "yellow",
+  "orange+white": "white",
+  "green+white": "white",
+  "purple+white": "white",
+  "brown+white": "white",
+  "pink+white": "white",
+  "cyan+white": "white",
 };
 const SPLITS: Partial<Record<TrainColor, [TrainColor, TrainColor]>> = {
   red: ["red", "red"], blue: ["blue", "blue"], yellow: ["yellow", "yellow"],
@@ -307,14 +338,23 @@ function TrackGraphic({ directions, mode = "cross", switchToe, switchIndex = 0, 
     paths = [`M 50 50 L ${x} ${y}`];
   }
   const geometry = directions.length === 3 ? switchGeometry(directions, switchToe) : null;
-  const activeBranch = geometry?.exits[switchIndex % geometry.exits.length];
+  const activeIndex = geometry ? switchIndex % geometry.exits.length : -1;
+  // Pour un aiguillage, on dessine la branche dormante en premier dans chaque
+  // couche : l'ordre de rendu reste par couche (ballast, traverses, rails…)
+  // pour conserver le tressage aux croisements, mais la branche active passe
+  // toujours par-dessus la dormante là où elles se superposent près du talon.
+  const drawOrder = activeIndex >= 0
+    ? paths.map((_, i) => i).sort((a, b) => (a === activeIndex ? 1 : 0) - (b === activeIndex ? 1 : 0))
+    : paths.map((_, i) => i);
+  const branchClass = (i: number) => (activeIndex >= 0 && i !== activeIndex ? " rail-dormant" : "");
   return (
     <>
       <svg className={`track-svg ${preview ? "preview" : ""}`} viewBox="0 0 100 100" aria-hidden="true">
-        {paths.map((d, i) => <path key={`bed-${i}`} className="rail-bed" d={d} />)}
-        {paths.map((d, i) => <path key={`sleepers-${i}`} className="rail-sleepers" d={d} />)}
-        {paths.map((d, i) => <path key={`outer-${i}`} className="rail-outer" d={d} />)}
-        {paths.map((d, i) => <path key={`inner-${i}`} className="rail-inner" d={d} />)}
+        {drawOrder.map((i) => <path key={`bed-${i}`} className={`rail-bed${branchClass(i)}`} d={paths[i]} />)}
+        {drawOrder.map((i) => <path key={`sleepers-${i}`} className={`rail-sleepers${branchClass(i)}`} d={paths[i]} />)}
+        {drawOrder.map((i) => <path key={`outer-${i}`} className={`rail-outer${branchClass(i)}`} d={paths[i]} />)}
+        {drawOrder.map((i) => <path key={`inner-${i}`} className={`rail-inner${branchClass(i)}`} d={paths[i]} />)}
+        {drawOrder.map((i) => <path key={`sleepers-mid-${i}`} className={`rail-sleepers-mid${branchClass(i)}`} d={paths[i]} />)}
         {directions.length === 4 && mode === "cross" && (
           <g className="cross-upper">
             <path className="cross-gap" d={paths[1]} />
@@ -322,11 +362,11 @@ function TrackGraphic({ directions, mode = "cross", switchToe, switchIndex = 0, 
             <path className="rail-sleepers" d={paths[1]} />
             <path className="rail-outer" d={paths[1]} />
             <path className="rail-inner" d={paths[1]} />
+            <path className="rail-sleepers-mid" d={paths[1]} />
           </g>
         )}
         {directions.length === 3 && <circle className="rail-joint" cx="50" cy="50" r="4" />}
       </svg>
-      {activeBranch && <span className="switch-indicator" style={{ transform: `rotate(${DIR_ANGLE[activeBranch] - 90}deg)` }}>➤</span>}
       {directions.length === 4 && <span className="junction-mode" aria-hidden="true">{mode === "cross" ? "＋" : "⌁"}</span>}
     </>
   );
@@ -360,16 +400,18 @@ function SteamLoco({ train, future }: { train: MovingTrain; future?: Point }) {
   const y = ((front[1] + rear[1]) / 2) * (100 / GRID);
   const displayAngle = Math.atan2(front[0] - rear[0], rear[1] - front[1]) * 180 / Math.PI;
   return (
-    <div className={`loco ${train.color}`} style={{ left: `${x}%`, top: `${y}%`, transform: `rotate(${displayAngle}deg)` }}>
-      <span className="cowcatcher" />
-      <span className="front-plate" />
-      <span className="wheel left-one" /><span className="wheel right-one" />
-      <span className="wheel left-two" /><span className="wheel right-two" />
-      <span className="side-rod left" /><span className="side-rod right" />
-      <span className="boiler"><i /><i /></span>
-      <span className="chimney" />
-      <span className="cab"><i /><i /></span>
-      <span className="lamp" />
+    <div className="loco-anchor" style={{ transform: `translate(${x}%, ${y}%)` }}>
+      <div className={`loco ${train.color}`} style={{ transform: `rotate(${displayAngle}deg)` }}>
+        <span className="cowcatcher" />
+        <span className="front-plate" />
+        <span className="wheel left-one" /><span className="wheel right-one" />
+        <span className="wheel left-two" /><span className="wheel right-two" />
+        <span className="side-rod left" /><span className="side-rod right" />
+        <span className="boiler"><i /><i /></span>
+        <span className="chimney" />
+        <span className="cab"><i /><i /></span>
+        <span className="lamp" />
+      </div>
     </div>
   );
 }
@@ -484,6 +526,10 @@ export default function App() {
   const [movingObjectId, setMovingObjectId] = useState<string | null>(null);
   const [moveGhostCell, setMoveGhostCell] = useState<Point | null>(null);
   const simRef = useRef<SimData>(createEmptySim(DEFAULT_LEVEL.objects));
+  const prevTrainsRef = useRef<MovingTrain[]>([]);
+  const nextTrainsRef = useRef<MovingTrain[]>([]);
+  const tickTimeRef = useRef<number>(Date.now());
+  const tickIntervalRef = useRef<number>(25);
   const mutedRef = useRef(true);
   const activeAudioRef = useRef<Set<HTMLAudioElement>>(new Set());
   const explosionId = useRef(0);
@@ -678,6 +724,8 @@ export default function App() {
     setRunning(false);
     setPaused(false);
     setTrains([]);
+    prevTrainsRef.current = [];
+    nextTrainsRef.current = [];
     setExplosions([]);
     setColorBursts([]);
     setResult("idle");
@@ -711,6 +759,8 @@ export default function App() {
     setRunning(false);
     setPaused(false);
     setTrains([]);
+    prevTrainsRef.current = [];
+    nextTrainsRef.current = [];
     setExplosions([]);
     setColorBursts([]);
     setResult("idle");
@@ -904,6 +954,9 @@ export default function App() {
     persistAttempt(false);
     const clean = createEmptySim(objects, switchPositions);
     simRef.current = clean;
+    prevTrainsRef.current = [];
+    nextTrainsRef.current = [];
+    tickTimeRef.current = Date.now();
     setDisplaySwitchPositions({ ...switchPositions });
     setTrains([]);
     setExplosions([]);
@@ -921,7 +974,16 @@ export default function App() {
     const timer = window.setInterval(() => {
       const sim = simRef.current;
       if (sim.failed) return;
-      const dt = 0.025 * speed;
+      // Pas de temps FIXE, identique quelle que soit la vitesse : la vitesse
+      // ne fait que multiplier le nombre de sous-pas joués par tick. Un pas
+      // proportionnel à la vitesse ferait franchir aux trains une distance
+      // supérieure au rayon de détection des interactions (0.22), qui
+      // seraient alors traversées sans être détectées — les fusions et
+      // croisements seraient manqués aux vitesses élevées.
+      const dt = 0.025;
+      const subSteps = Math.max(1, Math.round(speed));
+
+      for (let step = 0; step < subSteps && !sim.failed; step++) {
 
       outlets.forEach((outlet) => {
         const index = sim.emitted[outlet.id] ?? 0;
@@ -1147,7 +1209,19 @@ export default function App() {
       }
 
       sim.trains = sim.failed ? [] : resolved;
-      setTrains([...sim.trains]);
+
+      } // fin de la boucle de sous-pas
+
+      prevTrainsRef.current = nextTrainsRef.current;
+      nextTrainsRef.current = [...sim.trains];
+      const nowMs = Date.now();
+      // Durée réelle du tick : setInterval(25) dérive (charge, throttling
+      // navigateur). Supposer 25 ms fait saturer l'interpolation avant
+      // l'arrivée du tick suivant — tous les trains se figent brièvement
+      // puis sautent, simultanément. Bornée pour absorber les pauses longues
+      // (onglet en arrière-plan) sans étirer l'interpolation.
+      tickIntervalRef.current = Math.min(120, Math.max(8, nowMs - tickTimeRef.current));
+      tickTimeRef.current = nowMs;
       setDisplaySwitchPositions({ ...sim.switches });
       setEmitted({ ...sim.emitted });
       setReceived({ ...sim.received });
@@ -1171,6 +1245,48 @@ export default function App() {
   // The interval deliberately restarts when the editable topology changes.
   // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [running, paused, speed, outlets, stations, objects, edges, junctionModes, switchToes]);
+
+  // Rendu interpolé indépendant du tick physique (25ms / ~40 im/s) : chaque
+  // image recalcule, par la même formule pour tous les trains, une position
+  // intermédiaire entre le tick précédent et le tick suivant. Élimine toute
+  // dérive entre trains (plus de transition CSS retargetée indépendamment
+  // par le navigateur pour chaque loco) et affiche au taux de rafraîchissement
+  // de l'écran plutôt qu'à 40 im/s fixes.
+  useEffect(() => {
+    if (!running || paused) return;
+    let frame: number;
+    const render = () => {
+      const alpha = Math.min(1, Math.max(0, (Date.now() - tickTimeRef.current) / tickIntervalRef.current));
+      const previousById = new Map(prevTrainsRef.current.map((item) => [item.id, item]));
+      setTrains(nextTrainsRef.current.map((train) => {
+        const previous = previousById.get(train.id);
+        if (!previous) return train;
+        const sameSegment = previous.cell[0] === train.cell[0] && previous.cell[1] === train.cell[1]
+          && previous.next[0] === train.next[0] && previous.next[1] === train.next[1];
+        if (sameSegment) {
+          return { ...train, progress: previous.progress + (train.progress - previous.progress) * alpha };
+        }
+        // Le train a franchi une limite de case pendant ce tick. On interpole
+        // en abscisse curviligne (distance parcourue) plutôt que de sauter
+        // directement à la position de fin : tant que la distance couverte
+        // reste sur l'ancien segment on l'y affiche, ensuite on bascule sur
+        // le nouveau. Le mouvement reste continu au passage d'un rail à
+        // l'autre.
+        const remainingOnPrevious = 1 - previous.progress;
+        const travelled = (remainingOnPrevious + train.progress) * alpha;
+        if (travelled < remainingOnPrevious) {
+          // Encore affiché sur le segment d'approche : la case qui suit est
+          // déjà connue (c'est `train.next`, la sortie que la simulation a
+          // retenue), donc on la transmet au lieu de la laisser recalculer.
+          return { ...previous, progress: previous.progress + travelled, renderFuture: train.next };
+        }
+        return { ...train, progress: Math.min(train.progress, travelled - remainingOnPrevious) };
+      }));
+      frame = window.requestAnimationFrame(render);
+    };
+    frame = window.requestAnimationFrame(render);
+    return () => window.cancelAnimationFrame(frame);
+  }, [running, paused]);
 
   function cellFromPointer(clientX: number, clientY: number): Point | null {
     const rect = boardRef.current?.getBoundingClientRect();
@@ -1811,7 +1927,7 @@ export default function App() {
                 </button>
               );
             })}
-            {trains.map((train) => <SteamLoco key={train.id} train={train} future={futurePointForTrain(train)} />)}
+            {trains.map((train) => <SteamLoco key={train.id} train={train} future={train.renderFuture ?? futurePointForTrain(train)} />)}
             {colorBursts.map((burst) => <div key={burst.id} className={`color-burst ${burst.kind}`} style={{ left: `${burst.x * 100 / GRID}%`, top: `${burst.y * 100 / GRID}%`, "--burst-color": COLOR_HEX[burst.color] } as React.CSSProperties}><i /><i /><i /><i /><span /></div>)}
             {explosions.map((blast) => <div key={blast.id} className="explosion" style={{ left: `${blast.x * 100 / GRID}%`, top: `${blast.y * 100 / GRID}%` }}><i /><i /><i /><i /><span>✹</span></div>)}
           </div>
