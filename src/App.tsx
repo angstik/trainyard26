@@ -1,4 +1,8 @@
 import { useEffect, useMemo, useRef, useState } from "react";
+// Source unique du numéro de version : le fichier VERSION à la racine du
+// projet, également lisible directement dans le dépôt. Évite toute dérive
+// entre le fichier et le numéro affiché dans l'application.
+import versionFile from "../VERSION?raw";
 import { DEFAULT_LEVEL, LEVEL_FAMILIES } from "./levels/catalog";
 import { analyzeObjects, isImplicitInfrastructureLink, TRAIN_COLORS } from "./levels/feasibility";
 import { decodePuzzleString, encodeLevelToPuzzleString } from "./levels/puzzleCodec";
@@ -20,6 +24,14 @@ type MovingTrain = {
   progress: number;
   angle: number;
   fromAngle: number;
+  /**
+   * Uniquement pour le rendu : case suivant `next`, connue de façon
+   * autoritative parce que la décision d'aiguillage a déjà été prise par la
+   * simulation. Évite de la recalculer depuis l'état d'aiguillage courant,
+   * qui a déjà été incrémenté par ce même passage et désignerait donc la
+   * branche du passage suivant.
+   */
+  renderFuture?: Point;
 };
 type Explosion = { id: number; x: number; y: number; reason: string };
 type ColorBurst = { id: number; x: number; y: number; color: TrainColor; kind: "paint" | "mix" | "split" | "cross" };
@@ -50,7 +62,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.27";
+const APP_VERSION = versionFile.trim();
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -1263,7 +1275,10 @@ export default function App() {
         const remainingOnPrevious = 1 - previous.progress;
         const travelled = (remainingOnPrevious + train.progress) * alpha;
         if (travelled < remainingOnPrevious) {
-          return { ...previous, progress: previous.progress + travelled };
+          // Encore affiché sur le segment d'approche : la case qui suit est
+          // déjà connue (c'est `train.next`, la sortie que la simulation a
+          // retenue), donc on la transmet au lieu de la laisser recalculer.
+          return { ...previous, progress: previous.progress + travelled, renderFuture: train.next };
         }
         return { ...train, progress: Math.min(train.progress, travelled - remainingOnPrevious) };
       }));
@@ -1912,7 +1927,7 @@ export default function App() {
                 </button>
               );
             })}
-            {trains.map((train) => <SteamLoco key={train.id} train={train} future={futurePointForTrain(train)} />)}
+            {trains.map((train) => <SteamLoco key={train.id} train={train} future={train.renderFuture ?? futurePointForTrain(train)} />)}
             {colorBursts.map((burst) => <div key={burst.id} className={`color-burst ${burst.kind}`} style={{ left: `${burst.x * 100 / GRID}%`, top: `${burst.y * 100 / GRID}%`, "--burst-color": COLOR_HEX[burst.color] } as React.CSSProperties}><i /><i /><i /><i /><span /></div>)}
             {explosions.map((blast) => <div key={blast.id} className="explosion" style={{ left: `${blast.x * 100 / GRID}%`, top: `${blast.y * 100 / GRID}%` }}><i /><i /><i /><i /><span>✹</span></div>)}
           </div>
