@@ -50,7 +50,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.23";
+const APP_VERSION = "1.24";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -952,7 +952,16 @@ export default function App() {
     const timer = window.setInterval(() => {
       const sim = simRef.current;
       if (sim.failed) return;
-      const dt = 0.025 * speed;
+      // Pas de temps FIXE, identique quelle que soit la vitesse : la vitesse
+      // ne fait que multiplier le nombre de sous-pas joués par tick. Un pas
+      // proportionnel à la vitesse ferait franchir aux trains une distance
+      // supérieure au rayon de détection des interactions (0.22), qui
+      // seraient alors traversées sans être détectées — les fusions et
+      // croisements seraient manqués aux vitesses élevées.
+      const dt = 0.025;
+      const subSteps = Math.max(1, Math.round(speed));
+
+      for (let step = 0; step < subSteps && !sim.failed; step++) {
 
       outlets.forEach((outlet) => {
         const index = sim.emitted[outlet.id] ?? 0;
@@ -1178,6 +1187,9 @@ export default function App() {
       }
 
       sim.trains = sim.failed ? [] : resolved;
+
+      } // fin de la boucle de sous-pas
+
       prevTrainsRef.current = nextTrainsRef.current;
       nextTrainsRef.current = [...sim.trains];
       tickTimeRef.current = Date.now();
