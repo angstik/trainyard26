@@ -213,18 +213,21 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
    part et d'autre des rails. Trame identique, teinte assombrie (bois vu
    dans l'ombre entre les deux files de rail). */
 .track-svg .rail-sleepers-mid { stroke:#6d5238; stroke-width:5; stroke-dasharray:1.35 7.15; stroke-linecap:butt; opacity:.9; }
+/* Branche d'aiguillage qui ne sera pas empruntée au prochain passage :
+   estompée plutôt que signalée par une flèche. Transition douce pour que
+   la bascule reste lisible à l'œil. */
+.track-svg .rail-dormant { opacity:.22; transition:opacity .18s ease-out; }
+.track-svg .rail-bed:not(.rail-dormant),
+.track-svg .rail-sleepers:not(.rail-dormant),
+.track-svg .rail-outer:not(.rail-dormant),
+.track-svg .rail-inner:not(.rail-dormant),
+.track-svg .rail-sleepers-mid:not(.rail-dormant) { transition:opacity .18s ease-out; }
 .track-svg .rail-joint { fill:#748087; stroke:#171b1d; stroke-width:2; }
 .track-svg .cross-upper .cross-gap { stroke:#070a0b; stroke-width:27; stroke-linecap:butt; filter:drop-shadow(0 3px 2px #000); }
 .track-svg .cross-upper .rail-bed { stroke:#1b2225; }
 .track-svg .cross-upper .rail-outer { stroke:var(--rail); }
 .track-svg.preview .rail-outer { stroke:var(--cyan); filter:drop-shadow(0 0 5px var(--cyan)); }
 .track-svg.preview .rail-joint { fill:var(--cyan); }
-.switch-indicator {
-  position:absolute; z-index:5; left:calc(50% - 9px); top:calc(50% - 9px);
-  width:18px; height:18px; display:grid; place-items:center; transform-origin:50% 50%;
-  color:#45e5ff; font-size:17px; line-height:1; text-shadow:0 0 4px #0db8d6,0 0 9px #0b6675;
-  pointer-events:none;
-}
 .junction-mode {
   position:absolute; z-index:5; right:5px; bottom:4px; width:14px; height:14px; display:grid; place-items:center;
   border:1px solid rgba(53,221,243,.45); border-radius:50%; color:#59dff0; background:rgba(5,15,19,.78);

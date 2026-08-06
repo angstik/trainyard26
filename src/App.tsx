@@ -50,7 +50,7 @@ type SimData = {
 };
 
 const GRID = 7;
-const APP_VERSION = "1.26";
+const APP_VERSION = "1.27";
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
@@ -326,15 +326,23 @@ function TrackGraphic({ directions, mode = "cross", switchToe, switchIndex = 0, 
     paths = [`M 50 50 L ${x} ${y}`];
   }
   const geometry = directions.length === 3 ? switchGeometry(directions, switchToe) : null;
-  const activeBranch = geometry?.exits[switchIndex % geometry.exits.length];
+  const activeIndex = geometry ? switchIndex % geometry.exits.length : -1;
+  // Pour un aiguillage, on dessine la branche dormante en premier dans chaque
+  // couche : l'ordre de rendu reste par couche (ballast, traverses, rails…)
+  // pour conserver le tressage aux croisements, mais la branche active passe
+  // toujours par-dessus la dormante là où elles se superposent près du talon.
+  const drawOrder = activeIndex >= 0
+    ? paths.map((_, i) => i).sort((a, b) => (a === activeIndex ? 1 : 0) - (b === activeIndex ? 1 : 0))
+    : paths.map((_, i) => i);
+  const branchClass = (i: number) => (activeIndex >= 0 && i !== activeIndex ? " rail-dormant" : "");
   return (
     <>
       <svg className={`track-svg ${preview ? "preview" : ""}`} viewBox="0 0 100 100" aria-hidden="true">
-        {paths.map((d, i) => <path key={`bed-${i}`} className="rail-bed" d={d} />)}
-        {paths.map((d, i) => <path key={`sleepers-${i}`} className="rail-sleepers" d={d} />)}
-        {paths.map((d, i) => <path key={`outer-${i}`} className="rail-outer" d={d} />)}
-        {paths.map((d, i) => <path key={`inner-${i}`} className="rail-inner" d={d} />)}
-        {paths.map((d, i) => <path key={`sleepers-mid-${i}`} className="rail-sleepers-mid" d={d} />)}
+        {drawOrder.map((i) => <path key={`bed-${i}`} className={`rail-bed${branchClass(i)}`} d={paths[i]} />)}
+        {drawOrder.map((i) => <path key={`sleepers-${i}`} className={`rail-sleepers${branchClass(i)}`} d={paths[i]} />)}
+        {drawOrder.map((i) => <path key={`outer-${i}`} className={`rail-outer${branchClass(i)}`} d={paths[i]} />)}
+        {drawOrder.map((i) => <path key={`inner-${i}`} className={`rail-inner${branchClass(i)}`} d={paths[i]} />)}
+        {drawOrder.map((i) => <path key={`sleepers-mid-${i}`} className={`rail-sleepers-mid${branchClass(i)}`} d={paths[i]} />)}
         {directions.length === 4 && mode === "cross" && (
           <g className="cross-upper">
             <path className="cross-gap" d={paths[1]} />
@@ -347,7 +355,6 @@ function TrackGraphic({ directions, mode = "cross", switchToe, switchIndex = 0, 
         )}
         {directions.length === 3 && <circle className="rail-joint" cx="50" cy="50" r="4" />}
       </svg>
-      {activeBranch && <span className="switch-indicator" style={{ transform: `rotate(${DIR_ANGLE[activeBranch] - 90}deg)` }}>➤</span>}
       {directions.length === 4 && <span className="junction-mode" aria-hidden="true">{mode === "cross" ? "＋" : "⌁"}</span>}
     </>
   );
