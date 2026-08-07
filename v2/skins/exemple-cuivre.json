@@ -1,0 +1,20 @@
+{
+  "name": "Cuivre",
+  "author": "Exemple",
+  "version": "1.0",
+  "variables": {
+    "skin-trim": "#c87f3a",
+    "skin-grid-dot": "#8a7256",
+    "skin-building-dark": "#1a1410",
+    "skin-building-light": "#4a3a2c",
+    "skin-rock-light": "#5a4a3d",
+    "skin-rock-dark": "#241a14",
+    "skin-rock-edge": "#8a7256",
+    "skin-rail-bed": "#1a1512",
+    "skin-rail-sleeper": "#a07a4a",
+    "skin-rail-sleeper-mid": "#7d5c34",
+    "skin-loco-trim": "#c87f3a",
+    "skin-loco-body-dark": "#140f0c",
+    "skin-loco-body-light": "#463a30"
+  }
+}

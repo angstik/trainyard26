@@ -1,23 +1,51 @@
 <!doctype html>
 <html lang="fr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, viewport-fit=cover" />
-    <meta name="theme-color" content="#05090d" />
-    <meta name="application-name" content="Signal Nocturne" />
-    <meta name="description" content="Puzzle ferroviaire nocturne : tracez les voies, réglez les aiguillages et guidez les trains." />
-    <meta name="mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="apple-mobile-web-app-title" content="Signal Nocturne" />
-    <link rel="manifest" href="%BASE_URL%manifest.webmanifest" />
-    <link rel="icon" href="%BASE_URL%favicon.svg" />
-    <link rel="shortcut icon" href="%BASE_URL%favicon.svg" />
-    <link rel="apple-touch-icon" href="%BASE_URL%icon-192.svg" />
-    <title>Signal Nocturne</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#05090d">
+<title>Signal Nocturne</title>
+<link rel="icon" href="v1/favicon.svg">
+<style>
+  :root { --bg:#05090d; --panel:#0b1419; --border:#2c414b; --text:#dce8ed; --muted:#71838d; --cyan:#35ddf3; --gold:#d8c28d; }
+  * { box-sizing:border-box; }
+  html, body { margin:0; height:100%; background:var(--bg); color:var(--text);
+    font-family:"Arial Narrow","Roboto Condensed",system-ui,sans-serif; }
+  body { display:grid; place-items:center; padding:24px;
+    background:radial-gradient(circle at 50% -10%, #18303c 0, transparent 45%), var(--bg); }
+  main { width:min(420px,100%); text-align:center; }
+  .sigil { color:var(--cyan); font-size:44px; line-height:1; }
+  h1 { font-size:15px; letter-spacing:.22em; margin:10px 0 4px; }
+  .tagline { color:var(--muted); font-size:11px; line-height:1.6; margin:0 0 28px; }
+  a.version { display:block; text-align:left; text-decoration:none; color:inherit;
+    border:1px solid var(--border); background:var(--panel); padding:15px 17px; margin-bottom:11px; }
+  a.version:hover { border-color:#3d7180; background:#10232b; }
+  a.version b { display:block; color:var(--gold); font-size:13px; letter-spacing:.12em; }
+  a.version small { display:block; color:var(--muted); font-size:10px; line-height:1.5; margin-top:5px; }
+  a.version .go { float:right; color:var(--gold); font-size:19px; }
+  footer { color:var(--muted); font-size:9px; letter-spacing:.08em; margin-top:26px; }
+  footer a { color:var(--muted); }
+</style>
+</head>
+<body>
+  <main>
+    <div class="sigil">✣</div>
+    <h1>SIGNAL NOCTURNE</h1>
+    <p class="tagline">Puzzle ferroviaire nocturne.<br>Choisissez une version — leurs sauvegardes sont indépendantes.</p>
+
+    <a class="version" href="v1/">
+      <span class="go">→</span>
+      <b>VERSION 1 — STABLE</b>
+      <small>La version de référence pour jouer. 233 niveaux, 36 familles.</small>
+    </a>
+
+    <a class="version" href="v2/">
+      <span class="go">→</span>
+      <b>VERSION 2 — EN DÉVELOPPEMENT</b>
+      <small>Ajoute la personnalisation de l'apparence (skins). Évolue souvent, peut être instable.</small>
+    </a>
+
+    <footer><a href="https://github.com/angstik/trainyard26">Code source et signalement de problèmes</a></footer>
+  </main>
+</body>
 </html>

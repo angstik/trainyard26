@@ -22,12 +22,33 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run build
+
+      # Chaque version est servie sous son propre chemin (/v1/ et /v2/), donc
+      # avec son propre perimetre PWA : installations, caches et sauvegardes
+      # sont totalement independants d'une version a l'autre.
+      - name: Construire v1
+        working-directory: v1
+        run: |
+          npm ci
+          npm run build
+
+      - name: Construire v2
+        working-directory: v2
+        run: |
+          npm ci
+          npm run build
+
+      - name: Assembler le site
+        run: |
+          mkdir -p site/v1 site/v2
+          cp -a v1/dist/. site/v1/
+          cp -a v2/dist/. site/v2/
+          # Page d'accueil a la racine : sans elle, l'URL racine renverrait 404.
+          cp index.html site/index.html
+
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: site
 
   deploy:
     needs: build

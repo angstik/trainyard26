@@ -5,13 +5,7 @@ train jusqu'à la bonne gare, en jouant avec les couleurs, les peintures et
 les aiguillages. 233 niveaux répartis en 36 familles, du plus simple au plus
 retors.
 
-**[Choisir une version et jouer](https://angstik.github.io/trainyard26/)**
-
-- **Version 1 — stable** : [.../v1/](https://angstik.github.io/trainyard26/v1/) — la référence pour jouer.
-- **Version 2 — en développement** : [.../v2/](https://angstik.github.io/trainyard26/v2/) — ajoute la personnalisation de l'apparence (skins), évolue souvent et peut être instable.
-
-> Les deux versions sont indépendantes : installation, sauvegardes et
-> progression sont séparées. Installer l'une n'affecte pas l'autre.
+**Jouer : [https://angstik.github.io/trainyard26/](https://angstik.github.io/trainyard26/)**
 
 ## Origine du projet
 
@@ -41,38 +35,24 @@ fois installée.
 **Sur Android (Chrome)**
 1. Ouvrez le lien ci-dessus dans Chrome
 2. Ouvrez le menu (⋮) en haut à droite
-3. Choisissez **« Installer l'application »**
+3. Choisissez **« Installer l'application »** (ou **« Ajouter à l'écran d'accueil »**)
 
 **Sur ordinateur (Chrome, Edge…)**
 1. Ouvrez le lien ci-dessus
-2. Cliquez sur l'icône d'installation dans la barre d'adresse
+2. Cliquez sur l'icône d'installation dans la barre d'adresse (⊕ ou écran avec flèche)
 
-## Personnaliser l'apparence (v2)
-
-La version 2 permet de charger un fichier de skin (.json) depuis l'éditeur,
-menu **Import/Export**. Un skin peut être partiel : tout ce qu'il ne fournit
-pas conserve l'apparence par défaut. Les couleurs des trains ne sont jamais
-modifiées, car elles portent la logique du jeu.
-
-Voir [`v2/skins/README.md`](v2/skins/README.md) pour le format et un exemple.
+L'application elle-même propose ces instructions au premier lancement dans un
+navigateur.
 
 ## Un problème, une question, un besoin ?
 
-Pour tout souci d'utilisation, toute question, toute demande d'accès plus
-large, ou tout bug rencontré : ouvrez une
-[issue sur ce dépôt](../../issues/new).
+Ce projet est jeune et encore en évolution active. Pour tout souci
+d'utilisation, toute question, toute demande d'accès plus large, ou tout bug
+rencontré : ouvrez une [issue sur ce dépôt](../../issues/new) — c'est le
+meilleur moyen de me faire remonter l'information.
 
 ## Licence
 
 Le code de l'application et les effets sonores sont publiés sous licence MIT
 (voir [`LICENSE`](./LICENSE)). Le catalogue de niveaux est soumis à des
 conditions distinctes, détaillées dans ce même fichier.
-
-## Organisation du dépôt
-
-- `v1/` — version stable, servie sous `/v1/`
-- `v2/` — version en développement, servie sous `/v2/`
-- `index.html` — page d'accueil du site, à la racine
-
-Chaque dossier est une application autonome (ses propres dépendances et son
-propre build). Les deux sont construites et déployées ensemble.
