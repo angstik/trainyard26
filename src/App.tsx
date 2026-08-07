@@ -547,13 +547,11 @@ export default function App() {
   const nextSwitchesRef = useRef<Record<string, number>>({});
   const publishedSwitchesRef = useRef<Record<string, number> | null>(null);
   const mutedRef = useRef(true);
-  const activeAudioRef = useRef<Set<HTMLAudioElement>>(new Set());
-  // Moteur audio : les échantillons sont décodés UNE fois en mémoire, puis
-  // chaque lecture n'est qu'une planification confiée au thread audio. Sans
-  // cela, chaque effet construisait un élément <audio> (résolution de la
-  // ressource + décodage sur le thread principal, celui qui anime les trains).
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const buffersRef = useRef<Map<SoundKind, AudioBuffer>>(new Map());
+  // Pool d'éléments audio pré-créés et préchargés, un jeu par effet. Évite
+  // toute construction d'élément <audio> pendant le jeu (résolution +
+  // décodage sur le thread qui anime les trains), qui était la cause du
+  // ralentissement à vitesse élevée.
+  const poolsRef = useRef<Map<SoundKind, HTMLAudioElement[]>>(new Map());
   const lastPlayedRef = useRef<Map<SoundKind, number>>(new Map());
   const explosionId = useRef(0);
   const burstId = useRef(0);
@@ -954,34 +952,41 @@ export default function App() {
   const SOUND_KINDS: SoundKind[] = ["unmute", "switch", "brake", "explosion", "split", "paint", "station", "pass"];
   /** Deux occurrences du même effet plus rapprochées que cela ne sont pas rejouées. */
   const SOUND_MIN_INTERVAL_MS = 45;
+  /** Éléments par effet : permet quelques recouvrements sans jamais rien construire en jeu. */
+  const SOUND_POOL_SIZE = 3;
 
   /**
-   * Crée le contexte audio et lance le décodage des échantillons. La création
-   * ET la réactivation du contexte doivent être SYNCHRONES dans le gestionnaire
-   * de clic : les navigateurs n'autorisent la sortie audio que depuis un geste
-   * utilisateur, et un `await` préalable ferait sortir de ce contexte (le
-   * contexte resterait suspendu, donc totalement silencieux). Le décodage, lui,
-   * se poursuit en tâche de fond.
+   * Pré-crée et précharge les éléments audio, une fois pour toutes. Le coût
+   * qui saccadait l'animation venait de la CONSTRUCTION d'un élément <audio>
+   * (résolution de la ressource + décodage) à chaque effet, sur le thread qui
+   * anime les trains. Ici, les éléments existent déjà : jouer un effet revient
+   * à rembobiner et lancer un élément déjà décodé.
    */
   function primeAudio() {
-    if (audioCtxRef.current) {
-      void audioCtxRef.current.resume();
-      return;
-    }
-    const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
-    if (!Ctor) return; // Repli sur <audio> si Web Audio est indisponible.
-    const context = new Ctor();
-    audioCtxRef.current = context;
-    void context.resume();
-    void Promise.all(SOUND_KINDS.map(async (kind) => {
-      try {
-        const response = await fetch(`${import.meta.env.BASE_URL}audio/${kind}.m4a`);
-        const buffer = await context.decodeAudioData(await response.arrayBuffer());
-        buffersRef.current.set(kind, buffer);
-      } catch {
-        // Échantillon indécodable : cet effet retombera sur l'élément <audio>.
+    if (poolsRef.current.size > 0) return;
+    for (const kind of SOUND_KINDS) {
+      const pool: HTMLAudioElement[] = [];
+      for (let i = 0; i < SOUND_POOL_SIZE; i++) {
+        const audio = new Audio(`${import.meta.env.BASE_URL}audio/${kind}.m4a`);
+        audio.preload = "auto";
+        audio.volume = kind === "explosion" ? 1 : 0.82;
+        audio.load();
+        // iOS n'autorise la lecture d'un élément que s'il a été déclenché au
+        // moins une fois pendant un geste utilisateur. On le déverrouille donc
+        // ici (en sourdine) : sans cela, seuls les sons joués au moment du clic
+        // fonctionneraient, et aucun effet pendant la partie.
+        audio.muted = true;
+        void audio.play()
+          .then(() => {
+            audio.pause();
+            try { audio.currentTime = 0; } catch { /* pas encore prêt */ }
+            audio.muted = false;
+          })
+          .catch(() => { audio.muted = false; });
+        pool.push(audio);
       }
-    }));
+      poolsRef.current.set(kind, pool);
+    }
   }
 
   function playSample(kind: SoundKind, force = false) {
@@ -994,30 +999,23 @@ export default function App() {
     if (now - last < SOUND_MIN_INTERVAL_MS) return;
     lastPlayedRef.current.set(kind, now);
 
-    const context = audioCtxRef.current;
-    const buffer = buffersRef.current.get(kind);
-    // Uniquement si le contexte tourne VRAIMENT : `resume()` est asynchrone,
-    // démarrer une source sur un contexte encore suspendu serait silencieux.
-    if (context && buffer && context.state === "running") {
-      const source = context.createBufferSource();
-      source.buffer = buffer;
-      const gain = context.createGain();
-      gain.gain.value = kind === "explosion" ? 1 : 0.82;
-      source.connect(gain).connect(context.destination);
-      source.start();
+    const pool = poolsRef.current.get(kind);
+    if (pool) {
+      // Premier élément libre ; sinon on réutilise le plus ancien.
+      const audio = pool.find((item) => item.paused || item.ended) ?? pool[0];
+      try {
+        audio.currentTime = 0;
+      } catch {
+        // Position non modifiable (élément pas encore prêt) : on joue tel quel.
+      }
+      void audio.play().catch(() => undefined);
       return;
     }
-    if (context && context.state === "suspended") void context.resume();
 
-    // Repli tant que le décodage n'est pas terminé, ou sans Web Audio.
+    // Avant tout amorçage (premier son juste après l'activation).
     const audio = new Audio(`${import.meta.env.BASE_URL}audio/${kind}.m4a`);
-    audio.preload = "auto";
     audio.volume = kind === "explosion" ? 1 : 0.82;
-    activeAudioRef.current.add(audio);
-    const release = () => activeAudioRef.current.delete(audio);
-    audio.addEventListener("ended", release, { once: true });
-    audio.addEventListener("error", release, { once: true });
-    void audio.play().catch(release);
+    void audio.play().catch(() => undefined);
   }
 
   function toggleMute() {
@@ -1025,9 +1023,14 @@ export default function App() {
     mutedRef.current = next;
     setMuted(next);
     if (!next) {
-      // Synchrone, dans le geste utilisateur (cf. primeAudio).
       primeAudio();
-      playSample("unmute", true);
+      // Élément dédié, hors du pool : celui-ci est en cours de déverrouillage
+      // (lecture puis pause asynchrone), qui couperait ce son de confirmation.
+      // Le coût de construction est ici sans conséquence : un clic, pas une
+      // boucle de jeu.
+      const confirm = new Audio(`${import.meta.env.BASE_URL}audio/unmute.m4a`);
+      confirm.volume = 0.82;
+      void confirm.play().catch(() => undefined);
     }
   }
 
