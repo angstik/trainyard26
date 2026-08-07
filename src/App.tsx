@@ -1818,22 +1818,6 @@ export default function App() {
 
   return (
     <main className={`app-shell mode-${mode}`}>
-      {updateState.status !== "idle" && (
-        <div className="update-toast" role="status">
-          {updateState.status === "checking" && <span>Vérification…</span>}
-          {updateState.status === "current" && <span>Version {APP_VERSION} — à jour.</span>}
-          {updateState.status === "error" && <span>Vérification impossible (hors ligne ?).</span>}
-          {updateState.status === "available" && (
-            <>
-              <span>Version {updateState.version} disponible.</span>
-              <button className="update-apply" onClick={() => void applyUpdate()}>METTRE À JOUR</button>
-            </>
-          )}
-          {updateState.status !== "checking" && (
-            <button className="update-close" aria-label="Fermer" onClick={() => setUpdateState({ status: "idle" })}>×</button>
-          )}
-        </div>
-      )}
 
       {installHint && (() => {
         const ua = window.navigator.userAgent;
@@ -1873,7 +1857,25 @@ export default function App() {
         );
       })()}      <header>
         <div className="brand">
-          <span className="sigil">✣<button className="version-tag" title="Vérifier les mises à jour" aria-label={`Version ${APP_VERSION} — vérifier les mises à jour`} onClick={() => void checkForUpdate()}>v{APP_VERSION}</button></span>
+          <span className="sigil">
+            ✣<button className="version-tag" title="Vérifier les mises à jour" aria-label={`Version ${APP_VERSION} — vérifier les mises à jour`} onClick={() => void checkForUpdate()}>v{APP_VERSION}</button>
+            {updateState.status !== "idle" && (
+              <div className="update-toast" role="status">
+                {updateState.status === "checking" && <span>Vérification…</span>}
+                {updateState.status === "current" && <span>Version {APP_VERSION} — à jour.</span>}
+                {updateState.status === "error" && <span>Vérification impossible (hors ligne ?).</span>}
+                {updateState.status === "available" && (
+                  <>
+                    <span>Version {updateState.version} disponible.</span>
+                    <button className="update-apply" onClick={() => void applyUpdate()}>METTRE À JOUR</button>
+                  </>
+                )}
+                {updateState.status !== "checking" && (
+                  <button className="update-close" aria-label="Fermer" onClick={() => setUpdateState({ status: "idle" })}>×</button>
+                )}
+              </div>
+            )}
+          </span>
           <div><b>SIGNAL<br />NOCTURNE</b><small>NIVEAU {activeLevel.number.toString().padStart(2, "0")}</small></div>
         </div>
         <div className="status-strip">

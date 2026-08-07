@@ -63,9 +63,9 @@ header {
 }
 .version-tag:hover { color:var(--cyan); }
 .update-toast {
-  position:fixed; z-index:150; left:50%; bottom:calc(18px + env(safe-area-inset-bottom, 0px));
-  transform:translateX(-50%); display:flex; align-items:center; gap:10px; max-width:calc(100vw - 28px);
-  padding:10px 12px; background:#0d1a20; border:1px solid #3c6470; box-shadow:0 12px 40px #000;
+  position:absolute; z-index:150; left:0; top:100%; margin-top:8px;
+  display:flex; align-items:center; gap:10px; width:max-content; max-width:min(78vw, 340px);
+  padding:9px 11px; background:#0d1a20; border:1px solid #3c6470; box-shadow:0 12px 40px #000;
   color:#dbe9ee; font-size:10px; letter-spacing:.05em;
 }
 .update-toast button { border:1px solid #38505b; background:#111d23; color:var(--cyan); font-size:9px; letter-spacing:.08em; padding:6px 9px; cursor:pointer; }
