@@ -76,35 +76,38 @@ const COLOR_HEX: Record<TrainColor, string> = {
   red: "#e92f45", blue: "#258cff", yellow: "#f5bd2e", orange: "#ff941f", green: "#35c978",
   purple: "#a65be2", brown: "#875431", pink: "#ff52bb", cyan: "#35ddf3", white: "#eef7f8",
 };
+const PRIMARIES: TrainColor[] = ["red", "blue", "yellow"];
+/** Mélanges nommés. Toute paire absente retombe sur la règle générale (marron). */
 const MIXES: Record<string, TrainColor> = {
+  // Primaire + primaire -> secondaire
   "blue+red": "purple",
   "red+yellow": "orange",
   "blue+yellow": "green",
-  "green+red": "brown",
-  "blue+orange": "brown",
-  "purple+yellow": "brown",
+  // Secondaire + l'une de ses propres primaires -> teinte claire
   "purple+red": "pink",
   "blue+green": "cyan",
-  // Marron : absorbe toute couleur sauf le blanc (reste marron).
-  "brown+red": "brown",
-  "blue+brown": "brown",
-  "brown+yellow": "brown",
-  "brown+orange": "brown",
-  "brown+green": "brown",
-  "brown+purple": "brown",
-  "brown+pink": "brown",
-  "brown+cyan": "brown",
-  // Blanc : cède aux couleurs primaires (devient la primaire), domine sur les autres (reste blanc).
-  "red+white": "red",
-  "blue+white": "blue",
-  "white+yellow": "yellow",
-  "orange+white": "white",
-  "green+white": "white",
-  "purple+white": "white",
-  "brown+white": "white",
-  "pink+white": "white",
-  "cyan+white": "white",
 };
+
+/**
+ * Mélange de deux couleurs de train. Fonction TOTALE : toute paire renvoie
+ * une couleur, jamais null — deux trains qui se rejoignent fusionnent
+ * toujours. Ordre des règles :
+ *   1. couleurs identiques -> inchangée
+ *   2. blanc + primaire -> cette primaire ; blanc + autre -> blanc
+ *   3. marron + quoi que ce soit (hors blanc) -> marron
+ *   4. mélange nommé (table ci-dessus)
+ *   5. tout le reste (au moins les trois primaires réunies) -> marron
+ * Le tri des deux couleurs rend le résultat indépendant de leur ordre.
+ */
+function mixColors(one: TrainColor, two: TrainColor): TrainColor {
+  if (one === two) return one;
+  if (one === "white" || two === "white") {
+    const other = one === "white" ? two : one;
+    return PRIMARIES.includes(other) ? other : "white";
+  }
+  if (one === "brown" || two === "brown") return "brown";
+  return MIXES[[one, two].sort().join("+")] ?? "brown";
+}
 const SPLITS: Partial<Record<TrainColor, [TrainColor, TrainColor]>> = {
   red: ["red", "red"], blue: ["blue", "blue"], yellow: ["yellow", "yellow"],
   purple: ["red", "blue"], orange: ["red", "yellow"], green: ["blue", "yellow"],
@@ -221,11 +224,6 @@ function resolveStationArrivalBatch(
   return { acceptedCount: index - startIndex, ok: true };
 }
 
-function mixColors(one: TrainColor, two: TrainColor): TrainColor | null {
-  if (one === two) return one;
-  return MIXES[[one, two].sort().join("+")] ?? null;
-}
-
 function junctionModeForRoute(route: [Direction, Direction]): JunctionMode {
   if (isStraightRoute(route)) return "cross";
   return modeForRoutes(route, [OPPOSITE[route[0]], OPPOSITE[route[1]]]);
@@ -306,7 +304,7 @@ function createEmptySim(objects: LevelObject[], switches: Record<string, number>
   };
 }
 
-function TrackGraphic({ directions, mode = "cross", switchToe, switchIndex = 0, preview }: { directions: Direction[]; mode?: JunctionMode; switchToe?: Direction; switchIndex?: number; preview?: boolean }) {
+function TrackGraphic({ directions, mode = "cross", switchToe, switchIndex = 0, activeExit, preview }: { directions: Direction[]; mode?: JunctionMode; switchToe?: Direction; switchIndex?: number; activeExit?: Direction; preview?: boolean }) {
   if (!directions.length) return null;
   const endpoint: Record<Direction, Point> = { N: [50, -3], E: [103, 50], S: [50, 103], W: [-3, 50] };
   let paths: string[] = [];
@@ -338,7 +336,14 @@ function TrackGraphic({ directions, mode = "cross", switchToe, switchIndex = 0, 
     paths = [`M 50 50 L ${x} ${y}`];
   }
   const geometry = directions.length === 3 ? switchGeometry(directions, switchToe) : null;
-  const activeIndex = geometry ? switchIndex % geometry.exits.length : -1;
+  // Tant qu'un train occupe l'aiguillage, on met en avant la branche qu'il
+  // emprunte réellement : l'état de bascule a déjà avancé d'un cran à son
+  // entrée et désignerait sinon la branche du passage suivant, donnant
+  // l'impression que le train roule sur la voie dormante.
+  const overrideIndex = geometry && activeExit ? geometry.exits.indexOf(activeExit) : -1;
+  const activeIndex = geometry
+    ? (overrideIndex >= 0 ? overrideIndex : switchIndex % geometry.exits.length)
+    : -1;
   // Pour un aiguillage, on dessine la branche dormante en premier dans chaque
   // couche : l'ordre de rendu reste par couche (ballast, traverses, rails…)
   // pour conserver le tressage aux croisements, mais la branche active passe
@@ -475,6 +480,9 @@ function ToolIcon({ tool }: { tool: EditorTool }) {
 
 export default function App() {
   const [mode, setMode] = useState<"play" | "editor">("play");
+  const [updateState, setUpdateState] = useState<
+    { status: "idle" } | { status: "checking" } | { status: "current" } | { status: "available"; version: string } | { status: "error" }
+  >({ status: "idle" });
   const [installHint, setInstallHint] = useState(false);
   const [families, setFamilies] = useState<LevelFamily[]>(LEVEL_FAMILIES);
   const [activeLevel, setActiveLevel] = useState<LevelDefinition>(DEFAULT_LEVEL);
@@ -687,6 +695,41 @@ export default function App() {
     const dismissed = window.localStorage.getItem("signal-nocturne-install-hint-dismissed") === "1";
     if (!isStandalone && !dismissed) setInstallHint(true);
   }, []);
+
+  /**
+   * Compare la version embarquée dans ce build à celle actuellement déployée
+   * (fichier VERSION publié à côté de l'application). Requête sans cache pour
+   * ne pas se faire répondre par le service worker ou le cache HTTP.
+   */
+  async function checkForUpdate() {
+    setUpdateState({ status: "checking" });
+    try {
+      const response = await fetch(`${import.meta.env.BASE_URL}VERSION?t=${Date.now()}`, { cache: "no-store" });
+      if (!response.ok) throw new Error(String(response.status));
+      const deployed = (await response.text()).trim();
+      if (!deployed) throw new Error("réponse vide");
+      setUpdateState(deployed === APP_VERSION ? { status: "current" } : { status: "available", version: deployed });
+    } catch {
+      setUpdateState({ status: "error" });
+    }
+  }
+
+  /** Purge les caches et recharge, pour repartir sur la version en ligne. */
+  async function applyUpdate() {
+    try {
+      if ("serviceWorker" in navigator) {
+        const registrations = await navigator.serviceWorker.getRegistrations();
+        await Promise.all(registrations.map((registration) => registration.update().catch(() => undefined)));
+      }
+      if ("caches" in window) {
+        const keys = await caches.keys();
+        await Promise.all(keys.map((key) => caches.delete(key)));
+      }
+    } catch {
+      // Purge best-effort : on recharge de toute façon.
+    }
+    window.location.reload();
+  }
 
   function dismissInstallHint(persist: boolean) {
     setInstallHint(false);
@@ -1172,34 +1215,31 @@ export default function App() {
               const interactionKey = `${[a.id, b.id].sort().join("~")}@${edgeKey(a.cell, a.next)}`;
               if (!sim.interactions.has(interactionKey)) {
                 const mixedColor = mixColors(a.color, b.color);
-                if (mixedColor) {
-                  advanced[i] = { ...a, color: mixedColor };
-                  advanced[j] = { ...b, color: mixedColor };
-                }
-                addColorBurst((ax + bx) / 2, (ay + by) / 2, mixedColor ?? a.color, "cross");
+                advanced[i] = { ...a, color: mixedColor };
+                advanced[j] = { ...b, color: mixedColor };
+                addColorBurst((ax + bx) / 2, (ay + by) / 2, mixedColor, "cross");
                 playEffect("pass");
                 sim.interactions.add(interactionKey);
               }
               continue;
             }
             if (sameDirection && near) {
+              // Deux trains dans la même case, sur le même rail et dans le
+              // même sens fusionnent toujours, quelles que soient leurs
+              // couleurs (le mélange est total, cf. mixColors).
               const mixedColor = mixColors(a.color, b.color);
-              if (mixedColor) {
-                consumed.add(i);
-                consumed.add(j);
-                merged.push({ ...a, id: `${a.id}-mix-${b.id}`, color: mixedColor });
-                addColorBurst((ax + bx) / 2, (ay + by) / 2, mixedColor, "mix");
-                combined = true;
-              }
+              consumed.add(i);
+              consumed.add(j);
+              merged.push({ ...a, id: `${a.id}-mix-${b.id}`, color: mixedColor });
+              addColorBurst((ax + bx) / 2, (ay + by) / 2, mixedColor, "mix");
+              combined = true;
               break;
             }
             if (crossing) {
               const mixedColor = mixColors(a.color, b.color);
-              if (mixedColor) {
-                advanced[i] = { ...a, color: mixedColor };
-                advanced[j] = { ...b, color: mixedColor };
-                addColorBurst((ax + bx) / 2, (ay + by) / 2, mixedColor, "mix");
-              }
+              advanced[i] = { ...a, color: mixedColor };
+              advanced[j] = { ...b, color: mixedColor };
+              addColorBurst((ax + bx) / 2, (ay + by) / 2, mixedColor, "mix");
             }
           }
           if (sim.failed) break;
@@ -1738,6 +1778,14 @@ export default function App() {
     setSaveStatus("FAMILLE CRÉÉE");
   }
 
+  const occupiedExits = useMemo(() => {
+    const map = new Map<string, Direction>();
+    for (const train of trains) {
+      map.set(pointKey(train.cell), directionBetween(train.cell, train.next));
+    }
+    return map;
+  }, [trains]);
+
   function futurePointForTrain(train: MovingTrain): Point {
     const current = train.next;
     const fallback: Point = [
@@ -1770,6 +1818,23 @@ export default function App() {
 
   return (
     <main className={`app-shell mode-${mode}`}>
+      {updateState.status !== "idle" && (
+        <div className="update-toast" role="status">
+          {updateState.status === "checking" && <span>Vérification…</span>}
+          {updateState.status === "current" && <span>Version {APP_VERSION} — à jour.</span>}
+          {updateState.status === "error" && <span>Vérification impossible (hors ligne ?).</span>}
+          {updateState.status === "available" && (
+            <>
+              <span>Version {updateState.version} disponible.</span>
+              <button className="update-apply" onClick={() => void applyUpdate()}>METTRE À JOUR</button>
+            </>
+          )}
+          {updateState.status !== "checking" && (
+            <button className="update-close" aria-label="Fermer" onClick={() => setUpdateState({ status: "idle" })}>×</button>
+          )}
+        </div>
+      )}
+
       {installHint && (() => {
         const ua = window.navigator.userAgent;
         const isIOS = /iPad|iPhone|iPod/.test(ua) || (ua.includes("Macintosh") && "ontouchend" in document);
@@ -1808,7 +1873,7 @@ export default function App() {
         );
       })()}      <header>
         <div className="brand">
-          <span className="sigil">✣<small className="version-tag">v{APP_VERSION}</small></span>
+          <span className="sigil">✣<button className="version-tag" title="Vérifier les mises à jour" aria-label={`Version ${APP_VERSION} — vérifier les mises à jour`} onClick={() => void checkForUpdate()}>v{APP_VERSION}</button></span>
           <div><b>SIGNAL<br />NOCTURNE</b><small>NIVEAU {activeLevel.number.toString().padStart(2, "0")}</small></div>
         </div>
         <div className="status-strip">
@@ -1893,7 +1958,7 @@ export default function App() {
                       : "Deux virages sans contact. Cliquez pour changer leur orientation ou revenir au croisement."
                     : undefined}
               >
-                <TrackGraphic directions={renderedDirections} mode={junctionModes[key] ?? "cross"} switchToe={switchToes[key]} switchIndex={displaySwitchPositions[key] ?? 0} preview={inGesture} />
+                <TrackGraphic directions={renderedDirections} mode={junctionModes[key] ?? "cross"} switchToe={switchToes[key]} switchIndex={displaySwitchPositions[key] ?? 0} activeExit={occupiedExits.get(key)} preview={inGesture} />
               </div>;
             })}
             {moveGhostCell && (

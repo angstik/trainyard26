@@ -59,7 +59,17 @@ header {
 .version-tag {
   position:absolute; left:50%; bottom:-2px; transform:translateX(-50%);
   font-size:8px; letter-spacing:.04em; color:var(--muted); white-space:nowrap;
+  padding:2px 4px; border:0; background:transparent; font-family:inherit; cursor:pointer;
 }
+.version-tag:hover { color:var(--cyan); }
+.update-toast {
+  position:fixed; z-index:150; left:50%; bottom:calc(18px + env(safe-area-inset-bottom, 0px));
+  transform:translateX(-50%); display:flex; align-items:center; gap:10px; max-width:calc(100vw - 28px);
+  padding:10px 12px; background:#0d1a20; border:1px solid #3c6470; box-shadow:0 12px 40px #000;
+  color:#dbe9ee; font-size:10px; letter-spacing:.05em;
+}
+.update-toast button { border:1px solid #38505b; background:#111d23; color:var(--cyan); font-size:9px; letter-spacing:.08em; padding:6px 9px; cursor:pointer; }
+.update-toast .update-close { border:0; background:transparent; color:var(--muted); font-size:15px; padding:0 4px; line-height:1; }
 .version-badge {
   display:inline-grid; place-items:center; min-width:31px; height:18px; margin-left:5px; padding:0 5px;
   border:1px solid #75b8ff; border-radius:9px; background:#102d50; color:#bdddff;
@@ -711,7 +721,7 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
   .app-shell { grid-template-rows: calc(64px + env(safe-area-inset-top, 0px)) auto 1fr calc(74px + env(safe-area-inset-bottom, 0px)); }
   .app-shell.mode-editor { grid-template-rows: calc(64px + env(safe-area-inset-top, 0px)) auto 1fr; }
   header { grid-template-columns:minmax(0,1fr) auto; padding: env(safe-area-inset-top, 0px) 10px 0; }
-  .brand small:not(.version-tag), .status-strip { display:none; }
+  .brand small, .status-strip { display:none; }
   .workspace { padding:12px; }
   .workspace.editor { grid-template-columns:minmax(0,1fr); grid-template-rows:minmax(0,1fr) auto; gap:5px; padding:8px; }
   .workspace.editor .palette { width:100%; padding:5px; overflow:hidden; gap:4px; }
