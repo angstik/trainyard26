@@ -548,6 +548,13 @@ export default function App() {
   const publishedSwitchesRef = useRef<Record<string, number> | null>(null);
   const mutedRef = useRef(true);
   const activeAudioRef = useRef<Set<HTMLAudioElement>>(new Set());
+  // Moteur audio : les échantillons sont décodés UNE fois en mémoire, puis
+  // chaque lecture n'est qu'une planification confiée au thread audio. Sans
+  // cela, chaque effet construisait un élément <audio> (résolution de la
+  // ressource + décodage sur le thread principal, celui qui anime les trains).
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const buffersRef = useRef<Map<SoundKind, AudioBuffer>>(new Map());
+  const lastPlayedRef = useRef<Map<SoundKind, number>>(new Map());
   const explosionId = useRef(0);
   const burstId = useRef(0);
   const objectId = useRef(0);
@@ -944,8 +951,52 @@ export default function App() {
     if (target) loadLevel(target);
   }
 
+  const SOUND_KINDS: SoundKind[] = ["unmute", "switch", "brake", "explosion", "split", "paint", "station", "pass"];
+  /** Deux occurrences du même effet plus rapprochées que cela ne sont pas rejouées. */
+  const SOUND_MIN_INTERVAL_MS = 45;
+
+  /** Décode tous les échantillons une seule fois, hors du thread de rendu. */
+  async function primeAudio() {
+    if (audioCtxRef.current) return;
+    const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+    if (!Ctor) return; // Repli sur <audio> si Web Audio est indisponible.
+    const context = new Ctor();
+    audioCtxRef.current = context;
+    await Promise.all(SOUND_KINDS.map(async (kind) => {
+      try {
+        const response = await fetch(`${import.meta.env.BASE_URL}audio/${kind}.m4a`);
+        const buffer = await context.decodeAudioData(await response.arrayBuffer());
+        buffersRef.current.set(kind, buffer);
+      } catch {
+        // Un échantillon manquant reste simplement silencieux.
+      }
+    }));
+  }
+
   function playSample(kind: SoundKind, force = false) {
     if (mutedRef.current && !force) return;
+
+    // Anti-répétition : à vitesse élevée un même tick joue plusieurs sous-pas,
+    // qui déclencheraient sinon le même effet plusieurs fois de suite.
+    const now = performance.now();
+    const last = lastPlayedRef.current.get(kind) ?? -Infinity;
+    if (now - last < SOUND_MIN_INTERVAL_MS) return;
+    lastPlayedRef.current.set(kind, now);
+
+    const context = audioCtxRef.current;
+    const buffer = buffersRef.current.get(kind);
+    if (context && buffer) {
+      if (context.state === "suspended") void context.resume();
+      const source = context.createBufferSource();
+      source.buffer = buffer;
+      const gain = context.createGain();
+      gain.gain.value = kind === "explosion" ? 1 : 0.82;
+      source.connect(gain).connect(context.destination);
+      source.start();
+      return;
+    }
+
+    // Repli tant que le décodage n'est pas terminé, ou sans Web Audio.
     const audio = new Audio(`${import.meta.env.BASE_URL}audio/${kind}.m4a`);
     audio.preload = "auto";
     audio.volume = kind === "explosion" ? 1 : 0.82;
@@ -956,17 +1007,15 @@ export default function App() {
     void audio.play().catch(release);
   }
 
-  function toggleMute() {
+  async function toggleMute() {
     const next = !mutedRef.current;
     mutedRef.current = next;
     setMuted(next);
     if (!next) {
+      // Le contexte audio ne peut être créé que depuis un geste utilisateur :
+      // c'est ici, et le décodage des échantillons se fait dans la foulée.
+      await primeAudio();
       playSample("unmute", true);
-      for (const kind of ["switch", "brake", "explosion", "split", "paint", "station", "pass"] satisfies SoundKind[]) {
-        const preload = new Audio(`${import.meta.env.BASE_URL}audio/${kind}.m4a`);
-        preload.preload = "auto";
-        preload.load();
-      }
     }
   }
 
