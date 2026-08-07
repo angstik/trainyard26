@@ -35,8 +35,14 @@ export const SKINNABLE_VARIABLES = [
 export type SkinnableVariable = (typeof SKINNABLE_VARIABLES)[number];
 
 /** Éléments graphiques qu'un skin peut remplacer par un SVG. */
-export const SKINNABLE_ASSETS = ["rock"] as const;
+export const SKINNABLE_ASSETS = ["rock", "badge"] as const;
 export type SkinnableAsset = (typeof SKINNABLE_ASSETS)[number];
+
+/** Description lisible de chaque élément, reprise dans le modèle exporté. */
+export const ASSET_DESCRIPTIONS: Record<SkinnableAsset, string> = {
+  rock: "Le rocher (obstacle). SVG carré, étiré pour remplir la case.",
+  badge: "Petit emblème du skin, affiché dans l'en-tête à côté du numéro de version. SVG carré, rendu à environ 14 px.",
+};
 
 export type Skin = {
   name: string;
@@ -47,6 +53,46 @@ export type Skin = {
   /** SVG en ligne, indexé par élément. */
   assets?: Partial<Record<SkinnableAsset, string>>;
 };
+
+/**
+ * Produit un modèle de skin COMPLET : toutes les variables disponibles y
+ * figurent, renseignées avec la valeur effectivement appliquée — celle du
+ * skin en cours, ou celle du skin par défaut si le skin courant ne la
+ * définit pas. Le fichier obtenu est donc à la fois un export du skin actif
+ * et un point de départ exhaustif pour en écrire un nouveau.
+ */
+export function buildSkinTemplate(current: Skin | null): string {
+  const computed = getComputedStyle(document.documentElement);
+  const variables: Record<string, string> = {};
+  for (const variable of SKINNABLE_VARIABLES) {
+    const fromSkin = current?.variables?.[variable];
+    const effective = (fromSkin ?? computed.getPropertyValue(`--${variable}`)).trim();
+    if (effective) variables[variable] = effective;
+  }
+
+  const assets: Record<string, string> = {};
+  for (const asset of SKINNABLE_ASSETS) {
+    const svg = current?.assets?.[asset];
+    if (svg) assets[asset] = svg;
+  }
+
+  const template: Record<string, unknown> = {
+    name: current ? `${current.name} (copie)` : "Mon skin",
+    author: current?.author ?? "",
+    version: "1.0",
+    _aide: [
+      "Toutes les variables disponibles sont listées ci-dessous, avec la valeur actuellement appliquée.",
+      "Un skin peut être partiel : supprimez librement les entrées que vous ne souhaitez pas modifier.",
+      "Les couleurs des trains ne sont pas modifiables (elles portent la logique du jeu).",
+      "Les champs commençant par « _ » sont ignorés à l'import.",
+    ],
+    _elements_disponibles: ASSET_DESCRIPTIONS,
+    variables,
+    ...(Object.keys(assets).length ? { assets } : {}),
+  };
+
+  return JSON.stringify(template, null, 2);
+}
 
 export const SKIN_STORAGE_KEY = "signal-nocturne-skin-v1";
 

@@ -1,6 +1,6 @@
 {
-  "name": "Signal Nocturne",
-  "short_name": "Signal Nocturne",
+  "name": "Signal Nocturne v2",
+  "short_name": "Signal v2",
   "description": "Puzzle ferroviaire nocturne de construction et de simulation.",
   "start_url": "./",
   "scope": "./",

@@ -16,5 +16,8 @@
     "skin-loco-trim": "#c87f3a",
     "skin-loco-body-dark": "#140f0c",
     "skin-loco-body-light": "#463a30"
+  },
+  "assets": {
+    "badge": "<svg viewBox=\"0 0 24 24\" xmlns=\"http://www.w3.org/2000/svg\"><circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"#c87f3a\"/><path d=\"M7 15l5-8 5 8z\" fill=\"#241a14\"/></svg>"
   }
 }

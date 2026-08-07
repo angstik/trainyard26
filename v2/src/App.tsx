@@ -10,7 +10,7 @@ import { parseLevelImport, type LevelIdentity } from "./levels/importFormats";
 import type { Direction, LevelDefinition, LevelFamily, LevelObject, LevelSource, TrainColor } from "./levels/types";
 import { hydrateLevel } from "./levels/hydrate";
 import { sampleRailCenterline } from "./rail-motion";
-import { applySkin, loadStoredSkin, parseSkin, storeSkin, type Skin } from "./skins/skin";
+import { applySkin, buildSkinTemplate, loadStoredSkin, parseSkin, storeSkin, type Skin } from "./skins/skin";
 
 type Point = [number, number];
 type EditorTool = "rail" | "erase" | "select" | "outlet" | "station" | "painter" | "splitter" | "obstacle" | "delete";
@@ -503,6 +503,19 @@ export default function App() {
     setSkin(null);
     storeSkin(null);
     setSkinFeedback("Skin par défaut restauré.");
+  }
+
+  /** Télécharge un modèle complet, servant aussi d'export du skin en cours. */
+  function exportSkinTemplate() {
+    const contents = buildSkinTemplate(skin);
+    const blob = new Blob([contents], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = `${(skin?.name ?? "signal-nocturne-skin").replace(/[^a-zA-Z0-9-_]+/g, "-").toLowerCase()}.json`;
+    link.click();
+    URL.revokeObjectURL(url);
+    setSkinFeedback("Modèle exporté : toutes les options y figurent, avec les valeurs actuelles.");
   }
   const [updateState, setUpdateState] = useState<
     { status: "idle" } | { status: "checking" } | { status: "current" } | { status: "available"; version: string } | { status: "error" }
@@ -1973,6 +1986,9 @@ export default function App() {
         <div className="brand">
           <span className="sigil">
             ✣<button className="version-tag" title="Vérifier les mises à jour" aria-label={`Version ${APP_VERSION} — vérifier les mises à jour`} onClick={() => void checkForUpdate()}>v{APP_VERSION}</button>
+            {skinAssets.badge && (
+              <span className="skin-badge" title={`Skin : ${skin?.name ?? ""}`} aria-label={`Skin appliqué : ${skin?.name ?? ""}`} dangerouslySetInnerHTML={{ __html: skinAssets.badge }} />
+            )}
             {updateState.status !== "idle" && (
               <div className="update-toast" role="status">
                 {updateState.status === "checking" && <span>Vérification…</span>}
@@ -2340,6 +2356,7 @@ export default function App() {
                   }}
                 />
                 <button className="skin-reset" disabled={!skin} onClick={resetSkin}>REVENIR AU SKIN PAR DÉFAUT</button>
+                <button className="skin-export" onClick={exportSkinTemplate}>EXPORTER LE SKIN / MODÈLE COMPLET</button>
                 {skinFeedback && <p className="import-feedback" role="status">{skinFeedback}</p>}
               </div>
               )}

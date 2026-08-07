@@ -56,11 +56,12 @@ fonctions chargeant une ressource externe (`url()`) sont refusées.
 
 ## Éléments graphiques (`assets`)
 
-Actuellement un seul élément est remplaçable :
+Éléments actuellement remplaçables :
 
 | Clé | Élément |
 |---|---|
-| `rock` | Le rocher (obstacle) |
+| `rock` | Le rocher (obstacle). SVG carré, étiré pour remplir la case. |
+| `badge` | Emblème du skin, affiché dans l'en-tête à côté du numéro de version (≈ 14 px). Permet d'identifier d'un coup d'œil l'habillage en cours. |
 
 Le SVG est fourni **en ligne**, sous forme de chaîne. Il doit :
 - commencer par `<svg`, de préférence avec un `viewBox` (il est étiré pour
@@ -72,6 +73,22 @@ Le SVG est fourni **en ligne**, sous forme de chaîne. Il doit :
 Gares, remises et locomotives suivront dans une prochaine étape ; ils
 demandent des surcouches dynamiques (connecteurs orientables, points de
 couleur, zone de teinte du train) qui restent à définir.
+
+## Partir d'un modèle
+
+Le plus simple pour créer un skin est d'utiliser le bouton
+**« Exporter le skin / modèle complet »** dans la même section de
+l'application. Le fichier obtenu contient :
+
+- **toutes** les variables disponibles, renseignées avec la valeur
+  actuellement appliquée (celle du skin en cours, ou celle du skin par défaut) ;
+- la liste des éléments graphiques remplaçables, avec leur description ;
+- vos éventuels SVG déjà en place.
+
+Il sert donc à la fois d'export du skin actif et de point de départ exhaustif.
+Supprimez ensuite librement les entrées que vous ne souhaitez pas modifier :
+un skin partiel est valide. Les champs commençant par `_` sont de l'aide, ils
+sont ignorés à l'import.
 
 ## Exemple
 
