@@ -955,20 +955,31 @@ export default function App() {
   /** Deux occurrences du même effet plus rapprochées que cela ne sont pas rejouées. */
   const SOUND_MIN_INTERVAL_MS = 45;
 
-  /** Décode tous les échantillons une seule fois, hors du thread de rendu. */
-  async function primeAudio() {
-    if (audioCtxRef.current) return;
+  /**
+   * Crée le contexte audio et lance le décodage des échantillons. La création
+   * ET la réactivation du contexte doivent être SYNCHRONES dans le gestionnaire
+   * de clic : les navigateurs n'autorisent la sortie audio que depuis un geste
+   * utilisateur, et un `await` préalable ferait sortir de ce contexte (le
+   * contexte resterait suspendu, donc totalement silencieux). Le décodage, lui,
+   * se poursuit en tâche de fond.
+   */
+  function primeAudio() {
+    if (audioCtxRef.current) {
+      void audioCtxRef.current.resume();
+      return;
+    }
     const Ctor = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
     if (!Ctor) return; // Repli sur <audio> si Web Audio est indisponible.
     const context = new Ctor();
     audioCtxRef.current = context;
-    await Promise.all(SOUND_KINDS.map(async (kind) => {
+    void context.resume();
+    void Promise.all(SOUND_KINDS.map(async (kind) => {
       try {
         const response = await fetch(`${import.meta.env.BASE_URL}audio/${kind}.m4a`);
         const buffer = await context.decodeAudioData(await response.arrayBuffer());
         buffersRef.current.set(kind, buffer);
       } catch {
-        // Un échantillon manquant reste simplement silencieux.
+        // Échantillon indécodable : cet effet retombera sur l'élément <audio>.
       }
     }));
   }
@@ -985,8 +996,9 @@ export default function App() {
 
     const context = audioCtxRef.current;
     const buffer = buffersRef.current.get(kind);
-    if (context && buffer) {
-      if (context.state === "suspended") void context.resume();
+    // Uniquement si le contexte tourne VRAIMENT : `resume()` est asynchrone,
+    // démarrer une source sur un contexte encore suspendu serait silencieux.
+    if (context && buffer && context.state === "running") {
       const source = context.createBufferSource();
       source.buffer = buffer;
       const gain = context.createGain();
@@ -995,6 +1007,7 @@ export default function App() {
       source.start();
       return;
     }
+    if (context && context.state === "suspended") void context.resume();
 
     // Repli tant que le décodage n'est pas terminé, ou sans Web Audio.
     const audio = new Audio(`${import.meta.env.BASE_URL}audio/${kind}.m4a`);
@@ -1007,14 +1020,13 @@ export default function App() {
     void audio.play().catch(release);
   }
 
-  async function toggleMute() {
+  function toggleMute() {
     const next = !mutedRef.current;
     mutedRef.current = next;
     setMuted(next);
     if (!next) {
-      // Le contexte audio ne peut être créé que depuis un geste utilisateur :
-      // c'est ici, et le décodage des échantillons se fait dans la foulée.
-      await primeAudio();
+      // Synchrone, dans le geste utilisateur (cf. primeAudio).
+      primeAudio();
       playSample("unmute", true);
     }
   }

@@ -443,9 +443,9 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .splitter-piece.v .split-blue { left:3%; top:calc(50% - 4px); }
 @keyframes rainbow-wheel { to { transform:rotate(360deg); } }
 
-/* z-index sous les locos (.loco-anchor = 9) : l'effet accompagne l'action
-   sans jamais masquer les trains au moment précis de la fusion. */
-.color-burst { position:absolute; z-index:6; width:14.285%; height:14.285%; pointer-events:none; transform:translate(-1%,-1%); }
+/* z-index au-dessus des locos (.loco-anchor = 9) : l'effet de mélange doit
+   être pleinement visible au moment où il se produit. */
+.color-burst { position:absolute; z-index:12; width:14.285%; height:14.285%; pointer-events:none; transform:translate(-1%,-1%); }
 .color-burst span { position:absolute; inset:20%; border-radius:50%; background:var(--burst-color); filter:blur(8px); opacity:.75; animation:paint-cloud .5s ease-out both; }
 .color-burst i { position:absolute; left:46%; top:46%; width:10px; height:10px; border-radius:50%; background:var(--burst-color); box-shadow:0 0 12px var(--burst-color); animation:paint-drop .45s ease-out both; }
 .color-burst i:nth-child(1){--bx:-38px;--by:-22px}.color-burst i:nth-child(2){--bx:36px;--by:-28px}.color-burst i:nth-child(3){--bx:-24px;--by:35px}.color-burst i:nth-child(4){--bx:34px;--by:30px}
