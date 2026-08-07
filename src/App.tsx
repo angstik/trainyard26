@@ -538,6 +538,14 @@ export default function App() {
   const nextTrainsRef = useRef<MovingTrain[]>([]);
   const tickTimeRef = useRef<number>(Date.now());
   const tickIntervalRef = useRef<number>(25);
+  // Snapshot des positions d'aiguillage produit par le tick physique, publié
+  // vers le rendu par la boucle d'animation (et non directement) : trains et
+  // aiguillages doivent être commités dans le MÊME rendu, sinon il existe des
+  // images où l'aiguillage a déjà basculé alors que les trains affichés sont
+  // encore dans leur état précédent — l'aiguillage y désigne alors la branche
+  // du passage suivant, et le nez du train s'oriente dessus.
+  const nextSwitchesRef = useRef<Record<string, number>>({});
+  const publishedSwitchesRef = useRef<Record<string, number> | null>(null);
   const mutedRef = useRef(true);
   const activeAudioRef = useRef<Set<HTMLAudioElement>>(new Set());
   const explosionId = useRef(0);
@@ -999,6 +1007,8 @@ export default function App() {
     simRef.current = clean;
     prevTrainsRef.current = [];
     nextTrainsRef.current = [];
+    nextSwitchesRef.current = { ...switchPositions };
+    publishedSwitchesRef.current = null;
     tickTimeRef.current = Date.now();
     setDisplaySwitchPositions({ ...switchPositions });
     setTrains([]);
@@ -1262,7 +1272,7 @@ export default function App() {
       // (onglet en arrière-plan) sans étirer l'interpolation.
       tickIntervalRef.current = Math.min(120, Math.max(8, nowMs - tickTimeRef.current));
       tickTimeRef.current = nowMs;
-      setDisplaySwitchPositions({ ...sim.switches });
+      nextSwitchesRef.current = { ...sim.switches };
       setEmitted({ ...sim.emitted });
       setReceived({ ...sim.received });
 
@@ -1297,6 +1307,13 @@ export default function App() {
     let frame: number;
     const render = () => {
       const alpha = Math.min(1, Math.max(0, (Date.now() - tickTimeRef.current) / tickIntervalRef.current));
+      // Publié ici, donc dans le même lot de rendu React que setTrains
+      // ci-dessous : l'affichage des aiguillages ne peut plus prendre de
+      // l'avance sur l'état des trains affichés.
+      if (publishedSwitchesRef.current !== nextSwitchesRef.current) {
+        publishedSwitchesRef.current = nextSwitchesRef.current;
+        setDisplaySwitchPositions(nextSwitchesRef.current);
+      }
       const previousById = new Map(prevTrainsRef.current.map((item) => [item.id, item]));
       setTrains(nextTrainsRef.current.map((train) => {
         const previous = previousById.get(train.id);
