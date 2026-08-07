@@ -1782,6 +1782,15 @@ export default function App() {
     const map = new Map<string, Direction>();
     for (const train of trains) {
       map.set(pointKey(train.cell), directionBetween(train.cell, train.next));
+      // Pendant les images où l'interpolation affiche encore le train sur son
+      // segment d'approche, `train.cell` désigne la case précédente : la case
+      // vers laquelle il entre ne serait donc pas vue comme occupée et
+      // retomberait sur l'état d'aiguillage déjà incrémenté, faisant
+      // brièvement apparaître la branche du passage suivant. `renderFuture`
+      // porte la sortie réellement retenue : on marque la case d'arrivée avec.
+      if (train.renderFuture) {
+        map.set(pointKey(train.next), directionBetween(train.next, train.renderFuture));
+      }
     }
     return map;
   }, [trains]);
