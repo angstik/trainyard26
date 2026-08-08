@@ -294,7 +294,13 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
   font-size:10px; line-height:1; pointer-events:none; opacity:.8;
 }
 
-.object, .obstacle, .switch-control { position: absolute; width: 14.285%; height: 14.285%; z-index: 5; }
+/* isolation:isolate — chaque objet forme son propre contexte d'empilement.
+   Sans cela, les z-index internes (illustration d'un skin, toit, piliers…)
+   entrent en concurrence avec ceux du plateau : une illustration en z-index 1
+   passait sous les rails (z-index 3). Ainsi, tout l'objet est au-dessus des
+   rails, et l'ordre interne (points de couleur au-dessus du bâtiment) est
+   garanti quelle que soit la valeur choisie. */
+.object, .obstacle, .switch-control { position: absolute; width: 14.285%; height: 14.285%; z-index: 5; isolation: isolate; }
 .object, .obstacle { pointer-events:none; border:0; padding:0; background:transparent; }
 .workspace.editor .object, .workspace.editor .obstacle { pointer-events:auto; cursor:pointer; }
 .workspace.editor .invalid-object { outline:3px solid #ff4f45; outline-offset:-3px; filter:drop-shadow(0 0 13px #ff3b30); }
@@ -838,9 +844,15 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
    dessinés par-dessus par l'application (information de jeu). */
 .terminal-art { position:absolute; inset:0; display:block; z-index:1; }
 .terminal-art svg { width:100%; height:100%; display:block; }
-.terminal.skinned .terminal-dots { z-index:3; }
+/* Les points de couleur passent toujours au-dessus de l'illustration. */
+.terminal.skinned .terminal-dots { z-index:6; }
 /* Connecteur skinné : même géométrie que celui d'origine (pointe vers le
    haut, pivotée vers chaque entrée), seul le dessin change. */
 .terminal-connector.skinned { background:none; border:0; }
 .terminal-connector.skinned svg { width:100%; height:100%; display:block; }
 .tool-preview.skinned-preview svg { width:100%; height:100%; display:block; }
+/* Locomotive fournie par un skin : occupe la case, la rotation reste pilotée
+   par le code. Un peu plus grande que la loco par défaut, qui n'occupe qu'une
+   fraction de la case. */
+.loco.skinned { width:11%; height:11%; margin:1.5% 0 0 1.5%; }
+.loco.skinned svg { width:100%; height:100%; display:block; }

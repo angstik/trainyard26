@@ -64,7 +64,25 @@ fonctions chargeant une ressource externe (`url()`) sont refusées.
 | `outlet` | La remise (départ des trains). SVG carré. |
 | `station` | La gare (arrivée des trains). SVG carré. |
 | `connector` | Le connecteur reliant un bâtiment à la voie. Dessiné **pointe vers le haut** : l'application le fait pivoter vers chaque entrée active. |
+| `loco` | La locomotive. Dessinée **nez vers le haut**, l'application la fait pivoter. Les parties à teindre doivent utiliser `fill="currentColor"` ou `stroke="currentColor"` (voir ci-dessous). |
 | `badge` | Emblème du skin, affiché dans l'en-tête à côté du numéro de version (≈ 14 px). Permet d'identifier d'un coup d'œil l'habillage en cours. |
+
+### La locomotive et sa zone de couleur
+
+C'est le seul élément dont une partie doit prendre une couleur variable : celle
+du train (rouge, bleu, violet…). L'application pose cette couleur sur le
+conteneur ; votre SVG la récupère avec **`currentColor`** :
+
+```xml
+<svg viewBox="0 0 100 100">
+  <rect x="26" y="14" width="48" height="72" fill="#2b3236"/>   <!-- carrosserie fixe -->
+  <rect x="34" y="46" width="32" height="32" fill="currentColor"/> <!-- zone teintée -->
+</svg>
+```
+
+Prévoyez une zone de teinte **assez grande et centrale** : c'est ainsi que le
+joueur identifie la couleur d'un train en mouvement. Un simple liseré ne
+suffirait pas.
 
 ### Ce qui reste piloté par l'application
 

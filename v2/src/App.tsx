@@ -405,6 +405,22 @@ function SteamLoco({ train, future }: { train: MovingTrain; future?: Point }) {
   const x = ((front[0] + rear[0]) / 2) * (100 / GRID);
   const y = ((front[1] + rear[1]) / 2) * (100 / GRID);
   const displayAngle = Math.atan2(front[0] - rear[0], rear[1] - front[1]) * 180 / Math.PI;
+  const locoSvg = skinAsset("loco");
+  if (locoSvg) {
+    return (
+      <div className="loco-anchor" style={{ transform: `translate(${x}%, ${y}%)` }}>
+        {/* La couleur du train est posée en `color` : le SVG du skin la
+            récupère par `currentColor` sur les parties à teinter. C'est le
+            seul moyen de recolorer une zone désignée d'une illustration
+            fournie par un tiers. */}
+        <div
+          className={`loco skinned ${train.color}`}
+          style={{ transform: `rotate(${displayAngle}deg)`, color: COLOR_HEX[train.color] }}
+          dangerouslySetInnerHTML={{ __html: locoSvg }}
+        />
+      </div>
+    );
+  }
   return (
     <div className="loco-anchor" style={{ transform: `translate(${x}%, ${y}%)` }}>
       <div className={`loco ${train.color}`} style={{ transform: `rotate(${displayAngle}deg)` }}>
