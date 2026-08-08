@@ -61,7 +61,34 @@ fonctions chargeant une ressource externe (`url()`) sont refusées.
 | Clé | Élément |
 |---|---|
 | `rock` | Le rocher (obstacle). SVG carré, étiré pour remplir la case. |
+| `outlet` | La remise (départ des trains). SVG carré. |
+| `station` | La gare (arrivée des trains). SVG carré. |
+| `connector` | Le connecteur reliant un bâtiment à la voie. Dessiné **pointe vers le haut** : l'application le fait pivoter vers chaque entrée active. |
 | `badge` | Emblème du skin, affiché dans l'en-tête à côté du numéro de version (≈ 14 px). Permet d'identifier d'un coup d'œil l'habillage en cours. |
+
+### Ce qui reste piloté par l'application
+
+Sur les gares et remises, deux choses ne sont **pas** dans l'image et sont
+dessinées par-dessus :
+
+- **les points de couleur** (séquence de trains attendue ou émise), au centre
+  du bâtiment — ils portent de l'information de jeu, un skin ne doit pas
+  pouvoir les masquer. Gardez cette zone centrale lisible ;
+- **les connecteurs**, dont le nombre dépend des entrées actives (1 à 4 pour
+  une gare) et dont l'orientation est calculée. Un skin en fournit le dessin,
+  jamais le placement.
+
+### Forme attendue
+
+Chaque clé de `assets` vaut **directement une chaîne SVG**, sur une seule
+ligne, guillemets internes échappés en `\"`. Pas d'objet imbriqué :
+
+```json
+"assets": {
+  "rock": "<svg viewBox=\"0 0 100 100\">…</svg>",
+  "badge": "<svg viewBox=\"0 0 24 24\">…</svg>"
+}
+```
 
 Le SVG est fourni **en ligne**, sous forme de chaîne. Il doit :
 - commencer par `<svg`, de préférence avec un `viewBox` (il est étiré pour

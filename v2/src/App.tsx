@@ -10,7 +10,7 @@ import { parseLevelImport, type LevelIdentity } from "./levels/importFormats";
 import type { Direction, LevelDefinition, LevelFamily, LevelObject, LevelSource, TrainColor } from "./levels/types";
 import { hydrateLevel } from "./levels/hydrate";
 import { sampleRailCenterline } from "./rail-motion";
-import { applySkin, buildSkinTemplate, loadStoredSkin, parseSkin, storeSkin, type Skin } from "./skins/skin";
+import { applySkin, buildSkinTemplate, loadStoredSkin, parseSkin, setActiveSkinAssets, skinAsset, storeSkin, type Skin } from "./skins/skin";
 
 type Point = [number, number];
 type EditorTool = "rail" | "erase" | "select" | "outlet" | "station" | "painter" | "splitter" | "obstacle" | "delete";
@@ -425,15 +425,42 @@ function SteamLoco({ train, future }: { train: MovingTrain; future?: Point }) {
 function TerminalBuilding({ object, done = 0 }: { object: Extract<LevelObject, { type: "outlet" | "station" }>; done?: number }) {
   const colors = object.type === "outlet" ? object.trains : object.expects;
   const facings = object.type === "outlet" ? [object.facing] : object.facings;
+  const buildingSvg = skinAsset(object.type);
+  const connectorSvg = skinAsset("connector");
+
+  // Les connecteurs restent pilotés par le code : leur nombre dépend des
+  // entrées actives et chacun est pivoté vers sa direction. Un skin ne
+  // fournit que leur dessin, jamais leur placement.
+  const connectors = facings.map((facing) => (
+    connectorSvg
+      ? <span key={facing} className="terminal-connector skinned" style={{ transform: `rotate(${DIR_ANGLE[facing]}deg)` }} dangerouslySetInnerHTML={{ __html: connectorSvg }} />
+      : <span key={facing} className="terminal-connector" style={{ transform: `rotate(${DIR_ANGLE[facing]}deg)` }} />
+  ));
+
+  // Les points de couleur sont TOUJOURS dessinés par l'application, par-dessus
+  // le bâtiment : ils portent la séquence de trains attendue/émise, donc de
+  // l'information de jeu qu'un skin ne doit pas pouvoir masquer.
+  const dots = (
+    <div className={`terminal-dots ${object.type}-dots ${object.type === "station" && colors.length > 4 ? "scrolling" : ""}`}>
+      <Dots colors={colors} done={done} slots={object.type === "outlet" ? 6 : colors.length} />
+    </div>
+  );
+
+  if (buildingSvg) {
+    return (
+      <div className={`terminal ${object.type} skinned`}>
+        {connectors}
+        <span className="terminal-art" dangerouslySetInnerHTML={{ __html: buildingSvg }} />
+        {dots}
+      </div>
+    );
+  }
+
   return (
     <div className={`terminal ${object.type}`}>
-      {facings.map((facing) => (
-        <span key={facing} className="terminal-connector" style={{ transform: `rotate(${DIR_ANGLE[facing]}deg)` }} />
-      ))}
+      {connectors}
       <div className="roof"><span /><i /><i /></div>
-      <div className={`terminal-dots ${object.type}-dots ${object.type === "station" && colors.length > 4 ? "scrolling" : ""}`}>
-        <Dots colors={colors} done={done} slots={object.type === "outlet" ? 6 : colors.length} />
-      </div>
+      {dots}
       <span className="pillar left" /><span className="pillar right" />
       <div className="arch">
         {object.type === "outlet" ? <span className="door" /> : <><span className="buffer" /><i className="lantern left" /><i className="lantern right" /></>}
@@ -473,7 +500,11 @@ function ToolIcon({ tool }: { tool: EditorTool }) {
   }
   if (tool === "painter") return <span className="tool-preview"><PainterPiece object={{ id: "tool-painter", type: "painter", x: 0, y: 0, color: "red", sides: ["N", "S"] }} /></span>;
   if (tool === "splitter") return <span className="tool-preview"><SplitterPiece object={{ id: "tool-splitter", type: "splitter", x: 0, y: 0, orientation: "H" }} /></span>;
-  if (tool === "obstacle") return <span className="tool-preview rock-preview" />;
+  if (tool === "obstacle") {
+    const rock = skinAsset("rock");
+    if (rock) return <span className="tool-preview skinned-preview" dangerouslySetInnerHTML={{ __html: rock }} />;
+    return <span className="tool-preview rock-preview" />;
+  }
   if (tool === "select") return <span className="tool-preview select-preview"><span className="select-arrow n" /><span className="select-arrow e" /><span className="select-arrow s" /><span className="select-arrow w" /><span className="select-hub" /></span>;
   if (tool === "delete" || tool === "erase") return <span className="tool-preview eraser-preview"><span className="eraser-body" /><span className="eraser-band" /></span>;
   return <span className="tool-glyph">×</span>;
@@ -483,7 +514,8 @@ export default function App() {
   const [mode, setMode] = useState<"play" | "editor">("play");
   const [skin, setSkin] = useState<Skin | null>(() => loadStoredSkin());
   const [skinFeedback, setSkinFeedback] = useState("");
-  const skinAssets = skin?.assets ?? {};
+  const skinAssets = useMemo(() => skin?.assets ?? {}, [skin]);
+  setActiveSkinAssets(skinAssets);
 
   useEffect(() => { applySkin(skin); }, [skin]);
 

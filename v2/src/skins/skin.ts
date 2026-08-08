@@ -35,13 +35,25 @@ export const SKINNABLE_VARIABLES = [
 export type SkinnableVariable = (typeof SKINNABLE_VARIABLES)[number];
 
 /** Éléments graphiques qu'un skin peut remplacer par un SVG. */
-export const SKINNABLE_ASSETS = ["rock", "badge"] as const;
+export const SKINNABLE_ASSETS = ["rock", "badge", "outlet", "station", "connector"] as const;
 export type SkinnableAsset = (typeof SKINNABLE_ASSETS)[number];
 
 /** Description lisible de chaque élément, reprise dans le modèle exporté. */
 export const ASSET_DESCRIPTIONS: Record<SkinnableAsset, string> = {
   rock: "Le rocher (obstacle). SVG carré, étiré pour remplir la case.",
   badge: "Petit emblème du skin, affiché dans l'en-tête à côté du numéro de version. SVG carré, rendu à environ 14 px.",
+  outlet: "La remise (départ des trains). SVG carré. Les points de couleur sont dessinés PAR-DESSUS par l'application, au centre : gardez cette zone lisible.",
+  station: "La gare (arrivée des trains). SVG carré. Les points de couleur sont dessinés PAR-DESSUS par l'application, au centre : gardez cette zone lisible.",
+  connector: "Le connecteur reliant un bâtiment à la voie. SVG carré, dessiné pointe vers le HAUT : l'application le fait pivoter vers chaque entrée active.",
+};
+
+/** Exemples minimaux mais fonctionnels, fournis dans le modèle exporté. */
+export const ASSET_EXAMPLES: Record<SkinnableAsset, string> = {
+  rock: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><path d="M20 78 L12 46 L34 22 L64 18 L86 40 L80 74 L50 88 Z" fill="#5a6268" stroke="#8b949b" stroke-width="3" stroke-linejoin="round"/></svg>',
+  badge: '<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="#35ddf3"/></svg>',
+  outlet: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="26" width="68" height="58" rx="4" fill="#26313a" stroke="#a8894e" stroke-width="3"/><path d="M10 30 L50 10 L90 30 Z" fill="#31404b" stroke="#a8894e" stroke-width="3" stroke-linejoin="round"/><rect x="38" y="56" width="24" height="28" rx="2" fill="#0d1418"/></svg>',
+  station: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="26" width="68" height="58" rx="4" fill="#26313a" stroke="#a8894e" stroke-width="3"/><path d="M10 30 L50 10 L90 30 Z" fill="#31404b" stroke="#a8894e" stroke-width="3" stroke-linejoin="round"/><rect x="30" y="70" width="40" height="8" rx="2" fill="#a8894e"/></svg>',
+  connector: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="42" y="0" width="16" height="52" fill="#3d4a52" stroke="#8b949b" stroke-width="2"/></svg>',
 };
 
 export type Skin = {
@@ -76,25 +88,54 @@ export function buildSkinTemplate(current: Skin | null): string {
     if (svg) assets[asset] = svg;
   }
 
+  // Catalogue des éléments : description + exemple fonctionnel, prêts à être
+  // recopiés dans "assets". Placé sous une clé commençant par « _ », donc
+  // ignoré à l'import : il documente sans rien appliquer.
+  const catalogue: Record<string, unknown> = {};
+  for (const asset of SKINNABLE_ASSETS) {
+    catalogue[asset] = {
+      description: ASSET_DESCRIPTIONS[asset],
+      actif: Boolean(assets[asset]),
+      exemple: ASSET_EXAMPLES[asset],
+    };
+  }
+
   const template: Record<string, unknown> = {
     name: current ? `${current.name} (copie)` : "Mon skin",
     author: current?.author ?? "",
     version: "1.0",
     _aide: [
-      "Toutes les variables disponibles sont listées ci-dessous, avec la valeur actuellement appliquée.",
-      "Un skin peut être partiel : supprimez librement les entrées que vous ne souhaitez pas modifier.",
+      "COULEURS : toutes les variables disponibles sont dans « variables », renseignées avec la valeur actuellement appliquée.",
+      "ÉLÉMENTS GRAPHIQUES : la section « assets » ne contient que les éléments actifs. Pour en activer un, copiez son « exemple » depuis « _elements_disponibles » vers « assets », puis remplacez le SVG par le vôtre.",
+      "FORME ATTENDUE dans « assets » : chaque clé vaut DIRECTEMENT une chaîne SVG, sur une seule ligne, guillemets internes échappés en \\\". Pas d'objet imbriqué.",
+      "EXEMPLE : \"assets\": { \"rock\": \"<svg viewBox=\\\"0 0 100 100\\\">…</svg>\" }",
+      "Un skin peut être partiel : supprimez librement ce que vous ne souhaitez pas modifier.",
       "Les couleurs des trains ne sont pas modifiables (elles portent la logique du jeu).",
-      "Les champs commençant par « _ » sont ignorés à l'import.",
+      "Les clés commençant par « _ » sont de l'aide : elles sont ignorées à l'import.",
     ],
-    _elements_disponibles: ASSET_DESCRIPTIONS,
     variables,
-    ...(Object.keys(assets).length ? { assets } : {}),
+    assets,
+    _elements_disponibles: catalogue,
   };
 
   return JSON.stringify(template, null, 2);
 }
 
 export const SKIN_STORAGE_KEY = "signal-nocturne-skin-v1";
+
+/**
+ * Assets du skin actif, accessibles aux composants de rendu définis au niveau
+ * du module (ToolIcon, TerminalBuilding…) sans avoir à enfiler des props
+ * jusqu'à eux. Mis à jour par App au moment du rendu, donc toujours cohérent
+ * avec l'état affiché.
+ */
+let activeAssets: Partial<Record<SkinnableAsset, string>> = {};
+export function setActiveSkinAssets(assets: Partial<Record<SkinnableAsset, string>>) {
+  activeAssets = assets;
+}
+export function skinAsset(asset: SkinnableAsset): string | undefined {
+  return activeAssets[asset];
+}
 
 /** Un skin ne doit pas pouvoir injecter de contenu actif via ses valeurs. */
 function isSafeCssValue(value: string): boolean {
@@ -139,6 +180,7 @@ export function parseSkin(raw: string): SkinParseResult {
   const variables: Partial<Record<SkinnableVariable, string>> = {};
   if (source.variables && typeof source.variables === "object") {
     for (const [key, value] of Object.entries(source.variables as Record<string, unknown>)) {
+      if (key.startsWith("_")) continue; // clé d'aide : ignorée sans le signaler
       if (!SKINNABLE_VARIABLES.includes(key as SkinnableVariable)) { ignored.push(`variable inconnue : ${key}`); continue; }
       if (typeof value !== "string" || !isSafeCssValue(value)) { ignored.push(`valeur refusée : ${key}`); continue; }
       variables[key as SkinnableVariable] = value;
@@ -148,6 +190,7 @@ export function parseSkin(raw: string): SkinParseResult {
   const assets: Partial<Record<SkinnableAsset, string>> = {};
   if (source.assets && typeof source.assets === "object") {
     for (const [key, value] of Object.entries(source.assets as Record<string, unknown>)) {
+      if (key.startsWith("_")) continue; // clé d'aide : ignorée sans le signaler
       if (!SKINNABLE_ASSETS.includes(key as SkinnableAsset)) { ignored.push(`élément inconnu : ${key}`); continue; }
       if (typeof value !== "string" || !isSafeSvg(value)) { ignored.push(`SVG refusé : ${key}`); continue; }
       assets[key as SkinnableAsset] = value;

@@ -832,3 +832,15 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
    droite du sigle sans perturber la mise en page de l'en-tête. */
 .skin-badge { position:absolute; right:-15px; top:2px; width:14px; height:14px; display:block; pointer-events:none; opacity:.9; }
 .skin-badge svg { width:100%; height:100%; display:block; }
+
+/* ---- Éléments fournis par un skin : gares, remises, connecteurs ---- */
+/* L'illustration du skin remplit la case ; les points de couleur restent
+   dessinés par-dessus par l'application (information de jeu). */
+.terminal-art { position:absolute; inset:0; display:block; z-index:1; }
+.terminal-art svg { width:100%; height:100%; display:block; }
+.terminal.skinned .terminal-dots { z-index:3; }
+/* Connecteur skinné : même géométrie que celui d'origine (pointe vers le
+   haut, pivotée vers chaque entrée), seul le dessin change. */
+.terminal-connector.skinned { background:none; border:0; }
+.terminal-connector.skinned svg { width:100%; height:100%; display:block; }
+.tool-preview.skinned-preview svg { width:100%; height:100%; display:block; }
