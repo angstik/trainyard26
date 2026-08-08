@@ -854,5 +854,16 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
 /* Locomotive fournie par un skin : occupe la case, la rotation reste pilotée
    par le code. Un peu plus grande que la loco par défaut, qui n'occupe qu'une
    fraction de la case. */
-.loco.skinned { width:11%; height:11%; margin:1.5% 0 0 1.5%; }
-.loco.skinned svg { width:100%; height:100%; display:block; }
+/* Locomotive fournie par un skin : classe DÉDIÉE, sans aucune règle de la
+   loco par défaut. Celle-ci dessine sa carrosserie en ::before, qui
+   recouvrirait entièrement le SVG du skin. */
+.loco-skinned {
+  position:absolute; left:0; top:0; width:11%; height:11%; margin:1.5% 0 0 1.5%;
+  transform-origin:50% 50%; pointer-events:none; will-change:transform;
+}
+.loco-skinned svg { width:100%; height:100%; display:block; }
+
+/* Bâtiment fourni par un skin : on neutralise le corps par défaut
+   (.terminal::before), sinon son rectangle et son liseré restent visibles
+   autour de l'illustration. */
+.terminal.skinned::before { content:none; }

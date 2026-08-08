@@ -55,7 +55,7 @@ export const ASSET_EXAMPLES: Record<SkinnableAsset, string> = {
   outlet: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="26" width="68" height="58" rx="4" fill="#26313a" stroke="#a8894e" stroke-width="3"/><path d="M10 30 L50 10 L90 30 Z" fill="#31404b" stroke="#a8894e" stroke-width="3" stroke-linejoin="round"/><rect x="38" y="56" width="24" height="28" rx="2" fill="#0d1418"/></svg>',
   station: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="26" width="68" height="58" rx="4" fill="#26313a" stroke="#a8894e" stroke-width="3"/><path d="M10 30 L50 10 L90 30 Z" fill="#31404b" stroke="#a8894e" stroke-width="3" stroke-linejoin="round"/><rect x="30" y="70" width="40" height="8" rx="2" fill="#a8894e"/></svg>',
   connector: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="42" y="0" width="16" height="52" fill="#3d4a52" stroke="#8b949b" stroke-width="2"/></svg>',
-  loco: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="26" y="14" width="48" height="72" rx="10" fill="#2b3236" stroke="#a8894e" stroke-width="3"/><rect x="34" y="46" width="32" height="32" rx="5" fill="currentColor" stroke="#111" stroke-width="2"/><circle cx="50" cy="28" r="9" fill="currentColor" stroke="#111" stroke-width="2"/></svg>',
+  loco: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="52" rx="30" ry="40" fill="currentColor" stroke="#0d1114" stroke-width="3"/><circle cx="39" cy="28" r="6.5" fill="#fff"/><circle cx="61" cy="28" r="6.5" fill="#fff"/><circle cx="39" cy="27" r="3" fill="#0d1114"/><circle cx="61" cy="27" r="3" fill="#0d1114"/></svg>',
 };
 
 export type Skin = {
@@ -67,30 +67,6 @@ export type Skin = {
   /** SVG en ligne, indexé par élément. */
   assets?: Partial<Record<SkinnableAsset, string>>;
 };
-
-/**
- * Donut vert pomme de test, décliné par élément : chacun respecte la
- * géométrie attendue à cet emplacement (viewBox, orientation de référence,
- * zone de teinte pour la locomotive). Sert à vérifier d'un coup d'œil qu'un
- * élément est bien pris en compte, avant d'y mettre un vrai dessin.
- */
-function donutSvg(asset: SkinnableAsset): string {
-  const green = "#8fd14f";
-  const dark = "#4a7a22";
-  if (asset === "badge") {
-    return `<svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><circle cx="12" cy="12" r="9" fill="none" stroke="${green}" stroke-width="5"/><circle cx="12" cy="12" r="9" fill="none" stroke="${dark}" stroke-width="1"/></svg>`;
-  }
-  if (asset === "connector") {
-    // Dessiné pointe vers le haut : l'application le fait pivoter.
-    return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="26" r="18" fill="none" stroke="${green}" stroke-width="12"/><circle cx="50" cy="26" r="18" fill="none" stroke="${dark}" stroke-width="2"/></svg>`;
-  }
-  if (asset === "loco") {
-    // La couronne utilise currentColor : elle prend la couleur du train, ce
-    // qui permet de vérifier que la zone de teinte fonctionne.
-    return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="30" fill="none" stroke="currentColor" stroke-width="20"/><circle cx="50" cy="50" r="30" fill="none" stroke="${dark}" stroke-width="2"/><circle cx="50" cy="18" r="6" fill="${green}"/></svg>`;
-  }
-  return `<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><circle cx="50" cy="50" r="30" fill="none" stroke="${green}" stroke-width="20"/><circle cx="50" cy="50" r="30" fill="none" stroke="${dark}" stroke-width="2"/></svg>`;
-}
 
 /**
  * Produit un modèle de skin COMPLET : toutes les variables disponibles y
@@ -108,29 +84,26 @@ export function buildSkinTemplate(current: Skin | null): string {
     if (effective) variables[variable] = effective;
   }
 
+  // Section « assets » : les éléments réellement actifs sous leur vrai nom,
+  // et pour tous les autres le dessin standard sous un nom préfixé « _ »
+  // (donc inactif). Il suffit de retirer le « _ » pour activer le standard,
+  // de remplacer le SVG par le sien, ou de supprimer la ligne.
   const assets: Record<string, string> = {};
   for (const asset of SKINNABLE_ASSETS) {
     const svg = current?.assets?.[asset];
     if (svg) assets[asset] = svg;
+    else assets[`_${asset}`] = ASSET_EXAMPLES[asset];
   }
 
-  // Catalogue des éléments : description + exemple fonctionnel, prêts à être
-  // recopiés dans "assets". Placé sous une clé commençant par « _ », donc
-  // ignoré à l'import : il documente sans rien appliquer.
+  // Catalogue documentaire : description et contraintes de chaque élément.
   const catalogue: Record<string, unknown> = {};
   for (const asset of SKINNABLE_ASSETS) {
     catalogue[asset] = {
       description: ASSET_DESCRIPTIONS[asset],
-      actif: Boolean(assets[asset]),
-      exemple: ASSET_EXAMPLES[asset],
+      actif: Boolean(current?.assets?.[asset]),
+      viewBox_conseille: asset === "badge" ? "0 0 24 24" : "0 0 100 100",
     };
   }
-
-  // Exemples prêts à l'emploi : un donut vert pomme par élément. Les clés sont
-  // préfixées « _ », donc ignorées à l'import : renommez-en une (en retirant
-  // le « _ ») et déplacez-la dans « assets » pour l'activer.
-  const donutExamples: Record<string, string> = {};
-  for (const asset of SKINNABLE_ASSETS) donutExamples[`_${asset}`] = donutSvg(asset);
 
   // Taille réelle d'une case sur l'appareil ayant produit ce fichier : utile
   // pour calibrer l'épaisseur des traits et la lisibilité des détails, que le
@@ -144,24 +117,24 @@ export function buildSkinTemplate(current: Skin | null): string {
     version: "1.0",
     _aide: [
       "COULEURS : toutes les variables disponibles sont dans « variables », renseignées avec la valeur actuellement appliquée.",
-      "ÉLÉMENTS GRAPHIQUES : la section « assets » ne contient que les éléments actifs. Pour en activer un, copiez son « exemple » depuis « _elements_disponibles » vers « assets », puis remplacez le SVG par le vôtre.",
-      "FORME ATTENDUE dans « assets » : chaque clé vaut DIRECTEMENT une chaîne SVG, sur une seule ligne, guillemets internes échappés en \\\". Pas d'objet imbriqué.",
-      "EXEMPLE : \"assets\": { \"rock\": \"<svg viewBox=\\\"0 0 100 100\\\">…</svg>\" }",
-      "« _exemples_donut » contient un dessin de test (donut vert pomme) pour chaque élément : retirez le « _ » du nom et déplacez l'entrée dans « assets » pour la voir apparaître en jeu.",
+      "ÉLÉMENTS GRAPHIQUES : dans « assets », les entrées sous leur vrai nom sont ACTIVES. Celles préfixées « _ » sont le dessin standard, INACTIF : retirez le « _ » pour l'activer, remplacez le SVG par le vôtre, ou supprimez la ligne.",
+      "FORME ATTENDUE : chaque clé vaut DIRECTEMENT une chaîne SVG, sur une seule ligne, guillemets internes échappés en \\\". Pas d'objet imbriqué.",
+      "TAILLE : le SVG est étiré pour remplir sa zone, il n'y a donc pas de taille maximale en pixels. Ce qui compte est le viewBox (voir « _elements_disponibles ») et la finesse des traits, à calibrer avec « _rendu ».",
       "Un skin peut être partiel : supprimez librement ce que vous ne souhaitez pas modifier.",
       "Les couleurs des trains ne sont pas modifiables (elles portent la logique du jeu).",
-      "Les clés commençant par « _ » sont de l'aide : elles sont ignorées à l'import.",
+      "Les clés commençant par « _ » sont ignorées à l'import.",
     ],
     _rendu: {
       taille_case_px: cellPx,
       commentaire: cellPx
-        ? `Sur l'appareil ayant produit ce fichier, une case du plateau mesure environ ${cellPx} px de côté. Un SVG en viewBox 0 0 100 100 y est donc réduit d'environ ${Math.round((cellPx / 100) * 100) / 100}× : des traits plus fins que ${Math.round((100 / cellPx) * 10) / 10} unités de viewBox rendront moins d'un pixel.`
+        ? `Sur l'appareil ayant produit ce fichier, une case du plateau mesure environ ${cellPx} px de côté. Un SVG en viewBox 0 0 100 100 y est réduit d'environ ${Math.round((cellPx / 100) * 100) / 100}× : un trait plus fin que ${Math.round((100 / cellPx) * 10) / 10} unités de viewBox rendra moins d'un pixel et disparaîtra.`
         : "Taille de case indisponible (plateau non affiché au moment de l'export).",
+      locomotive_px: cellPx ? Math.round(cellPx * 0.11 * 10) / 10 : null,
+      badge_px: 14,
     },
     variables,
     assets,
     _elements_disponibles: catalogue,
-    _exemples_donut: donutExamples,
   };
 
   return JSON.stringify(template, null, 2);

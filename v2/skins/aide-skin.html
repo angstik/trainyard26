@@ -1,0 +1,67 @@
+<!doctype html><html lang="fr"><head><meta charset="UTF-8">
+<title>Aide — couleurs et éléments d'un skin</title><style>
+body{margin:0;background:#05090d;color:#dce8ed;font-family:system-ui,sans-serif;padding:32px;line-height:1.6}
+.w{max-width:900px;margin:0 auto}
+h1{font-size:22px;color:#d8c28d;margin:0 0 4px}p.sub{color:#71838d;font-size:13px;margin:0 0 30px}
+h2{font-size:17px;color:#35ddf3;border-bottom:1px solid #2c414b;padding-bottom:8px;margin:40px 0 14px}
+h3{font-size:12px;color:#d8c28d;text-transform:uppercase;letter-spacing:.06em;margin:22px 0 8px}
+.vars{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:8px}
+.v{display:flex;align-items:center;gap:9px;background:#0b1419;border:1px solid #2c414b;border-radius:6px;padding:9px 11px}
+.sw{width:18px;height:18px;border-radius:4px;border:1px solid rgba(255,255,255,.25);flex:0 0 auto}
+code{font-size:11px;color:#a8d8e0;background:none;border:0}
+small{display:block;color:#71838d;font-size:10px;margin-top:2px}
+.v>div{min-width:0}
+table{width:100%;border-collapse:collapse;font-size:13px;margin:10px 0 20px}
+th,td{text-align:left;padding:8px 10px;border-bottom:1px solid #2c414b;vertical-align:top}
+th{color:#71838d;font-size:11px;text-transform:uppercase}
+.note{border-left:3px solid #ff9b83;background:rgba(255,155,131,.08);padding:11px 15px;border-radius:0 6px 6px 0;margin:14px 0;font-size:13px}
+.note b{color:#ff9b83}
+.ok{border-left:3px solid #54d994;background:rgba(84,217,148,.08);padding:11px 15px;border-radius:0 6px 6px 0;margin:14px 0;font-size:13px}
+.ok b{color:#54d994}
+figure{margin:0 0 18px;background:#0b1419;border:1px solid #2c414b;border-radius:8px;padding:16px;text-align:center}
+figcaption{color:#71838d;font-size:11px;margin-top:10px}
+</style></head><body><div class="w">
+<h1>Aide — couleurs et éléments d'un skin</h1>
+<p class="sub">À quoi correspond chaque réglage, et ce qu'il faut respecter.</p>
+
+<h2>1. Les couleurs</h2>
+<p style="color:#71838d;font-size:13px">Chaque pastille montre la valeur par défaut. Les couleurs des trains n'apparaissent pas ici : elles ne sont pas modifiables, car elles portent la logique du jeu.</p>
+<section><h3>Plateau</h3><div class="vars"><div class="v"><span class="sw" style="background:#65717a"></span><code>skin-grid-dot</code><small>Points du quadrillage</small></div><div class="v"><span class="sw" style="background:#ff5a4d"></span><code>skin-grid-dot-erase</code><small>Idem, en mode gomme</small></div></div></section><section><h3>Voie</h3><div class="vars"><div class="v"><span class="sw" style="background:#15191a"></span><code>skin-rail-bed</code><small>Ballast (sous la voie)</small></div><div class="v"><span class="sw" style="background:#8a6a48"></span><code>skin-rail-sleeper</code><small>Traverses, parties extérieures</small></div><div class="v"><span class="sw" style="background:#6d5238"></span><code>skin-rail-sleeper-mid</code><small>Traverses, partie centrale</small></div><div class="v"><span class="sw" style="background:#252c2f"></span><code>skin-rail-inner</code><small>Entre-rail (ombre)</small></div></div></section><section><h3>Gares et remises</h3><div class="vars"><div class="v"><span class="sw" style="background:#a8894e"></span><code>skin-trim</code><small>Liseré des bâtiments (UNE seule couleur)</small></div><div class="v"><span class="sw" style="background:#101416"></span><code>skin-building-dark</code><small>Corps des bâtiments, côté sombre</small></div><div class="v"><span class="sw" style="background:#353a3b"></span><code>skin-building-light</code><small>Corps des bâtiments, côté clair</small></div></div></section><section><h3>Rocher</h3><div class="vars"><div class="v"><span class="sw" style="background:#40484d"></span><code>skin-rock-light</code><small>Rocher, face éclairée</small></div><div class="v"><span class="sw" style="background:#171d21"></span><code>skin-rock-dark</code><small>Rocher, face à l'ombre</small></div><div class="v"><span class="sw" style="background:#69747a"></span><code>skin-rock-edge</code><small>Rocher, liseré</small></div></div></section><section><h3>Locomotive</h3><div class="vars"><div class="v"><span class="sw" style="background:#a8894e"></span><code>skin-loco-trim</code><small>Liseré de la locomotive</small></div><div class="v"><span class="sw" style="background:#0b0e10"></span><code>skin-loco-body-dark</code><small>Carrosserie, côté sombre</small></div><div class="v"><span class="sw" style="background:#353d40"></span><code>skin-loco-body-light</code><small>Carrosserie, côté clair</small></div></div></section>
+
+<h2>2. Où se trouvent ces couleurs</h2>
+<figure>
+<svg viewBox="0 0 420 200" width="100%" style="max-width:420px">
+  <rect x="10" y="10" width="180" height="180" fill="#131a1f" stroke="#222d33" stroke-width="4"/>
+  <line x1="70" y1="10" x2="70" y2="190" stroke="#323d44"/><line x1="130" y1="10" x2="130" y2="190" stroke="#323d44"/>
+  <line x1="10" y1="70" x2="190" y2="70" stroke="#323d44"/><line x1="10" y1="130" x2="190" y2="130" stroke="#323d44"/>
+  <circle cx="16" cy="16" r="2.5" fill="#65717a"/><circle cx="64" cy="64" r="2.5" fill="#65717a"/>
+  <line x1="10" y1="100" x2="190" y2="100" stroke="#15191a" stroke-width="17"/>
+  <line x1="10" y1="100" x2="190" y2="100" stroke="#8a6a48" stroke-width="13" stroke-dasharray="2 6"/>
+  <line x1="10" y1="100" x2="190" y2="100" stroke="#cbd1d3" stroke-width="7"/>
+  <line x1="10" y1="100" x2="190" y2="100" stroke="#252c2f" stroke-width="4"/>
+  <path d="M232 44 h60 v18 h-60z" fill="#353a3b" stroke="#a8894e" stroke-width="3"/>
+  <text x="300" y="30" fill="#8fa2ab" font-size="11">skin-grid-dot</text>
+  <line x1="240" y1="26" x2="70" y2="60" stroke="#4a5a63"/>
+  <text x="300" y="58" fill="#8fa2ab" font-size="11">skin-trim</text>
+  <text x="300" y="108" fill="#8fa2ab" font-size="11">skin-rail-*</text>
+  <line x1="296" y1="104" x2="150" y2="100" stroke="#4a5a63"/>
+</svg>
+<figcaption>Repérage indicatif : quadrillage, couches de la voie, liseré des bâtiments.</figcaption>
+</figure>
+
+<h2>3. Les éléments graphiques (SVG)</h2>
+<table>
+<tr><th>Clé</th><th>viewBox conseillé</th><th>Contraintes</th></tr>
+<tr><td><code>rock</code></td><td>0 0 100 100</td><td>Étiré sur toute la case.</td></tr>
+<tr><td><code>outlet</code></td><td>0 0 100 100</td><td>Zone centrale à garder lisible : les points de couleur s'y superposent.</td></tr>
+<tr><td><code>station</code></td><td>0 0 100 100</td><td>Idem remise.</td></tr>
+<tr><td><code>connector</code></td><td>0 0 100 100</td><td>Dessiné <b>pointe vers le haut</b> ; l'application le pivote vers chaque entrée.</td></tr>
+<tr><td><code>loco</code></td><td>0 0 100 100</td><td>Dessinée <b>nez vers le haut</b>. Zone teintée via <code>currentColor</code>.</td></tr>
+<tr><td><code>badge</code></td><td>0 0 24 24</td><td>Rendu à environ 14 px : formes simples uniquement.</td></tr>
+</table>
+
+<div class="ok"><b>Pas de taille maximale en pixels.</b> Les SVG sont étirés pour remplir leur zone : ce qui compte est le <i>viewBox</i>, pas une dimension en pixels. Le fichier exporté contient, sous <code>_rendu</code>, la taille réelle d'une case sur votre appareil et l'épaisseur de trait en dessous de laquelle un détail disparaît.</div>
+
+<div class="note"><b>Deux choses ne sont jamais dans vos images :</b> les points de couleur des gares et remises (séquence de trains attendue ou émise) et le placement des connecteurs. Ils portent de l'information de jeu et restent dessinés par l'application, par-dessus votre illustration.</div>
+
+</div></body></html>

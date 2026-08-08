@@ -379,11 +379,18 @@ function TrackGraphic({ directions, mode = "cross", switchToe, switchIndex = 0, 
 }
 
 function Dots({ colors, done = 0, slots = colors.length }: { colors: TrainColor[]; done?: number; slots?: number }) {
+  // Les trains déjà traités sont retirés de l'affichage : la zone de couleur
+  // se réduit à mesure de l'avancement, et disparaît entièrement une fois
+  // tous les trains arrivés (gare) ou partis (remise). Elle ne masque donc
+  // plus le bâtiment inutilement en fin de tour.
+  const remaining = colors.slice(done);
+  if (remaining.length === 0) return null;
+  const visibleSlots = Math.max(remaining.length, Math.min(slots - done, slots));
   return (
-    <div className="dots" aria-label={`${colors.length} trains`}>
-      {Array.from({ length: slots }, (_, i) => (
-        <i key={i} className={`${colors[i] ?? "empty"} ${i < done ? "done" : ""}`}>
-          {colors[i] ? colorMark(colors[i]) : ""}
+    <div className="dots" aria-label={`${remaining.length} trains restants`}>
+      {Array.from({ length: visibleSlots }, (_, i) => (
+        <i key={i} className={`${remaining[i] ?? "empty"}`}>
+          {remaining[i] ? colorMark(remaining[i]) : ""}
         </i>
       ))}
     </div>
@@ -414,7 +421,7 @@ function SteamLoco({ train, future }: { train: MovingTrain; future?: Point }) {
             seul moyen de recolorer une zone désignée d'une illustration
             fournie par un tiers. */}
         <div
-          className={`loco skinned ${train.color}`}
+          className="loco-skinned"
           style={{ transform: `rotate(${displayAngle}deg)`, color: COLOR_HEX[train.color] }}
           dangerouslySetInnerHTML={{ __html: locoSvg }}
         />
@@ -458,7 +465,7 @@ function TerminalBuilding({ object, done = 0 }: { object: Extract<LevelObject, {
   // l'information de jeu qu'un skin ne doit pas pouvoir masquer.
   const dots = (
     <div className={`terminal-dots ${object.type}-dots ${object.type === "station" && colors.length > 4 ? "scrolling" : ""}`}>
-      <Dots colors={colors} done={done} slots={object.type === "outlet" ? 6 : colors.length} />
+      <Dots colors={colors} done={done} slots={colors.length} />
     </div>
   );
 

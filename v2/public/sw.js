@@ -1,4 +1,7 @@
-const CACHE = "signal-nocturne-v1.2";
+// Nom de cache PROPRE À LA v2 : le stockage de cache est partagé par origine
+// (pas par chemin), donc un nom identique à celui de la v1 ferait que les deux
+// versions se serviraient mutuellement des fichiers périmés.
+const CACHE = "signal-nocturne-v2-2.2";
 const SCOPE = self.registration.scope;
 const CORE = [
   "", "manifest.webmanifest", "favicon.svg", "icon-192.svg", "icon-512.svg",
