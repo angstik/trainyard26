@@ -1435,6 +1435,12 @@ export default function App() {
       const allEmitted = outlets.every((outlet) => (sim.emitted[outlet.id] ?? 0) >= outlet.trains.length);
       if (!sim.failed && allEmitted && sim.trains.length === 0) {
         setRunning(false);
+        // La boucle d'animation s'arrête avec `running` : sans ce nettoyage,
+        // l'affichage resterait figé sur la dernière image, trains compris,
+        // alors que la simulation n'en a plus aucun.
+        prevTrainsRef.current = [];
+        nextTrainsRef.current = [];
+        setTrains([]);
         const allReceived = stations.every((station) => (sim.received[station.id] ?? 0) >= station.expects.length);
         if (allReceived) {
           setResult("success");

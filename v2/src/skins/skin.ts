@@ -45,7 +45,7 @@ export const ASSET_DESCRIPTIONS: Record<SkinnableAsset, string> = {
   outlet: "La remise (départ des trains). SVG carré. Les points de couleur sont dessinés PAR-DESSUS par l'application, au centre : gardez cette zone lisible.",
   station: "La gare (arrivée des trains). SVG carré. Les points de couleur sont dessinés PAR-DESSUS par l'application, au centre : gardez cette zone lisible.",
   connector: "Le connecteur reliant un bâtiment à la voie. SVG carré, dessiné pointe vers le HAUT : l'application le fait pivoter vers chaque entrée active.",
-  loco: "La locomotive. SVG carré, dessinée NEZ VERS LE HAUT (l'application la fait pivoter selon sa direction). IMPORTANT : les parties devant prendre la couleur du train doivent utiliser fill=\"currentColor\" ou stroke=\"currentColor\" — c'est ainsi que la couleur est appliquée. Prévoyez une zone de couleur assez grande pour rester identifiable en mouvement.",
+  loco: "La locomotive. SVG carré, dessinée NEZ VERS LE HAUT (l'application la fait pivoter selon sa direction). IMPORTANT : les parties devant prendre la couleur du train doivent utiliser fill=\"currentColor\" ou stroke=\"currentColor\". NE PAS mettre de style=\"color:…\" sur la balise <svg> : cette déclaration l'emporterait sur la couleur du train et figerait la locomotive dans une seule teinte. Prévoyez une zone de couleur assez grande pour rester identifiable en mouvement.",
 };
 
 /** Exemples minimaux mais fonctionnels, fournis dans le modèle exporté. */
