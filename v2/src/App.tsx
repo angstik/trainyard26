@@ -378,20 +378,33 @@ function TrackGraphic({ directions, mode = "cross", switchToe, switchIndex = 0, 
   );
 }
 
-function Dots({ colors, done = 0, slots = colors.length }: { colors: TrainColor[]; done?: number; slots?: number }) {
+/**
+ * Disposition du plateau de couleurs selon le nombre de trains à afficher.
+ * La grille se resserre au fil du jeu, puisque le nombre restant diminue.
+ */
+function dotsGrid(count: number): { cols: number; rows: number } {
+  if (count <= 1) return { cols: 1, rows: 1 };
+  if (count === 2) return { cols: 2, rows: 1 };
+  if (count <= 4) return { cols: 2, rows: 2 };
+  if (count <= 6) return { cols: 3, rows: 2 };
+  return { cols: 3, rows: 3 };
+}
+
+function Dots({ colors, done = 0 }: { colors: TrainColor[]; done?: number; slots?: number }) {
   // Les trains déjà traités sont retirés de l'affichage : la zone de couleur
   // se réduit à mesure de l'avancement, et disparaît entièrement une fois
-  // tous les trains arrivés (gare) ou partis (remise). Elle ne masque donc
-  // plus le bâtiment inutilement en fin de tour.
+  // tous les trains arrivés (gare) ou partis (remise).
   const remaining = colors.slice(done);
   if (remaining.length === 0) return null;
-  const visibleSlots = Math.max(remaining.length, Math.min(slots - done, slots));
+  const { cols, rows } = dotsGrid(remaining.length);
   return (
-    <div className="dots" aria-label={`${remaining.length} trains restants`}>
-      {Array.from({ length: visibleSlots }, (_, i) => (
-        <i key={i} className={`${remaining[i] ?? "empty"}`}>
-          {remaining[i] ? colorMark(remaining[i]) : ""}
-        </i>
+    <div
+      className="dots"
+      aria-label={`${remaining.length} trains restants`}
+      style={{ gridTemplateColumns: `repeat(${cols}, 1fr)`, gridTemplateRows: `repeat(${rows}, 1fr)` }}
+    >
+      {remaining.slice(0, cols * rows).map((color, i) => (
+        <i key={i} className={color}>{colorMark(color)}</i>
       ))}
     </div>
   );
@@ -611,6 +624,11 @@ export default function App() {
   const [levelProgress, setLevelProgress] = useState<Record<string, LevelProgress>>({});
   const [editingElapsedMs, setEditingElapsedMs] = useState(0);
   const [totalElapsedMs, setTotalElapsedMs] = useState(0);
+  // Pas de simulation écoulés depuis le lancement. Comptés dans la boucle
+  // physique (un par sous-pas, donc indépendant de la vitesse choisie) et
+  // publiés avec le reste de l'état de rendu.
+  const [simSteps, setSimSteps] = useState(0);
+  const simStepsRef = useRef(0);
   const [libraryFamilyId, setLibraryFamilyId] = useState<string | null>(null);
   const [importText, setImportText] = useState("");
   const [importFeedback, setImportFeedback] = useState("");
@@ -1163,6 +1181,8 @@ export default function App() {
     simRef.current = clean;
     prevTrainsRef.current = [];
     nextTrainsRef.current = [];
+    simStepsRef.current = 0;
+    setSimSteps(0);
     nextSwitchesRef.current = { ...switchPositions };
     publishedSwitchesRef.current = null;
     tickTimeRef.current = Date.now();
@@ -1193,6 +1213,7 @@ export default function App() {
       const subSteps = Math.max(1, Math.round(speed));
 
       for (let step = 0; step < subSteps && !sim.failed; step++) {
+      simStepsRef.current += 1;
 
       outlets.forEach((outlet) => {
         const index = sim.emitted[outlet.id] ?? 0;
@@ -1429,6 +1450,7 @@ export default function App() {
       tickIntervalRef.current = Math.min(120, Math.max(8, nowMs - tickTimeRef.current));
       tickTimeRef.current = nowMs;
       nextSwitchesRef.current = { ...sim.switches };
+      setSimSteps(simStepsRef.current);
       setEmitted({ ...sim.emitted });
       setReceived({ ...sim.received });
 
@@ -2006,6 +2028,11 @@ export default function App() {
 
   return (
     <main className={`app-shell mode-${mode}`}>
+      {/* Motifs déclarés par le skin : injectés une fois, invisibles, pour que
+          les références url(#id) des variables de couleur se résolvent. */}
+      {skinAssets.patterns && (
+        <div className="skin-patterns" aria-hidden="true" dangerouslySetInnerHTML={{ __html: skinAssets.patterns }} />
+      )}
 
       {installHint && (() => {
         const ua = window.navigator.userAgent;
@@ -2118,6 +2145,7 @@ export default function App() {
             {mode === "play" && <div className="game-hud" aria-label={`${trackCells} cases sur ${activeLevel.optimalCells ?? "objectif inconnu"}, ${switchCells} croisements sur ${activeLevel.optimalSwitchCells ?? "objectif inconnu"}, temps ${formatTime(totalElapsedMs)}`}>
               <span><small>CASES / CIBLE</small><strong style={{ color: activeLevel.optimalCells != null ? metricColor(trackCells, activeLevel.optimalCells) : undefined }}>{trackCells}{activeLevel.optimalCells != null ? `/${activeLevel.optimalCells}` : ""}</strong></span>
               <span><small>CROISEMENTS / CIBLE</small><strong style={{ color: activeLevel.optimalSwitchCells != null ? metricColor(switchCells, activeLevel.optimalSwitchCells) : undefined }}>{switchCells}{activeLevel.optimalSwitchCells != null ? `/${activeLevel.optimalSwitchCells}` : ""}</strong></span>
+              <span><small>PAS</small><strong>{simSteps}</strong></span>
               <span><small>TEMPS</small><strong>{formatTime(totalElapsedMs)}</strong></span>
             </div>}
             <button className="board-level-arrow" aria-label="Niveau suivant" title="Niveau suivant" disabled={running || activeLevelIndex < 0 || activeLevelIndex >= navigableLevels.length - 1} onClick={() => changeLevel(1)}>→</button>

@@ -30,12 +30,17 @@ export const SKINNABLE_VARIABLES = [
   "skin-loco-trim",
   "skin-loco-body-dark",
   "skin-loco-body-light",
+  // Dimensionnement des illustrations d'un skin (gares, remises, rocher).
+  "skin-icon-scale",
+  // Pointillé des rails eux-mêmes, et son décalage de phase.
+  "skin-rail-dasharray",
+  "skin-rail-dashoffset",
 ] as const;
 
 export type SkinnableVariable = (typeof SKINNABLE_VARIABLES)[number];
 
 /** Éléments graphiques qu'un skin peut remplacer par un SVG. */
-export const SKINNABLE_ASSETS = ["rock", "badge", "outlet", "station", "connector", "loco"] as const;
+export const SKINNABLE_ASSETS = ["rock", "badge", "outlet", "station", "connector", "loco", "patterns"] as const;
 export type SkinnableAsset = (typeof SKINNABLE_ASSETS)[number];
 
 /** Description lisible de chaque élément, reprise dans le modèle exporté. */
@@ -45,6 +50,7 @@ export const ASSET_DESCRIPTIONS: Record<SkinnableAsset, string> = {
   outlet: "La remise (départ des trains). SVG carré. Les points de couleur sont dessinés PAR-DESSUS par l'application, au centre : gardez cette zone lisible.",
   station: "La gare (arrivée des trains). SVG carré. Les points de couleur sont dessinés PAR-DESSUS par l'application, au centre : gardez cette zone lisible.",
   connector: "Le connecteur reliant un bâtiment à la voie. SVG carré, dessiné pointe vers le HAUT : l'application le fait pivoter vers chaque entrée active.",
+  patterns: "Bibliothèque de motifs du skin : un <svg> ne contenant que des <defs> avec des <pattern>/<linearGradient> nommés par un id. Ils sont injectés une fois dans la page, puis référençables depuis les variables de couleur par url(#mon-id) — par exemple pour texturer le ballast ou les traverses.",
   loco: "La locomotive. SVG carré, dessinée NEZ VERS LE HAUT (l'application la fait pivoter selon sa direction). IMPORTANT : les parties devant prendre la couleur du train doivent utiliser fill=\"currentColor\" ou stroke=\"currentColor\". NE PAS mettre de style=\"color:…\" sur la balise <svg> : cette déclaration l'emporterait sur la couleur du train et figerait la locomotive dans une seule teinte. Prévoyez une zone de couleur assez grande pour rester identifiable en mouvement.",
 };
 
@@ -55,6 +61,7 @@ export const ASSET_EXAMPLES: Record<SkinnableAsset, string> = {
   outlet: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="26" width="68" height="58" rx="4" fill="#26313a" stroke="#a8894e" stroke-width="3"/><path d="M10 30 L50 10 L90 30 Z" fill="#31404b" stroke="#a8894e" stroke-width="3" stroke-linejoin="round"/><rect x="38" y="56" width="24" height="28" rx="2" fill="#0d1418"/></svg>',
   station: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="16" y="26" width="68" height="58" rx="4" fill="#26313a" stroke="#a8894e" stroke-width="3"/><path d="M10 30 L50 10 L90 30 Z" fill="#31404b" stroke="#a8894e" stroke-width="3" stroke-linejoin="round"/><rect x="30" y="70" width="40" height="8" rx="2" fill="#a8894e"/></svg>',
   connector: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><rect x="42" y="0" width="16" height="52" fill="#3d4a52" stroke="#8b949b" stroke-width="2"/></svg>',
+  patterns: '<svg xmlns="http://www.w3.org/2000/svg"><defs><pattern id="skin-gravier" width="24" height="24" patternUnits="userSpaceOnUse"><rect width="24" height="24" fill="#15191a"/><circle cx="6" cy="7" r="2" fill="#2f363a"/><circle cx="17" cy="4" r="1.6" fill="#3b4348"/><circle cx="12" cy="14" r="2.2" fill="#262d31"/><circle cx="20" cy="18" r="1.8" fill="#343c41"/><circle cx="4" cy="19" r="1.5" fill="#2a3135"/></pattern></defs></svg>',
   loco: '<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg"><ellipse cx="50" cy="52" rx="30" ry="40" fill="currentColor" stroke="#0d1114" stroke-width="3"/><circle cx="39" cy="28" r="6.5" fill="#fff"/><circle cx="61" cy="28" r="6.5" fill="#fff"/><circle cx="39" cy="27" r="3" fill="#0d1114"/><circle cx="61" cy="27" r="3" fill="#0d1114"/></svg>',
 };
 
@@ -80,8 +87,16 @@ export function buildSkinTemplate(current: Skin | null): string {
   const variables: Record<string, string> = {};
   for (const variable of SKINNABLE_VARIABLES) {
     const fromSkin = current?.variables?.[variable];
-    const effective = (fromSkin ?? computed.getPropertyValue(`--${variable}`)).trim();
-    if (effective) variables[variable] = effective;
+    if (fromSkin) {
+      // Défini par le skin : actif, sous son vrai nom.
+      variables[variable] = fromSkin;
+      continue;
+    }
+    // Non défini : proposé sous un nom préfixé « _ » (donc inactif) avec la
+    // valeur par défaut. Retirer le « _ » suffit à le prendre en main. Même
+    // mécanisme que pour les éléments graphiques.
+    const fallback = computed.getPropertyValue(`--${variable}`).trim();
+    if (fallback) variables[`_${variable}`] = fallback;
   }
 
   // Section « assets » : les éléments réellement actifs sous leur vrai nom,
@@ -116,10 +131,12 @@ export function buildSkinTemplate(current: Skin | null): string {
     author: current?.author ?? "",
     version: "1.0",
     _aide: [
-      "COULEURS : toutes les variables disponibles sont dans « variables », renseignées avec la valeur actuellement appliquée.",
+      "COULEURS : dans « variables », les entrées sous leur vrai nom sont ACTIVES (définies par ce skin). Celles préfixées « _ » montrent la valeur par défaut sans l'appliquer : retirez le « _ » pour prendre la main dessus, ou supprimez la ligne.",
       "ÉLÉMENTS GRAPHIQUES : dans « assets », les entrées sous leur vrai nom sont ACTIVES. Celles préfixées « _ » sont le dessin standard, INACTIF : retirez le « _ » pour l'activer, remplacez le SVG par le vôtre, ou supprimez la ligne.",
       "FORME ATTENDUE : chaque clé vaut DIRECTEMENT une chaîne SVG, sur une seule ligne, guillemets internes échappés en \\\". Pas d'objet imbriqué.",
-      "TAILLE : le SVG est étiré pour remplir sa zone, il n'y a donc pas de taille maximale en pixels. Ce qui compte est le viewBox (voir « _elements_disponibles ») et la finesse des traits, à calibrer avec « _rendu ».",
+      "TAILLE : le SVG est étiré pour remplir sa zone, il n'y a donc pas de taille maximale en pixels. Ce qui compte est le viewBox (voir « _elements_disponibles ») et la finesse des traits, à calibrer avec « _rendu ». « skin-icon-scale » ajuste globalement les illustrations (défaut 105%, borné entre 80% et 120%).",
+      "TEXTURES : déclarez vos motifs dans l'élément « patterns » (un <svg> ne contenant que des <defs>), puis référencez-les depuis une variable de couleur par url(#mon-id) — par exemple \"skin-rail-bed\": \"url(#skin-gravier)\". Seules les références locales (#id) sont autorisées, jamais une ressource externe.",
+      "RAILS : « skin-rail-dasharray » et « skin-rail-dashoffset » pilotent le pointillé de la couche rails (défaut « none » = trait continu). Utile pour une voie discontinue ou une suite d'empreintes.",
       "Un skin peut être partiel : supprimez librement ce que vous ne souhaitez pas modifier.",
       "Les couleurs des trains ne sont pas modifiables (elles portent la logique du jeu).",
       "Les clés commençant par « _ » sont ignorées à l'import.",
@@ -156,10 +173,33 @@ export function skinAsset(asset: SkinnableAsset): string | undefined {
   return activeAssets[asset];
 }
 
-/** Un skin ne doit pas pouvoir injecter de contenu actif via ses valeurs. */
+/**
+ * Un skin ne doit pas pouvoir injecter de contenu actif via ses valeurs.
+ * `url(#identifiant)` est toléré — et uniquement cette forme : elle référence
+ * un motif déclaré par le skin lui-même dans son asset `patterns`. Toute
+ * autre forme d'`url()` (donc toute ressource externe) reste refusée.
+ */
 function isSafeCssValue(value: string): boolean {
   if (value.length > 200) return false;
-  return !/[<>{};]|url\s*\(|expression\s*\(|@import|javascript:/i.test(value);
+  if (/[<>{};]|expression\s*\(|@import|javascript:/i.test(value)) return false;
+  // On retire les références locales avant de rechercher un url() résiduel.
+  const withoutLocalRefs = value.replace(/url\(\s*['"]?#[A-Za-z][\w-]*['"]?\s*\)/g, "");
+  return !/url\s*\(/i.test(withoutLocalRefs);
+}
+
+/** Bornes des valeurs numériques, pour éviter des réglages inexploitables. */
+const CLAMPED_VARIABLES: Partial<Record<SkinnableVariable, { min: number; max: number; unit: string }>> = {
+  "skin-icon-scale": { min: 80, max: 120, unit: "%" },
+};
+
+/** Ramène une valeur bornée dans son intervalle. Retourne null si illisible. */
+function clampVariable(key: SkinnableVariable, value: string): string | null {
+  const bounds = CLAMPED_VARIABLES[key];
+  if (!bounds) return value;
+  const parsed = Number.parseFloat(value);
+  if (!Number.isFinite(parsed)) return null;
+  const clamped = Math.min(bounds.max, Math.max(bounds.min, parsed));
+  return `${clamped}${bounds.unit}`;
 }
 
 /**
@@ -202,7 +242,9 @@ export function parseSkin(raw: string): SkinParseResult {
       if (key.startsWith("_")) continue; // clé d'aide : ignorée sans le signaler
       if (!SKINNABLE_VARIABLES.includes(key as SkinnableVariable)) { ignored.push(`variable inconnue : ${key}`); continue; }
       if (typeof value !== "string" || !isSafeCssValue(value)) { ignored.push(`valeur refusée : ${key}`); continue; }
-      variables[key as SkinnableVariable] = value;
+      const bounded = clampVariable(key as SkinnableVariable, value);
+      if (bounded === null) { ignored.push(`valeur illisible : ${key}`); continue; }
+      variables[key as SkinnableVariable] = bounded;
     }
   }
 

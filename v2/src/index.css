@@ -54,6 +54,15 @@
   --skin-rail-sleeper-mid: #6d5238;
   --skin-rail-inner: #252c2f;
 
+  /* Dimensionnement des illustrations fournies par un skin (gares, remises,
+     rocher). Borné entre 80% et 120% à l'import. */
+  --skin-icon-scale: 105%;
+
+  /* Pointillé des rails eux-mêmes. « none » = trait continu (défaut).
+     Permet par exemple une suite d'empreintes le long de la voie. */
+  --skin-rail-dasharray: none;
+  --skin-rail-dashoffset: 0;
+
   /* Locomotive (carrosserie ; la couleur du train reste --loco-color) */
   --skin-loco-trim: #a8894e;
   --skin-loco-body-dark: #0b0e10;
@@ -256,7 +265,7 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .track-svg path { fill:none; vector-effect:non-scaling-stroke; stroke-linejoin:round; }
 .track-svg .rail-bed { stroke:var(--skin-rail-bed); stroke-width:20; stroke-linecap:butt; filter:drop-shadow(0 2px 2px #000); }
 .track-svg .rail-sleepers { stroke:var(--skin-rail-sleeper); stroke-width:16; stroke-dasharray:1.35 7.15; stroke-linecap:butt; opacity:.94; }
-.track-svg .rail-outer { stroke:var(--rail); stroke-width:9; stroke-linecap:butt; }
+.track-svg .rail-outer { stroke-dasharray:var(--skin-rail-dasharray); stroke-dashoffset:var(--skin-rail-dashoffset); stroke:var(--rail); stroke-width:9; stroke-linecap:butt; }
 .track-svg .rail-inner { stroke:var(--skin-rail-inner); stroke-width:5.4; stroke-linecap:butt; }
 /* Partie centrale des traverses, dessinée par-dessus l'entre-rail pour que
    la traverse se lise d'un bout à l'autre au lieu de n'apparaître que de
@@ -335,21 +344,23 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .terminal .buffer { position:absolute; left:8%; right:8%; bottom:11%; height:7px; background:linear-gradient(#c29b56,#604b2c); box-shadow:0 -12px 0 -2px #454d50; }
 .terminal .lantern { position:absolute; top:35%; width:7px; height:12px; background:#ffc252; border:2px solid #493719; box-shadow:0 0 9px #f39a1e; }
 .terminal .lantern.left { left:-20%; }.terminal .lantern.right { right:-20%; }
-.dots { display:flex; gap:3px; align-items:center; }
+/* Grille dimensionnée à l'exécution selon le nombre de trains restants
+   (voir dotsGrid) : la disposition se resserre au fil du run. */
+.dots { display:grid; gap:3px; place-items:center; justify-content:center; }
 .terminal-dots { position:absolute; z-index:6; }
+/* Plateau CENTRÉ sur la remise, sans hauteur imposée : il s'ajuste à la
+   grille effective plutôt que de réserver la place de six trains. */
 .outlet-dots {
-  left:24%; right:24%; top:31%; height:25%;
+  left:0; right:0; top:50%;
   display:grid; place-items:center;
-  transform:scale(.78);
-  transform-origin:50% 0;
+  transform:translateY(-50%) scale(.82);
+  transform-origin:50% 50%;
 }
-.outlet-dots .dots {
-  display:grid; grid-template-columns:repeat(3,9px); grid-template-rows:repeat(2,9px);
-  gap:1px; justify-content:center; padding:2px;
-}
+.outlet-dots .dots { gap:1px; padding:2px; }
 .station-dots {
-  left:7%; right:7%; top:29%; overflow:hidden;
+  left:0; right:0; top:50%; overflow:hidden;
   display:flex; justify-content:center;
+  transform:translateY(-50%);
 }
 .station-dots .dots { width:max-content; flex:0 0 auto; white-space:nowrap; }
 .station-dots.scrolling { justify-content:flex-start; }
@@ -876,3 +887,12 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
    (.terminal::before), sinon son rectangle et son liseré restent visibles
    autour de l'illustration. */
 .terminal.skinned::before { content:none; }
+
+/* ---- Dimensionnement des illustrations d'un skin ---- */
+/* Appliqué au dessin seulement : la boîte, les connecteurs et les points de
+   couleur gardent leur géométrie, seul l'habillage grandit ou rétrécit. */
+.terminal.skinned .terminal-art,
+.obstacle.skinned .skin-asset { transform:scale(var(--skin-icon-scale)); transform-origin:50% 50%; }
+/* Bibliothèque de motifs du skin : présente dans le DOM pour que les url(#id)
+   se résolvent, mais jamais visible. */
+.skin-patterns { position:absolute; width:0; height:0; overflow:hidden; pointer-events:none; }
