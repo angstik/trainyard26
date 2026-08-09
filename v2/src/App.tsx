@@ -63,6 +63,12 @@ type SimData = {
 };
 
 const GRID = 7;
+/**
+ * Fraction de case parcourue par unité de temps de simulation. Source unique :
+ * sert à la fois au déplacement des trains et au comptage des pas, qui restent
+ * ainsi cohérents si la valeur est un jour ajustée.
+ */
+const TRAIN_SPEED = 1.15;
 const APP_VERSION = versionFile.trim();
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
@@ -629,6 +635,8 @@ export default function App() {
   // publiés avec le reste de l'état de rendu.
   const [simSteps, setSimSteps] = useState(0);
   const simStepsRef = useRef(0);
+  /** Fraction de case parcourue depuis le dernier pas complet. */
+  const simStepAccumRef = useRef(0);
   const [libraryFamilyId, setLibraryFamilyId] = useState<string | null>(null);
   const [importText, setImportText] = useState("");
   const [importFeedback, setImportFeedback] = useState("");
@@ -1182,6 +1190,7 @@ export default function App() {
     prevTrainsRef.current = [];
     nextTrainsRef.current = [];
     simStepsRef.current = 0;
+    simStepAccumRef.current = 0;
     setSimSteps(0);
     nextSwitchesRef.current = { ...switchPositions };
     publishedSwitchesRef.current = null;
@@ -1213,7 +1222,17 @@ export default function App() {
       const subSteps = Math.max(1, Math.round(speed));
 
       for (let step = 0; step < subSteps && !sim.failed; step++) {
-      simStepsRef.current += 1;
+      // Un « pas » = une case parcourue, pas un sous-pas de calcul. Tous les
+      // trains avançant au même rythme, il suffit d'accumuler la distance
+      // parcourue et d'incrémenter à chaque case complète. C'est la métrique
+      // du catalogue officiel (« durée en pas de simulation »), donc
+      // comparable d'une partie à l'autre et indépendante de la vitesse.
+      simStepAccumRef.current += dt * TRAIN_SPEED;
+      if (simStepAccumRef.current >= 1) {
+        const whole = Math.floor(simStepAccumRef.current);
+        simStepsRef.current += whole;
+        simStepAccumRef.current -= whole;
+      }
 
       outlets.forEach((outlet) => {
         const index = sim.emitted[outlet.id] ?? 0;
@@ -1237,7 +1256,7 @@ export default function App() {
       const advanced: MovingTrain[] = [];
       const stationArrivals = new Map<string, MovingTrain[]>();
       for (const train of sim.trains) {
-        let moved = { ...train, progress: train.progress + dt * 1.15 };
+        let moved = { ...train, progress: train.progress + dt * TRAIN_SPEED };
         if (moved.progress < 1) {
           advanced.push(moved);
           continue;
