@@ -189,7 +189,7 @@ function isSafeCssValue(value: string): boolean {
 
 /** Bornes des valeurs numériques, pour éviter des réglages inexploitables. */
 const CLAMPED_VARIABLES: Partial<Record<SkinnableVariable, { min: number; max: number; unit: string }>> = {
-  "skin-icon-scale": { min: 50, max: 200, unit: "%" },
+  "skin-icon-scale": { min: 70, max: 150, unit: "%" },
 };
 
 /** Ramène une valeur bornée dans son intervalle. Retourne null si illisible. */

@@ -164,60 +164,57 @@ function structuralChecks(objects: LevelObject[], width: number, height: number)
     if (object.type === "outlet" || object.type === "station") {
       const label = object.type === "outlet" ? "Remise" : "Gare";
       const facingsToCheck = object.type === "outlet" ? [object.facing] : object.facings;
-      for (const facing of facingsToCheck) {
+
+      /** Une entrée est praticable si elle ne donne ni hors grille, ni sur un
+       *  obstacle, ni sur un artefact sans connecteur en vis-à-vis. */
+      const isUsable = (facing: Direction): boolean => {
         const [frontX, frontY] = add(object.x, object.y, facing);
-        if (!inBounds(frontX, frontY, width, height)) {
-          report(object, `${label} ${object.id} : entrée ${facing} orientée hors de la grille`);
-          continue;
-        }
+        if (!inBounds(frontX, frontY, width, height)) return false;
         const occupant = at(frontX, frontY);
-        if (!occupant) continue;
-        // Un artefact frontal est acceptable s'il forme une liaison implicite
-        // valide avec celui-ci (côtés qui se font face), dans le sens qui
-        // convient : une remise émet vers lui, une gare reçoit de lui.
+        if (!occupant) return true;
         const linked = object.type === "outlet"
           ? canEnterFrom(occupant, OPPOSITE[facing])
           : canExitToward(occupant, OPPOSITE[facing]);
-        if (!linked) {
-          report(object, `${label} ${object.id} : côté incompatible avec l’artefact devant l’entrée ${facing}`);
-          continue;
-        }
+        if (!linked) return false;
         if (occupant.type === "painter") {
+          // Un painter frontal doit pouvoir être traversé, sinon la liaison
+          // ne mène nulle part.
           const beyondSide = occupant.sides.find((side) => side !== OPPOSITE[facing])!;
           const [beyondX, beyondY] = add(frontX, frontY, beyondSide);
-          if (!inBounds(beyondX, beyondY, width, height) || at(beyondX, beyondY)?.type === "obstacle") {
-            report(object, `${label} ${object.id} : painter frontal (${facing}) sans passage libre dans l’axe`);
-          }
+          if (!inBounds(beyondX, beyondY, width, height) || at(beyondX, beyondY)?.type === "obstacle") return false;
         }
+        return true;
+      };
+
+      if (object.type === "outlet") {
+        // La remise n'a qu'une sortie : elle doit être praticable.
+        if (!isUsable(object.facing)) {
+          report(object, `${label} ${object.id} : sa sortie ${object.facing} est bloquée (bordure, obstacle, ou artefact sans connecteur en vis-à-vis)`);
+        }
+      } else if (!facingsToCheck.some(isUsable)) {
+        // La gare peut avoir plusieurs entrées : une seule praticable suffit.
+        report(object, `${label} ${object.id} : aucune de ses entrées (${facingsToCheck.join("/")}) n’est praticable`);
       }
     }
 
+    // Règle commune aux artefacts « traversants » (painter, splitter) et aux
+    // gares : être en bordure n'est PAS un défaut en soi. Ce qui compte est
+    // qu'au moins une de leurs entrées soit praticable, c'est-à-dire qu'elle
+    // ne donne ni hors grille, ni sur un obstacle, ni sur un artefact qui ne
+    // présente pas de connecteur en vis-à-vis.
     if (object.type === "painter") {
-      for (const side of object.sides) {
-        const [nx, ny] = add(object.x, object.y, side);
-        if (!inBounds(nx, ny, width, height)) {
-          report(object, `Painter ${object.id} : le côté ${side} sort de la grille`);
-        }
-      }
-      const usable = object.sides.every((side) => usableNeighbor(object.x, object.y, side));
-      if (!usable) {
-        report(object, `Painter ${object.id} : axe ${object.sides.join("-")} non utilisable`);
+      if (!object.sides.some((side) => usableNeighbor(object.x, object.y, side))) {
+        report(object, `Painter ${object.id} : aucune de ses deux entrées (${object.sides.join("-")}) n’est praticable`);
       }
     }
 
     if (object.type === "splitter") {
-      if (object.x === 0 || object.y === 0 || object.x === width - 1 || object.y === height - 1) {
-        report(object, `Splitter ${object.id} : ne doit pas être placé en bordure`);
-      }
       const inputs = splitterInputs(object.orientation);
-      const outputs = splitterOutputs(object.orientation);
       if (!inputs.some((direction) => usableNeighbor(object.x, object.y, direction))) {
-        report(object, `Splitter ${object.id} : aucune entrée utilisable`);
+        report(object, `Splitter ${object.id} : aucune entrée praticable (${inputs.join("/")})`);
       }
-      const blockedOutputs = outputs.filter((direction) => !usableNeighbor(object.x, object.y, direction));
-      if (blockedOutputs.length) {
-        report(object, `Splitter ${object.id} : sortie ${blockedOutputs.join("/")} bloquée`);
-      }
+      // Les sorties ne sont volontairement PAS contrôlées : une sortie donnant
+      // sur la bordure reste un placement autorisé, à la charge du concepteur.
     }
   }
   return issues;

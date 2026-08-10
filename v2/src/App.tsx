@@ -80,7 +80,7 @@ const COLOR_LABELS: Record<TrainColor, string> = {
   purple: "Violet", brown: "Marron", pink: "Rose", cyan: "Cyan", white: "Blanc",
 };
 const COLOR_HEX: Record<TrainColor, string> = {
-  red: "#e92f45", blue: "#258cff", yellow: "#f5bd2e", orange: "#ff941f", green: "#35c978",
+  red: "#e92f45", blue: "#258cff", yellow: "#f2ec1d", orange: "#ff941f", green: "#35c978",
   purple: "#a65be2", brown: "#875431", pink: "#ff52bb", cyan: "#35ddf3", white: "#eef7f8",
 };
 const PRIMARIES: TrainColor[] = ["red", "blue", "yellow"];
@@ -396,12 +396,23 @@ function dotsGrid(count: number): { cols: number; rows: number } {
   return { cols: 3, rows: 3 };
 }
 
-function Dots({ colors, done = 0 }: { colors: TrainColor[]; done?: number; slots?: number }) {
-  // Les trains déjà traités sont retirés de l'affichage : la zone de couleur
-  // se réduit à mesure de l'avancement, et disparaît entièrement une fois
-  // tous les trains arrivés (gare) ou partis (remise).
+function Dots({ colors, done = 0, layout = "grid" }: { colors: TrainColor[]; done?: number; layout?: "grid" | "line" }) {
+  // Les trains déjà traités sont retirés : la zone se réduit au fil du run et
+  // disparaît une fois le lot écoulé.
   const remaining = colors.slice(done);
   if (remaining.length === 0) return null;
+
+  // Deux mécanismes volontairement différents, pour distinguer les artefacts
+  // au premier coup d'œil : la remise groupe en grille compacte, la gare
+  // aligne en une file qui défile si elle dépasse la case.
+  if (layout === "line") {
+    return (
+      <div className="dots line" aria-label={`${remaining.length} trains attendus`}>
+        {remaining.map((color, i) => <i key={i} className={color}>{colorMark(color)}</i>)}
+      </div>
+    );
+  }
+
   const { cols, rows } = dotsGrid(remaining.length);
   return (
     <div
@@ -483,8 +494,8 @@ function TerminalBuilding({ object, done = 0 }: { object: Extract<LevelObject, {
   // le bâtiment : ils portent la séquence de trains attendue/émise, donc de
   // l'information de jeu qu'un skin ne doit pas pouvoir masquer.
   const dots = (
-    <div className={`terminal-dots ${object.type}-dots ${object.type === "station" && colors.length > 4 ? "scrolling" : ""}`}>
-      <Dots colors={colors} done={done} slots={colors.length} />
+    <div className={`terminal-dots ${object.type}-dots ${object.type === "station" && colors.length - done > 4 ? "scrolling" : ""}`}>
+      <Dots colors={colors} done={done} layout={object.type === "station" ? "line" : "grid"} />
     </div>
   );
 
@@ -1255,12 +1266,41 @@ export default function App() {
 
       const advanced: MovingTrain[] = [];
       const stationArrivals = new Map<string, MovingTrain[]>();
+
+      // --- Phase 1 : avancer, et séparer ceux qui changent de case ---------
+      const pending: MovingTrain[] = [];
       for (const train of sim.trains) {
-        let moved = { ...train, progress: train.progress + dt * TRAIN_SPEED };
-        if (moved.progress < 1) {
-          advanced.push(moved);
-          continue;
-        }
+        const moved = { ...train, progress: train.progress + dt * TRAIN_SPEED };
+        if (moved.progress < 1) advanced.push(moved);
+        else pending.push(moved);
+      }
+
+      // --- Phase 2 : FUSION AVANT TRAITEMENT -------------------------------
+      // Plusieurs trains atteignant la même case au même instant n'en forment
+      // qu'un seul. C'est ce train fusionné qui sera ensuite peint, découpé ou
+      // reçu en gare — jamais chacun séparément. L'ordre importe : fusionner
+      // après coup ferait peindre deux trains, ou compter deux arrivées.
+      const byDestination = new Map<string, MovingTrain[]>();
+      for (const moved of pending) {
+        const key = pointKey(moved.next);
+        const list = byDestination.get(key) ?? [];
+        list.push(moved);
+        byDestination.set(key, list);
+      }
+      const arriving: MovingTrain[] = [];
+      for (const group of byDestination.values()) {
+        if (group.length === 1) { arriving.push(group[0]); continue; }
+        const mixedColor = group.reduce<TrainColor>((acc, item) => mixColors(acc, item.color), group[0].color);
+        addColorBurst(group[0].next[0], group[0].next[1], mixedColor, "mix");
+        arriving.push({ ...group[0], id: group.map((item) => item.id).join("+"), color: mixedColor });
+      }
+
+      // --- Phase 3 : traitement des destinations ---------------------------
+      // L'état des aiguillages est FIGÉ pendant cette phase : deux trains
+      // atteignant le même aiguillage au même instant sont orientés selon la
+      // même position, les bascules n'étant appliquées qu'après.
+      const switchFlips = new Map<string, number>();
+      for (let moved of arriving) {
 
         const from = moved.cell;
         const current = moved.next;
@@ -1343,7 +1383,9 @@ export default function App() {
           if (geometry) {
             const position = (sim.switches[switchKey] ?? 0) % geometry.exits.length;
             exit = entry === geometry.toe ? geometry.exits[position] : geometry.toe;
-            sim.switches[switchKey] = (position + 1) % geometry.exits.length;
+            // Bascule différée à la fin de la phase : elle ne doit pas
+            // modifier l'orientation d'un autre train du même instant.
+            switchFlips.set(switchKey, (switchFlips.get(switchKey) ?? 0) + 1);
             playEffect("switch");
           }
         } else {
@@ -1357,6 +1399,15 @@ export default function App() {
         const next = add(current, exit);
         const nextAngle = DIR_ANGLE[directionBetween(current, next)];
         advanced.push({ ...moved, previous: from, cell: current, next, progress: moved.progress - 1, fromAngle: moved.angle, angle: nextAngle });
+      }
+
+      // Bascules d'aiguillage appliquées une fois toutes les orientations
+      // décidées (voir phase 3).
+      for (const [switchKey, count] of switchFlips) {
+        const cellDirs = directionsForCell(...(switchKey.split(",").map(Number) as [number, number]));
+        const geometry = switchGeometry(cellDirs, switchToes[switchKey]);
+        if (!geometry) continue;
+        sim.switches[switchKey] = ((sim.switches[switchKey] ?? 0) + count) % geometry.exits.length;
       }
 
       if (!sim.failed) {
