@@ -1276,19 +1276,23 @@ export default function App() {
       }
 
       // --- Phase 2 : FUSION AVANT TRAITEMENT -------------------------------
-      // Plusieurs trains atteignant la même case au même instant n'en forment
-      // qu'un seul. C'est ce train fusionné qui sera ensuite peint, découpé ou
-      // reçu en gare — jamais chacun séparément. L'ordre importe : fusionner
-      // après coup ferait peindre deux trains, ou compter deux arrivées.
-      const byDestination = new Map<string, MovingTrain[]>();
+      // Ne fusionnent que les trains qui empruntent le MÊME SEGMENT DANS LE
+      // MÊME SENS (même case de départ ET même case d'arrivée) : ils roulent
+      // sur la même voie et n'en forment donc qu'un seul, qui sera ensuite
+      // peint, découpé ou reçu en gare.
+      // Regrouper sur la seule case d'arrivée serait faux : cela fusionnerait
+      // des trains qui ne font que se croiser, et réduirait à un seul les
+      // arrivées simultanées d'une gare multi-entrées — lesquelles doivent
+      // rester distinctes pour être arbitrées une à une (voir plus bas).
+      const bySegment = new Map<string, MovingTrain[]>();
       for (const moved of pending) {
-        const key = pointKey(moved.next);
-        const list = byDestination.get(key) ?? [];
+        const key = `${pointKey(moved.cell)}>${pointKey(moved.next)}`;
+        const list = bySegment.get(key) ?? [];
         list.push(moved);
-        byDestination.set(key, list);
+        bySegment.set(key, list);
       }
       const arriving: MovingTrain[] = [];
-      for (const group of byDestination.values()) {
+      for (const group of bySegment.values()) {
         if (group.length === 1) { arriving.push(group[0]); continue; }
         const mixedColor = group.reduce<TrainColor>((acc, item) => mixColors(acc, item.color), group[0].color);
         addColorBurst(group[0].next[0], group[0].next[1], mixedColor, "mix");
