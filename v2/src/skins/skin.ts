@@ -32,9 +32,6 @@ export const SKINNABLE_VARIABLES = [
   "skin-loco-body-light",
   // Dimensionnement des illustrations d'un skin (gares, remises, rocher).
   "skin-icon-scale",
-  // Dimensionnement propre à la locomotive : elle se déplace et doit rester
-  // lisible sans masquer la voie, son ratio est donc réglable séparément.
-  "skin-loco-scale",
   // Pointillé des rails eux-mêmes, et son décalage de phase.
   "skin-rail-dasharray",
   "skin-rail-dashoffset",
@@ -160,49 +157,6 @@ export function buildSkinTemplate(current: Skin | null): string {
   return JSON.stringify(template, null, 2);
 }
 
-/** Signature d'un flux gzip : 0x1f 0x8b. */
-function looksGzipped(bytes: Uint8Array): boolean {
-  return bytes.length > 2 && bytes[0] === 0x1f && bytes[1] === 0x8b;
-}
-
-async function gunzip(bytes: Uint8Array): Promise<string> {
-  if (typeof DecompressionStream === "undefined") {
-    throw new Error("Ce navigateur ne sait pas décompresser le format gzip.");
-  }
-  const stream = new Blob([bytes as BlobPart]).stream().pipeThrough(new DecompressionStream("gzip"));
-  return await new Response(stream).text();
-}
-
-/**
- * Lit un skin fourni sous n'importe quelle forme : JSON en clair, fichier
- * gzip, ou base64 d'un gzip (ce que produit un copier-coller de fichier
- * compressé). Renvoie toujours du texte JSON.
- */
-export async function readSkinPayload(input: ArrayBuffer | string): Promise<string> {
-  if (typeof input !== "string") {
-    const bytes = new Uint8Array(input);
-    return looksGzipped(bytes) ? await gunzip(bytes) : new TextDecoder().decode(bytes);
-  }
-
-  const trimmed = input.trim();
-  if (trimmed.startsWith("{")) return trimmed; // JSON en clair
-
-  // Sinon, on tente d'y voir du base64 (gzip collé sous forme de texte).
-  const compact = trimmed.replace(/\s+/g, "");
-  if (/^[A-Za-z0-9+/=]+$/.test(compact) && compact.length > 16) {
-    try {
-      const binary = atob(compact);
-      const bytes = Uint8Array.from(binary, (char) => char.charCodeAt(0));
-      if (looksGzipped(bytes)) return await gunzip(bytes);
-      const decoded = new TextDecoder().decode(bytes).trim();
-      if (decoded.startsWith("{")) return decoded;
-    } catch {
-      // Pas du base64 exploitable : on laisse la validation JSON rendre l'erreur.
-    }
-  }
-  return trimmed;
-}
-
 export const SKIN_STORAGE_KEY = "signal-nocturne-skin-v1";
 
 /**
@@ -236,7 +190,6 @@ function isSafeCssValue(value: string): boolean {
 /** Bornes des valeurs numériques, pour éviter des réglages inexploitables. */
 const CLAMPED_VARIABLES: Partial<Record<SkinnableVariable, { min: number; max: number; unit: string }>> = {
   "skin-icon-scale": { min: 70, max: 150, unit: "%" },
-  "skin-loco-scale": { min: 50, max: 200, unit: "%" },
 };
 
 /** Ramène une valeur bornée dans son intervalle. Retourne null si illisible. */
@@ -279,10 +232,8 @@ export function parseSkin(raw: string): SkinParseResult {
   if (!data || typeof data !== "object") return { ok: false, reason: "Le fichier ne contient pas un objet de skin." };
 
   const source = data as Record<string, unknown>;
-  // Un nom vide ne doit pas empêcher l'import : le modèle exporté part d'un
-  // nom vide, et l'oubli est fréquent. On retombe sur un libellé neutre.
-  const declared = typeof source.name === "string" ? source.name.trim().slice(0, 60) : "";
-  const name = declared || "Skin sans nom";
+  const name = typeof source.name === "string" && source.name.trim() ? source.name.trim().slice(0, 60) : null;
+  if (!name) return { ok: false, reason: "Le skin doit déclarer un nom (\"name\")." };
 
   const ignored: string[] = [];
   const variables: Partial<Record<SkinnableVariable, string>> = {};
