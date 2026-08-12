@@ -10,7 +10,7 @@ import { parseLevelImport, type LevelIdentity } from "./levels/importFormats";
 import type { Direction, LevelDefinition, LevelFamily, LevelObject, LevelSource, TrainColor } from "./levels/types";
 import { hydrateLevel } from "./levels/hydrate";
 import { sampleRailCenterline } from "./rail-motion";
-import { applySkin, buildSkinTemplate, loadStoredSkin, parseSkin, setActiveSkinAssets, skinAsset, storeSkin, type Skin } from "./skins/skin";
+import { applySkin, buildSkinTemplate, loadStoredSkin, parseSkin, readSkinPayload, setActiveSkinAssets, skinAsset, storeSkin, type Skin } from "./skins/skin";
 
 type Point = [number, number];
 type EditorTool = "rail" | "erase" | "select" | "outlet" | "station" | "painter" | "splitter" | "obstacle" | "delete";
@@ -567,16 +567,25 @@ export default function App() {
   const [mode, setMode] = useState<"play" | "editor">("play");
   const [skin, setSkin] = useState<Skin | null>(() => loadStoredSkin());
   const [skinFeedback, setSkinFeedback] = useState("");
+  const [skinPasteText, setSkinPasteText] = useState("");
   const skinAssets = useMemo(() => skin?.assets ?? {}, [skin]);
   setActiveSkinAssets(skinAssets);
 
   useEffect(() => { applySkin(skin); }, [skin]);
 
-  function importSkinFromText(raw: string) {
+  async function importSkinFromPayload(payload: ArrayBuffer | string) {
+    let raw: string;
+    try {
+      raw = await readSkinPayload(payload);
+    } catch (error) {
+      setSkinFeedback(error instanceof Error ? error.message : "Lecture impossible.");
+      return;
+    }
     const parsed = parseSkin(raw);
     if (!parsed.ok) { setSkinFeedback(parsed.reason); return; }
     setSkin(parsed.skin);
     storeSkin(parsed.skin);
+    setSkinPasteText("");
     setSkinFeedback(
       parsed.ignored.length
         ? `Skin « ${parsed.skin.name} » appliqué, ${parsed.ignored.length} entrée(s) ignorée(s) : ${parsed.ignored.join(" · ")}`
@@ -622,6 +631,8 @@ export default function App() {
   const [family, setFamily] = useState(DEFAULT_LEVEL.family);
   const [editorTool, setEditorTool] = useState<EditorTool>("rail");
   const [history, setHistory] = useState<Set<string>[]>([]);
+  /** États annulés, réapplicables tant qu'aucun nouveau tracé n'est fait. */
+  const [redoStack, setRedoStack] = useState<Set<string>[]>([]);
   const [gesture, setGesture] = useState<Point[]>([]);
   const [gestureBaseEdges, setGestureBaseEdges] = useState<Set<string>>(() => new Set());
   const [trains, setTrains] = useState<MovingTrain[]>([]);
@@ -932,6 +943,7 @@ export default function App() {
     setSwitchPositions(level.switchPositions ?? {});
     setDisplaySwitchPositions(level.switchPositions ?? {});
     setHistory([]);
+    setRedoStack([]);
     objectsHistoryRef.current = [];
     setObjectsHistoryLength(0);
     setGesture([]);
@@ -1276,19 +1288,23 @@ export default function App() {
       }
 
       // --- Phase 2 : FUSION AVANT TRAITEMENT -------------------------------
-      // Plusieurs trains atteignant la même case au même instant n'en forment
-      // qu'un seul. C'est ce train fusionné qui sera ensuite peint, découpé ou
-      // reçu en gare — jamais chacun séparément. L'ordre importe : fusionner
-      // après coup ferait peindre deux trains, ou compter deux arrivées.
-      const byDestination = new Map<string, MovingTrain[]>();
+      // Ne fusionnent que les trains qui empruntent le MÊME SEGMENT DANS LE
+      // MÊME SENS (même case de départ ET même case d'arrivée) : ils roulent
+      // sur la même voie et n'en forment donc qu'un seul, qui sera ensuite
+      // peint, découpé ou reçu en gare.
+      // Regrouper sur la seule case d'arrivée serait faux : cela fusionnerait
+      // des trains qui ne font que se croiser, et réduirait à un seul les
+      // arrivées simultanées d'une gare multi-entrées — lesquelles doivent
+      // rester distinctes pour être arbitrées une à une (voir plus bas).
+      const bySegment = new Map<string, MovingTrain[]>();
       for (const moved of pending) {
-        const key = pointKey(moved.next);
-        const list = byDestination.get(key) ?? [];
+        const key = `${pointKey(moved.cell)}>${pointKey(moved.next)}`;
+        const list = bySegment.get(key) ?? [];
         list.push(moved);
-        byDestination.set(key, list);
+        bySegment.set(key, list);
       }
       const arriving: MovingTrain[] = [];
-      for (const group of byDestination.values()) {
+      for (const group of bySegment.values()) {
         if (group.length === 1) { arriving.push(group[0]); continue; }
         const mixedColor = group.reduce<TrainColor>((acc, item) => mixColors(acc, item.color), group[0].color);
         addColorBurst(group[0].next[0], group[0].next[1], mixedColor, "mix");
@@ -1460,13 +1476,30 @@ export default function App() {
             const bVector: Point = [b.next[0] - b.cell[0], b.next[1] - b.cell[1]];
             const perpendicular = aVector[0] * bVector[0] + aVector[1] * bVector[1] === 0;
             const sharedCellCrossing = samePoint(a.cell, b.cell) && !samePoint(a.next, b.next);
-            // Sur une jonction à 4 sorties en mode "virages" (N-E / S-W ou N-W / S-E), les deux
-            // routes sont deux arcs indépendants qui ne se touchent jamais géométriquement,
-            // contrairement au mode "cross" (deux droites qui se croisent au centre). Dans ce
-            // cas, deux trains présents dans la même case ne doivent pas mélanger leurs couleurs.
-            const sharedCellDirections = sharedCellCrossing ? directionsForCell(a.cell[0], a.cell[1]) : [];
-            const sharedCellMode = sharedCellDirections.length === 4 ? (junctionModes[pointKey(a.cell)] ?? "cross") : null;
-            const independentTracks = sharedCellCrossing && sharedCellMode !== null && sharedCellMode !== "cross";
+            // Deux trains empruntant, dans une même case, DEUX VIRAGES
+            // INDÉPENDANTS ne se touchent jamais géométriquement : les deux
+            // arcs passent de part et d'autre du centre (contrairement au mode
+            // "cross", deux droites qui se coupent au milieu). C'est le seul
+            // cas où deux trains partageant une case ne mélangent pas leurs
+            // couleurs.
+            // Le test porte sur la case TRAVERSÉE (`next`), pas sur la case de
+            // départ : deux quarts de tour indépendants s'abordent par des
+            // côtés différents, donc `a.cell` et `b.cell` diffèrent.
+            const junctionCells: string[] = [];
+            for (const key of [pointKey(a.cell), pointKey(a.next), pointKey(b.cell), pointKey(b.next)]) {
+              if (!junctionCells.includes(key)) junctionCells.push(key);
+            }
+            const independentTracks = junctionCells.some((key) => {
+              // La case doit être commune aux deux trains pour qu'il y ait
+              // matière à interaction.
+              const usedByA = key === pointKey(a.cell) || key === pointKey(a.next);
+              const usedByB = key === pointKey(b.cell) || key === pointKey(b.next);
+              if (!usedByA || !usedByB) return false;
+              const [cx, cy] = key.split(",").map(Number) as [number, number];
+              const mode = junctionModes[key] ?? "cross";
+              if (mode === "cross") return false; // les droites se croisent réellement
+              return directionsForCell(cx, cy).length === 4;
+            });
             const crossing = near && !areSplitterSiblings(a, b) && !independentTracks && (perpendicular || sharedCellCrossing);
             if (frontal && near) {
               const interactionKey = `${[a.id, b.id].sort().join("~")}@${edgeKey(a.cell, a.next)}`;
@@ -1922,6 +1955,8 @@ export default function App() {
       }
     } else if (gestureRef.current.length > 1) {
       setHistory((items) => [...items.slice(-24), gestureStartEdges.current]);
+      // Un nouveau tracé rend les états annulés incohérents : on les abandonne.
+      setRedoStack([]);
     }
     gestureRef.current = [];
     setGesture([]);
@@ -1930,12 +1965,23 @@ export default function App() {
   function undoTrack() {
     const previous = history.at(-1);
     if (!previous) return;
+    setRedoStack((items) => [...items.slice(-24), new Set(edges)]);
     setEdges(new Set(previous));
     setHistory((items) => items.slice(0, -1));
   }
 
+  /** Réapplique le dernier tracé annulé. */
+  function redoTrack() {
+    const next = redoStack.at(-1);
+    if (!next) return;
+    setHistory((items) => [...items.slice(-24), new Set(edges)]);
+    setEdges(new Set(next));
+    setRedoStack((items) => items.slice(0, -1));
+  }
+
   function clearTracks() {
     setHistory((items) => [...items.slice(-24), new Set(edges)]);
+    setRedoStack([]);
     setEdges(new Set());
     setJunctionModes({});
     setSwitchToes({});
@@ -2505,15 +2551,30 @@ export default function App() {
                 <p className="skin-current">Skin actif : <b>{skin ? skin.name : "par défaut"}</b>{skin?.author ? ` — ${skin.author}` : ""}</p>
                 <input
                   type="file"
-                  accept="application/json,.json"
+                  accept="application/json,.json,.gz,application/gzip"
                   className="skin-file"
                   onChange={(event) => {
                     const file = event.target.files?.[0];
                     event.target.value = "";
                     if (!file) return;
-                    void file.text().then(importSkinFromText).catch(() => setSkinFeedback("Lecture du fichier impossible."));
+                    void file.arrayBuffer()
+                      .then(importSkinFromPayload)
+                      .catch(() => setSkinFeedback("Lecture du fichier impossible."));
                   }}
                 />
+                <p className="io-hint">…ou collez directement le contenu du skin ci-dessous (JSON, ou base64 d’un fichier compressé) :</p>
+                <textarea
+                  rows={3}
+                  className="skin-paste"
+                  placeholder='{ "name": "Mon skin", "variables": { … } }'
+                  value={skinPasteText}
+                  onChange={(event) => setSkinPasteText(event.target.value)}
+                />
+                <button
+                  className="skin-paste-apply"
+                  disabled={!skinPasteText.trim()}
+                  onClick={() => void importSkinFromPayload(skinPasteText)}
+                >APPLIQUER LE SKIN COLLÉ</button>
                 <button className="skin-reset" disabled={!skin} onClick={resetSkin}>REVENIR AU SKIN PAR DÉFAUT</button>
                 <button className="skin-export" onClick={exportSkinTemplate}>EXPORTER LE SKIN / MODÈLE COMPLET</button>
                 {skinFeedback && <p className="import-feedback" role="status">{skinFeedback}</p>}
@@ -2614,7 +2675,13 @@ export default function App() {
         <button className={editorTool === "erase" ? "tool-active" : ""} disabled={running} onClick={() => setEditorTool((tool) => tool === "erase" ? "rail" : "erase")}><ToolIcon tool="erase" /><span>EFFACER</span></button>
         <button disabled={running || !history.length} onClick={undoTrack}>↶<span>ANNULER</span></button>
         <button onClick={clearTracks} disabled={running}>×<span>VIDER</span></button>
-        <button className={running ? "tool-active" : ""} disabled={!running && result === "idle"} onClick={() => resetSimulation()}>■<span>MODIF</span></button>
+        {running || result !== "idle" ? (
+          <button className={running ? "tool-active" : ""} onClick={() => resetSimulation()}>■<span>MODIF</span></button>
+        ) : (
+          /* Hors simulation, la même place sert au « refaire » : les deux
+             fonctions ne sont jamais disponibles en même temps. */
+          <button disabled={!redoStack.length} onClick={redoTrack}>↷<span>REFAIRE</span></button>
+        )}
         <button className="launch" onClick={launch}>{running ? (paused ? "▶" : "Ⅱ") : "▶"}<span>{running ? (paused ? "REPRENDRE" : "PAUSE") : "LANCER"}</span></button>
         <button onClick={() => setSpeed((value) => value === 4 ? 1 : value * 2)}>»<span>VITESSE ×{speed}</span></button>
       </footer>}
