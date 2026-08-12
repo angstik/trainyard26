@@ -118,7 +118,8 @@ function mixColors(one: TrainColor, two: TrainColor): TrainColor {
 const SPLITS: Partial<Record<TrainColor, [TrainColor, TrainColor]>> = {
   red: ["red", "red"], blue: ["blue", "blue"], yellow: ["yellow", "yellow"],
   purple: ["red", "blue"], orange: ["red", "yellow"], green: ["blue", "yellow"],
-  brown: ["red", "green"], pink: ["purple", "red"], cyan: ["green", "blue"],
+  // Le marron ne se décompose pas : il ressort marron des deux côtés.
+  brown: ["brown", "brown"], pink: ["purple", "red"], cyan: ["green", "blue"],
 };
 
 function pointKey(point: Point) {
@@ -408,7 +409,7 @@ function Dots({ colors, done = 0, layout = "grid" }: { colors: TrainColor[]; don
   if (layout === "line") {
     return (
       <div className="dots line" aria-label={`${remaining.length} trains attendus`}>
-        {remaining.map((color, i) => <i key={i} className={color}>{colorMark(color)}</i>)}
+        {remaining.map((color, i) => <i key={i} className={color} />)}
       </div>
     );
   }
@@ -421,7 +422,7 @@ function Dots({ colors, done = 0, layout = "grid" }: { colors: TrainColor[]; don
       style={{ gridTemplateColumns: `repeat(${cols}, 1fr)`, gridTemplateRows: `repeat(${rows}, 1fr)` }}
     >
       {remaining.slice(0, cols * rows).map((color, i) => (
-        <i key={i} className={color}>{colorMark(color)}</i>
+        <i key={i} className={color} />
       ))}
     </div>
   );
@@ -494,7 +495,7 @@ function TerminalBuilding({ object, done = 0 }: { object: Extract<LevelObject, {
   // le bâtiment : ils portent la séquence de trains attendue/émise, donc de
   // l'information de jeu qu'un skin ne doit pas pouvoir masquer.
   const dots = (
-    <div className={`terminal-dots ${object.type}-dots ${object.type === "station" && colors.length - done > 4 ? "scrolling" : ""}`}>
+    <div className={`terminal-dots ${object.type}-dots ${object.type === "station" && colors.length - done >= 4 ? "scrolling" : ""}`}>
       <Dots colors={colors} done={done} layout={object.type === "station" ? "line" : "grid"} />
     </div>
   );
@@ -1451,91 +1452,75 @@ export default function App() {
 
       let resolved = advanced;
       if (!sim.failed) {
-        const stationCellKeys = new Set(objects.filter((o) => o.type === "station").map((o) => pointKey([o.x, o.y])));
+        // ------------------------------------------------------------------
+        // Interactions entre trains — règles PUREMENT DISCRÈTES, à la case.
+        // Aucune notion de distance n'intervient : deux trains interagissent
+        // s'ils occupent la même case au même incrément, point.
+        //
+        //  1. FUSION  : même case ET même côté de sortie -> un seul train,
+        //               de la couleur mélangée.
+        //  2. MÉLANGE : même case, sorties différentes -> deux trains
+        //               distincts, tous deux de la couleur mélangée.
+        //
+        // Exceptions :
+        //  - gare       : l'arrivée déclenche le test de réussite, jamais un
+        //                 mélange (traité plus haut, par lot) ;
+        //  - painter    : la sortie porte toujours la couleur du painter, il
+        //                 est donc inutile — et faux — de mélanger avant ;
+        //  - splitter   : les deux trains issus d'un même split ne se
+        //                 remélangent pas entre eux.
+        // ------------------------------------------------------------------
+        const exemptCells = new Set(
+          objects
+            .filter((o) => o.type === "station" || o.type === "painter")
+            .map((o) => pointKey([o.x, o.y])),
+        );
+
+        const byCell = new Map<string, number[]>();
+        advanced.forEach((train, index) => {
+          const key = pointKey(train.cell);
+          const list = byCell.get(key) ?? [];
+          list.push(index);
+          byCell.set(key, list);
+        });
+
         const consumed = new Set<number>();
-        const merged: MovingTrain[] = [];
-        for (let i = 0; i < advanced.length; i++) {
-          if (consumed.has(i)) continue;
-          let combined = false;
-          for (let j = i + 1; j < advanced.length; j++) {
-            if (consumed.has(j)) continue;
-            const a = advanced[i], b = advanced[j];
-            // Deux trains qui convergent vers une gare (potentiellement multi-entrées)
-            // ne doivent jamais être mélangés par la logique de croisement générale :
-            // leur arrivée simultanée y est intentionnelle et gérée séparément (voir
-            // la résolution par lot des arrivées en gare, plus bas).
-            if (stationCellKeys.has(pointKey(a.next)) || stationCellKeys.has(pointKey(b.next))) continue;
-            const sameDirection = samePoint(a.cell, b.cell) && samePoint(a.next, b.next);
-            const frontal = samePoint(a.cell, b.next) && samePoint(a.next, b.cell);
-            const ax = a.cell[0] + (a.next[0] - a.cell[0]) * a.progress;
-            const ay = a.cell[1] + (a.next[1] - a.cell[1]) * a.progress;
-            const bx = b.cell[0] + (b.next[0] - b.cell[0]) * b.progress;
-            const by = b.cell[1] + (b.next[1] - b.cell[1]) * b.progress;
-            const near = Math.hypot(ax - bx, ay - by) < 0.22;
-            const aVector: Point = [a.next[0] - a.cell[0], a.next[1] - a.cell[1]];
-            const bVector: Point = [b.next[0] - b.cell[0], b.next[1] - b.cell[1]];
-            const perpendicular = aVector[0] * bVector[0] + aVector[1] * bVector[1] === 0;
-            const sharedCellCrossing = samePoint(a.cell, b.cell) && !samePoint(a.next, b.next);
-            // Deux trains empruntant, dans une même case, DEUX VIRAGES
-            // INDÉPENDANTS ne se touchent jamais géométriquement : les deux
-            // arcs passent de part et d'autre du centre (contrairement au mode
-            // "cross", deux droites qui se coupent au milieu). C'est le seul
-            // cas où deux trains partageant une case ne mélangent pas leurs
-            // couleurs.
-            // Le test porte sur la case TRAVERSÉE (`next`), pas sur la case de
-            // départ : deux quarts de tour indépendants s'abordent par des
-            // côtés différents, donc `a.cell` et `b.cell` diffèrent.
-            const junctionCells: string[] = [];
-            for (const key of [pointKey(a.cell), pointKey(a.next), pointKey(b.cell), pointKey(b.next)]) {
-              if (!junctionCells.includes(key)) junctionCells.push(key);
-            }
-            const independentTracks = junctionCells.some((key) => {
-              // La case doit être commune aux deux trains pour qu'il y ait
-              // matière à interaction.
-              const usedByA = key === pointKey(a.cell) || key === pointKey(a.next);
-              const usedByB = key === pointKey(b.cell) || key === pointKey(b.next);
-              if (!usedByA || !usedByB) return false;
-              const [cx, cy] = key.split(",").map(Number) as [number, number];
-              const mode = junctionModes[key] ?? "cross";
-              if (mode === "cross") return false; // les droites se croisent réellement
-              return directionsForCell(cx, cy).length === 4;
-            });
-            const crossing = near && !areSplitterSiblings(a, b) && !independentTracks && (perpendicular || sharedCellCrossing);
-            if (frontal && near) {
-              const interactionKey = `${[a.id, b.id].sort().join("~")}@${edgeKey(a.cell, a.next)}`;
-              if (!sim.interactions.has(interactionKey)) {
-                const mixedColor = mixColors(a.color, b.color);
-                advanced[i] = { ...a, color: mixedColor };
-                advanced[j] = { ...b, color: mixedColor };
-                addColorBurst((ax + bx) / 2, (ay + by) / 2, mixedColor, "cross");
-                playEffect("pass");
-                sim.interactions.add(interactionKey);
-              }
-              continue;
-            }
-            if (sameDirection && near) {
-              // Deux trains dans la même case, sur le même rail et dans le
-              // même sens fusionnent toujours, quelles que soient leurs
-              // couleurs (le mélange est total, cf. mixColors).
-              const mixedColor = mixColors(a.color, b.color);
-              consumed.add(i);
-              consumed.add(j);
-              merged.push({ ...a, id: `${a.id}-mix-${b.id}`, color: mixedColor });
-              addColorBurst((ax + bx) / 2, (ay + by) / 2, mixedColor, "mix");
-              combined = true;
-              break;
-            }
-            if (crossing) {
-              const mixedColor = mixColors(a.color, b.color);
-              advanced[i] = { ...a, color: mixedColor };
-              advanced[j] = { ...b, color: mixedColor };
-              addColorBurst((ax + bx) / 2, (ay + by) / 2, mixedColor, "mix");
-            }
+        for (const [cellKey, indices] of byCell) {
+          if (indices.length < 2 || exemptCells.has(cellKey)) continue;
+
+          // Groupe les occupants de la case par côté de sortie.
+          const bySide = new Map<string, number[]>();
+          for (const index of indices) {
+            const train = advanced[index];
+            const side = pointKey(train.next);
+            const list = bySide.get(side) ?? [];
+            list.push(index);
+            bySide.set(side, list);
           }
-          if (sim.failed) break;
-          if (!combined && !consumed.has(i)) merged.push(advanced[i]);
+
+          const participants = indices.filter((index) =>
+            indices.some((other) => other !== index && !areSplitterSiblings(advanced[index], advanced[other])),
+          );
+          if (participants.length < 2) continue;
+
+          const mixedColor = participants
+            .map((index) => advanced[index].color)
+            .reduce((acc, color) => mixColors(acc, color));
+          const [cx, cy] = cellKey.split(",").map(Number) as [number, number];
+          addColorBurst(cx, cy, mixedColor, "mix");
+          playEffect("pass");
+
+          for (const [, sameSide] of bySide) {
+            const group = sameSide.filter((index) => participants.includes(index));
+            if (group.length === 0) continue;
+            // Même côté de sortie : les trains n'en forment plus qu'un.
+            const [keep, ...absorbed] = group;
+            advanced[keep] = { ...advanced[keep], color: mixedColor };
+            for (const index of absorbed) consumed.add(index);
+          }
         }
-        resolved = merged;
+
+        resolved = advanced.filter((_, index) => !consumed.has(index));
       }
 
       sim.trains = sim.failed ? [] : resolved;
@@ -1744,10 +1729,20 @@ export default function App() {
   }
 
   function resolveTrackGesture(path: Point[]) {
+    // La gomme ne fait qu'effacer : elle ne doit jamais recréer de liaison ni
+    // reconstruire de jonction. On applique donc les suppressions et on
+    // s'arrête là, sans passer par la logique de raccordement ci-dessous.
+    if (editorTool === "erase") {
+      const erased = new Set(gestureStartEdges.current);
+      path.slice(1).forEach((cell, index) => erased.delete(edgeKey(path[index], cell)));
+      setEdges(erased);
+      return;
+    }
+
     const resolvedEdges = new Set(gestureStartEdges.current);
     path.slice(1).forEach((cell, index) => {
       const key = edgeKey(path[index], cell);
-      if (editorTool === "erase") resolvedEdges.delete(key); else resolvedEdges.add(key);
+      resolvedEdges.add(key);
     });
     const nextModes = { ...junctionModes };
     const nextToes = { ...switchToes };
@@ -2613,13 +2608,13 @@ export default function App() {
                           aria-label={`Train ${index + 1}${color ? `, ${COLOR_LABELS[color]}` : ", vide"}`}
                           aria-pressed={sequenceSlot === index}
                           onClick={() => setSequenceSlot(index)}
-                        ><small>{index + 1}</small><b>{color ? colorMark(color) : "＋"}</b></button>;
+                        ><small>{index + 1}</small><b className={color ? "swatch" : ""}>{color ? "" : "＋"}</b></button>;
                       })}
                     </div>
                     <div className="color-picker" role="group" aria-label={`Couleur du train ${sequenceSlot + 1}`}>
                       {COLORS.map((color) => (
                         <button key={color} className={color} onClick={() => updateSequence(sequenceSlot, color)}>
-                          <b>{colorMark(color)}</b><span>{COLOR_LABELS[color]}</span>
+                          <b className="swatch" /><span>{COLOR_LABELS[color]}</span>
                         </button>
                       ))}
                       <button className="empty" onClick={() => updateSequence(sequenceSlot, "")}><b>×</b><span>Vide</span></button>
@@ -2646,7 +2641,7 @@ export default function App() {
                     <div className="color-picker painter-colors" role="group" aria-label="Couleur de peinture">
                       {COLORS.map((color) => (
                         <button key={color} className={`${color} ${selected.color === color ? "active" : ""}`} aria-pressed={selected.color === color} onClick={() => updateSelectedObject({ color })}>
-                          <b>{colorMark(color)}</b><span>{COLOR_LABELS[color]}</span>
+                          <b className="swatch" /><span>{COLOR_LABELS[color]}</span>
                         </button>
                       ))}
                     </div>

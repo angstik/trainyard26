@@ -909,3 +909,7 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
 .skin-paste { width:100%; resize:vertical; min-height:56px; padding:7px; box-sizing:border-box; background:#0a1318; border:1px solid #2a3d47; color:#dbe9ee; font-family:inherit; font-size:10px; line-height:1.4; }
 .skin-paste-apply { width:100%; margin-top:6px; padding:9px 5px; border:1px solid #38505b; background:#111d23; color:inherit; font-size:9px; letter-spacing:.08em; }
 .skin-paste-apply:disabled { opacity:.4; cursor:not-allowed; }
+
+/* Pastilles de couleur des sélecteurs de l'éditeur : aplat plein, sans
+   symbole superposé (il nuisait à la lecture de la teinte elle-même). */
+.sequence-slots b.swatch, .color-picker b.swatch { display:block; width:100%; height:100%; min-height:16px; border-radius:3px; background:currentColor; }
