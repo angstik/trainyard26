@@ -204,6 +204,52 @@ export async function readSkinPayload(input: ArrayBuffer | string): Promise<stri
 }
 
 export const SKIN_STORAGE_KEY = "signal-nocturne-skin-v1";
+export const SKIN_HISTORY_KEY = "signal-nocturne-skin-history-v1";
+export const SKIN_HISTORY_MAX = 10;
+
+export type SkinHistoryEntry = { skin: Skin; appliedAt: number };
+
+/** Historique des skins appliqués, du plus récent au plus ancien. */
+export function loadSkinHistory(): SkinHistoryEntry[] {
+  try {
+    const raw = window.localStorage.getItem(SKIN_HISTORY_KEY);
+    if (!raw) return [];
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+    return parsed.filter(
+      (entry): entry is SkinHistoryEntry => entry && typeof entry === "object" && typeof entry.skin?.name === "string",
+    );
+  } catch {
+    return [];
+  }
+}
+
+/**
+ * Ajoute un skin en tête d'historique. Un skin déjà présent (même nom +
+ * mêmes variables + mêmes assets) est déplacé en tête plutôt que dupliqué.
+ * Conserve au plus SKIN_HISTORY_MAX entrées.
+ */
+export function pushSkinHistory(skin: Skin): SkinHistoryEntry[] {
+  const fingerprint = JSON.stringify({ name: skin.name, variables: skin.variables ?? {}, assets: skin.assets ?? {} });
+  const current = loadSkinHistory().filter(
+    (entry) => JSON.stringify({ name: entry.skin.name, variables: entry.skin.variables ?? {}, assets: entry.skin.assets ?? {} }) !== fingerprint,
+  );
+  const next = [{ skin, appliedAt: Date.now() }, ...current].slice(0, SKIN_HISTORY_MAX);
+  try {
+    window.localStorage.setItem(SKIN_HISTORY_KEY, JSON.stringify(next));
+  } catch {
+    // Stockage indisponible : l'historique reste valable pour la session.
+  }
+  return next;
+}
+
+export function clearSkinHistory() {
+  try {
+    window.localStorage.removeItem(SKIN_HISTORY_KEY);
+  } catch {
+    // Rien à faire de plus.
+  }
+}
 
 /**
  * Assets du skin actif, accessibles aux composants de rendu définis au niveau

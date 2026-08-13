@@ -10,7 +10,7 @@ import { parseLevelImport, type LevelIdentity } from "./levels/importFormats";
 import type { Direction, LevelDefinition, LevelFamily, LevelObject, LevelSource, TrainColor } from "./levels/types";
 import { hydrateLevel } from "./levels/hydrate";
 import { sampleRailCenterline } from "./rail-motion";
-import { applySkin, buildSkinTemplate, loadStoredSkin, parseSkin, readSkinPayload, setActiveSkinAssets, skinAsset, storeSkin, type Skin } from "./skins/skin";
+import { applySkin, buildSkinTemplate, clearSkinHistory, loadSkinHistory, loadStoredSkin, parseSkin, pushSkinHistory, readSkinPayload, setActiveSkinAssets, skinAsset, storeSkin, type Skin, type SkinHistoryEntry } from "./skins/skin";
 
 type Point = [number, number];
 type EditorTool = "rail" | "erase" | "select" | "outlet" | "station" | "painter" | "splitter" | "obstacle" | "delete";
@@ -487,7 +487,11 @@ function TerminalBuilding({ object, done = 0 }: { object: Extract<LevelObject, {
   // fournit que leur dessin, jamais leur placement.
   const connectors = facings.map((facing) => (
     connectorSvg
-      ? <span key={facing} className="terminal-connector skinned" style={{ transform: `rotate(${DIR_ANGLE[facing]}deg)` }} dangerouslySetInnerHTML={{ __html: connectorSvg }} />
+      // Décalage de quelques pixels vers le sens de sortie : appliqué APRÈS
+      // la rotation, donc dans le repère local du connecteur (dessiné pointe
+      // vers le haut) — translateY pousse alors bien vers l'extérieur, quelle
+      // que soit l'entrée concernée.
+      ? <span key={facing} className="terminal-connector skinned" style={{ transform: `rotate(${DIR_ANGLE[facing]}deg) translateY(-6px)` }} dangerouslySetInnerHTML={{ __html: connectorSvg }} />
       : <span key={facing} className="terminal-connector" style={{ transform: `rotate(${DIR_ANGLE[facing]}deg)` }} />
   ));
 
@@ -569,6 +573,9 @@ export default function App() {
   const [skin, setSkin] = useState<Skin | null>(() => loadStoredSkin());
   const [skinFeedback, setSkinFeedback] = useState("");
   const [skinPasteText, setSkinPasteText] = useState("");
+  const [ioTab, setIoTab] = useState<"level" | "skin">("level");
+  const [identityOpen, setIdentityOpen] = useState(false);
+  const [skinHistory, setSkinHistory] = useState<SkinHistoryEntry[]>(() => loadSkinHistory());
   const skinAssets = useMemo(() => skin?.assets ?? {}, [skin]);
   setActiveSkinAssets(skinAssets);
 
@@ -586,12 +593,26 @@ export default function App() {
     if (!parsed.ok) { setSkinFeedback(parsed.reason); return; }
     setSkin(parsed.skin);
     storeSkin(parsed.skin);
+    setSkinHistory(pushSkinHistory(parsed.skin));
     setSkinPasteText("");
     setSkinFeedback(
       parsed.ignored.length
         ? `Skin « ${parsed.skin.name} » appliqué, ${parsed.ignored.length} entrée(s) ignorée(s) : ${parsed.ignored.join(" · ")}`
         : `Skin « ${parsed.skin.name} » appliqué.`,
     );
+  }
+
+  /** Réapplique un skin déjà présent dans l'historique. */
+  function applySkinFromHistory(entry: SkinHistoryEntry) {
+    setSkin(entry.skin);
+    storeSkin(entry.skin);
+    setSkinHistory(pushSkinHistory(entry.skin)); // remonte en tête
+    setSkinFeedback(`Skin « ${entry.skin.name} » réappliqué depuis l'historique.`);
+  }
+
+  function clearHistory() {
+    clearSkinHistory();
+    setSkinHistory([]);
   }
 
   function resetSkin() {
@@ -2500,79 +2521,119 @@ export default function App() {
               )}
             {editorDialog === "io" && (
               <div className="level-io">
-                <h3>IMPORTER UN NIVEAU</h3>
-                <p className="io-hint">Colle soit une ligne CSV à 20 colonnes (id,webID,creatorID,…,puzzleString,…), soit juste une puzzleString « hh… ». Remplace le niveau en cours.</p>
-                <textarea
-                  rows={4}
-                  placeholder="hh3Giav6Giav3Sb5R…  ou  1,1,1,1,,Nom,Description,hh…,…"
-                  value={importText}
-                  onChange={(event) => setImportText(event.target.value)}
-                />
-                <button className="import-level" disabled={!importText.trim()} onClick={handleImportLevel}>IMPORTER</button>
-                {importFeedback && <p className="import-feedback" role="status">{importFeedback}</p>}
-                {importedIdentity && (
-                  <div className="identity-card">
-                    <h4>FICHE D’IDENTITÉ</h4>
-                    <div><span>ID</span><b>{importedIdentity.id || "—"}</b></div>
-                    <div><span>Web ID</span><b>{importedIdentity.webID || "—"}</b></div>
-                    <div><span>Créateur</span><b>{importedIdentity.creatorID || "—"}</b></div>
-                    <div><span>Section</span><b>{importedIdentity.section || "—"}</b></div>
-                    <div><span>Nom</span><b>{importedIdentity.name || "—"}</b></div>
-                    <div><span>Description</span><b>{importedIdentity.description || "—"}</b></div>
-                    <div><span>Pièces</span><b>{importedIdentity.pieceCounts || "—"}</b></div>
-                    <div><span>Clés (wrenches)</span><b>{importedIdentity.wrenches || "—"}</b></div>
-                    <div><span>Résoluble</span><b>{importedIdentity.isSolvable || "—"}</b></div>
-                    <div><span>Aimé</span><b>{importedIdentity.hasBeenLiked || "—"}</b></div>
-                    <div><span>Soumis le</span><b>{importedIdentity.submissionDate || "—"}</b></div>
-                    <div><span>Import local</span><b>{importedIdentity.localInsertionDate || "—"}</b></div>
-                    <div><span>Likes</span><b>{importedIdentity.likes || "—"}</b></div>
-                    <div><span>Vues</span><b>{importedIdentity.views || "—"}</b></div>
-                    <div><span>Ordinal utilisateur</span><b>{importedIdentity.userOrdinal || "—"}</b></div>
-                    <div><span>Ordinal téléchargement</span><b>{importedIdentity.downloadOrdinal || "—"}</b></div>
-                    <div><span>Mis en avant</span><b>{importedIdentity.isInFeatured || "—"}</b></div>
-                    <small className="identity-note">solutionString conservée telle quelle (non décodée, format non documenté) : {importedIdentity.solutionString ? `${importedIdentity.solutionString.slice(0, 24)}…` : "—"}</small>
-                  </div>
-                )}
-                <h3>EXPORTER LE NIVEAU</h3>
-                <button className="export-level" onClick={handleExportLevel}>COPIER LA PUZZLESTRING</button>
-                {exportFeedback && <p className="export-feedback" role="status">{exportFeedback}</p>}
+                <div className="io-tabs">
+                  <button className={ioTab === "level" ? "active" : ""} onClick={() => setIoTab("level")}>NIVEAU</button>
+                  <button className={ioTab === "skin" ? "active" : ""} onClick={() => setIoTab("skin")}>APPARENCE</button>
+                </div>
 
-                <h3>APPARENCE (SKIN)</h3>
-                <p className="io-hint">
-                  Chargez un fichier de skin (.json) pour changer l'habillage. Un skin peut
-                  être partiel : tout ce qu'il ne fournit pas garde l'apparence par défaut.
-                  Les couleurs des trains ne sont jamais modifiées.
-                </p>
-                <p className="skin-current">Skin actif : <b>{skin ? skin.name : "par défaut"}</b>{skin?.author ? ` — ${skin.author}` : ""}</p>
-                <input
-                  type="file"
-                  accept="application/json,.json,.gz,application/gzip"
-                  className="skin-file"
-                  onChange={(event) => {
-                    const file = event.target.files?.[0];
-                    event.target.value = "";
-                    if (!file) return;
-                    void file.arrayBuffer()
-                      .then(importSkinFromPayload)
-                      .catch(() => setSkinFeedback("Lecture du fichier impossible."));
-                  }}
-                />
-                <p className="io-hint">…ou collez directement le contenu du skin ci-dessous (JSON, ou base64 d’un fichier compressé) :</p>
-                <textarea
-                  rows={3}
-                  className="skin-paste"
-                  placeholder='{ "name": "Mon skin", "variables": { … } }'
-                  value={skinPasteText}
-                  onChange={(event) => setSkinPasteText(event.target.value)}
-                />
-                <button
-                  className="skin-paste-apply"
-                  disabled={!skinPasteText.trim()}
-                  onClick={() => void importSkinFromPayload(skinPasteText)}
-                >APPLIQUER LE SKIN COLLÉ</button>
-                <button className="skin-reset" disabled={!skin} onClick={resetSkin}>REVENIR AU SKIN PAR DÉFAUT</button>
-                <button className="skin-export" onClick={exportSkinTemplate}>EXPORTER LE SKIN / MODÈLE COMPLET</button>
-                {skinFeedback && <p className="import-feedback" role="status">{skinFeedback}</p>}
+                {ioTab === "level" && (
+                  <>
+                    <h3>IMPORTER</h3>
+                    <p className="io-hint">CSV 20 colonnes ou puzzleString « hh… ». Remplace le niveau en cours.</p>
+                    <textarea
+                      rows={3}
+                      placeholder="hh3Giav6Giav3Sb5R…  ou  1,1,1,1,,Nom,Description,hh…,…"
+                      value={importText}
+                      onChange={(event) => setImportText(event.target.value)}
+                    />
+                    <div className="io-row">
+                      <button className="btn-compact" disabled={!importText.trim()} onClick={handleImportLevel}>IMPORTER</button>
+                      <button className="btn-compact" onClick={handleExportLevel}>EXPORTER</button>
+                    </div>
+                    {importFeedback && <p className="import-feedback" role="status">{importFeedback}</p>}
+                    {exportFeedback && <p className="export-feedback" role="status">{exportFeedback}</p>}
+
+                    {importedIdentity && (
+                      <div className="identity-card">
+                        <button className="identity-toggle" onClick={() => setIdentityOpen((v) => !v)}>
+                          FICHE D’IDENTITÉ<i>{identityOpen ? "▲" : "▼"}</i>
+                        </button>
+                        {identityOpen && (
+                          <div className="identity-grid">
+                            <div><span>ID</span><b>{importedIdentity.id || "—"}</b></div>
+                            <div><span>Web ID</span><b>{importedIdentity.webID || "—"}</b></div>
+                            <div><span>Créateur</span><b>{importedIdentity.creatorID || "—"}</b></div>
+                            <div><span>Section</span><b>{importedIdentity.section || "—"}</b></div>
+                            <div><span>Nom</span><b>{importedIdentity.name || "—"}</b></div>
+                            <div><span>Description</span><b>{importedIdentity.description || "—"}</b></div>
+                            <div><span>Pièces</span><b>{importedIdentity.pieceCounts || "—"}</b></div>
+                            <div><span>Clés</span><b>{importedIdentity.wrenches || "—"}</b></div>
+                            <div><span>Résoluble</span><b>{importedIdentity.isSolvable || "—"}</b></div>
+                            <div><span>Aimé</span><b>{importedIdentity.hasBeenLiked || "—"}</b></div>
+                            <div><span>Soumis le</span><b>{importedIdentity.submissionDate || "—"}</b></div>
+                            <div><span>Import local</span><b>{importedIdentity.localInsertionDate || "—"}</b></div>
+                            <div><span>Likes</span><b>{importedIdentity.likes || "—"}</b></div>
+                            <div><span>Vues</span><b>{importedIdentity.views || "—"}</b></div>
+                            <div><span>Ord. utilisateur</span><b>{importedIdentity.userOrdinal || "—"}</b></div>
+                            <div><span>Ord. téléchargement</span><b>{importedIdentity.downloadOrdinal || "—"}</b></div>
+                            <div><span>Mis en avant</span><b>{importedIdentity.isInFeatured || "—"}</b></div>
+                            <small className="identity-note">solutionString conservée telle quelle (non décodée) : {importedIdentity.solutionString ? `${importedIdentity.solutionString.slice(0, 24)}…` : "—"}</small>
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </>
+                )}
+
+                {ioTab === "skin" && (
+                  <>
+                    <p className="skin-current">Actif : <b>{skin ? skin.name : "par défaut"}</b>{skin?.author ? ` — ${skin.author}` : ""}</p>
+                    <p className="io-hint">Fichier (.json ou .gz), ou collage direct. Un skin peut être partiel ; les couleurs des trains ne sont jamais modifiées.</p>
+
+                    <div className="io-row">
+                      <label className="btn-compact file-btn">
+                        FICHIER…
+                        <input
+                          type="file"
+                          accept="application/json,.json,.gz,application/gzip"
+                          onChange={(event) => {
+                            const file = event.target.files?.[0];
+                            event.target.value = "";
+                            if (!file) return;
+                            void file.arrayBuffer()
+                              .then(importSkinFromPayload)
+                              .catch(() => setSkinFeedback("Lecture du fichier impossible."));
+                          }}
+                        />
+                      </label>
+                      <button className="btn-compact" onClick={exportSkinTemplate}>EXPORTER</button>
+                      <button className="btn-compact" disabled={!skin} onClick={resetSkin}>PAR DÉFAUT</button>
+                    </div>
+
+                    <textarea
+                      rows={2}
+                      className="skin-paste"
+                      placeholder='Coller ici : { "name": "Mon skin", "variables": { … } }'
+                      value={skinPasteText}
+                      onChange={(event) => setSkinPasteText(event.target.value)}
+                    />
+                    <button
+                      className="btn-compact btn-block"
+                      disabled={!skinPasteText.trim()}
+                      onClick={() => void importSkinFromPayload(skinPasteText)}
+                    >APPLIQUER LE SKIN COLLÉ</button>
+                    {skinFeedback && <p className="import-feedback" role="status">{skinFeedback}</p>}
+
+                    {skinHistory.length > 0 && (
+                      <div className="skin-history">
+                        <div className="skin-history-head">
+                          <h4>HISTORIQUE ({skinHistory.length}/10)</h4>
+                          <button className="btn-mini" onClick={clearHistory}>VIDER</button>
+                        </div>
+                        {skinHistory.map((entry, index) => (
+                          <button
+                            key={`${entry.skin.name}-${entry.appliedAt}`}
+                            className={`skin-history-row ${skin && skin.name === entry.skin.name && index === 0 ? "current" : ""}`}
+                            onClick={() => applySkinFromHistory(entry)}
+                          >
+                            <b>{entry.skin.name || "Skin sans nom"}</b>
+                            <small>{new Date(entry.appliedAt).toLocaleString()}</small>
+                          </button>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
               )}
             {editorDialog === "object" && selected && (

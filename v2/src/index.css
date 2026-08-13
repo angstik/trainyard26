@@ -604,23 +604,41 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .save-actions .save-level { color:var(--cyan); border-color:#278fa0; }
 .save-status { color:#71cddd; font-size:8px; letter-spacing:.08em; text-align:center; }
 
-.level-io { margin-top:20px; border-top:1px solid #263943; padding-top:16px; }
-.level-io h3 { font-size:10px; color:var(--muted); letter-spacing:.14em; margin:16px 0 6px; }
+.level-io { margin-top:16px; border-top:1px solid #263943; padding-top:12px; }
+.level-io h3 { font-size:9px; color:var(--muted); letter-spacing:.12em; margin:10px 0 5px; }
 .level-io h3:first-child { margin-top:0; }
-.io-hint { color:var(--muted); font-size:9px; line-height:1.5; margin:0 0 8px; }
+.io-hint { color:var(--muted); font-size:9px; line-height:1.45; margin:0 0 7px; }
+
+/* Onglets NIVEAU / APPARENCE : évite d'empiler tout le contenu dans un seul
+   panneau qui obligeait à faire défiler. */
+.io-tabs { display:flex; gap:0; margin-bottom:12px; border:1px solid #2a3d47; }
+.io-tabs button { flex:1; padding:7px 4px; background:#0a1218; border:0; color:var(--muted); font-size:9px; letter-spacing:.08em; }
+.io-tabs button + button { border-left:1px solid #2a3d47; }
+.io-tabs button.active { background:#132029; color:var(--cyan); }
+
+/* Boutons compacts, en ligne plutôt qu'empilés pleine largeur. */
+.io-row { display:flex; gap:6px; margin-top:7px; }
+.btn-compact { flex:1; padding:6px 4px; border:1px solid #38505b; background:#111d23; color:inherit; font-size:8.5px; letter-spacing:.05em; text-align:center; cursor:pointer; }
+.btn-compact:disabled { opacity:.4; cursor:not-allowed; }
+.btn-block { width:100%; margin-top:6px; }
+.btn-mini { padding:3px 7px; border:1px solid #38505b; background:#111d23; color:var(--muted); font-size:8px; letter-spacing:.04em; cursor:pointer; }
+.file-btn { position:relative; overflow:hidden; color:var(--cyan); border-color:#278fa0; }
+.file-btn input[type=file] { position:absolute; inset:0; opacity:0; cursor:pointer; }
+
 .level-io textarea {
   width:100%; resize:vertical; min-height:64px; padding:8px; box-sizing:border-box;
   background:#0a1318; border:1px solid #2a3d47; color:#dbe9ee; font-family:inherit; font-size:10px; line-height:1.4;
 }
-.level-io button { width:100%; margin-top:8px; padding:9px 5px; border:1px solid #38505b; background:#111d23; color:inherit; font-size:9px; letter-spacing:.08em; }
-.level-io button:disabled { opacity:.4; cursor:not-allowed; }
-.level-io .export-level { color:var(--cyan); border-color:#278fa0; }
-.import-feedback, .export-feedback { color:#71cddd; font-size:8px; letter-spacing:.04em; line-height:1.5; margin:8px 0 0; word-break:break-word; }
-.identity-card { margin-top:10px; border:1px solid #263943; padding:10px; display:grid; gap:5px; }
-.identity-card h4 { font-size:9px; color:var(--muted); letter-spacing:.14em; margin:0 0 4px; }
-.identity-card div { display:flex; justify-content:space-between; gap:10px; font-size:10px; border-bottom:1px solid #1d2a31; padding-bottom:3px; }
-.identity-card div span { color:var(--muted); }
-.identity-card div b { text-align:right; word-break:break-word; }
+.import-feedback, .export-feedback { color:#71cddd; font-size:8px; letter-spacing:.04em; line-height:1.5; margin:7px 0 0; word-break:break-word; }
+/* Fiche d'identité : repliable, pour ne pas imposer son défilement dès
+   qu'un import réussit. */
+.identity-card { margin-top:8px; border:1px solid #263943; }
+.identity-toggle { width:100%; display:flex; justify-content:space-between; align-items:center; padding:7px 9px; background:#0e161b; border:0; color:var(--muted); font-size:9px; letter-spacing:.1em; cursor:pointer; }
+.identity-toggle i { font-style:normal; font-size:8px; }
+.identity-grid { padding:8px 9px; display:grid; gap:4px; border-top:1px solid #263943; max-height:40vh; overflow-y:auto; }
+.identity-grid div { display:flex; justify-content:space-between; gap:10px; font-size:9.5px; border-bottom:1px solid #1d2a31; padding-bottom:3px; }
+.identity-grid div span { color:var(--muted); flex:0 0 auto; }
+.identity-grid div b { text-align:right; word-break:break-word; }
 .identity-note { display:block; margin-top:6px; color:var(--muted); font-size:8px; line-height:1.5; }
 .library-io-trigger { width:100%; display:flex; align-items:center; justify-content:center; gap:8px; padding:11px; margin-bottom:14px; background:#111d23; border:1px solid #278fa0; color:var(--cyan); font-size:10px; letter-spacing:.08em; }
 
@@ -848,10 +866,7 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
 .skin-asset svg { width:100%; height:100%; display:block; }
 .skin-current { font-size:10px; color:var(--muted); margin:6px 0 8px; }
 .skin-current b { color:var(--text); }
-.skin-file { width:100%; font-size:10px; color:var(--muted); margin-bottom:8px; }
-.skin-reset { width:100%; padding:9px 5px; border:1px solid #38505b; background:#111d23; color:inherit; font-size:9px; letter-spacing:.08em; }
-.skin-reset:disabled { opacity:.4; cursor:not-allowed; }
-.skin-export { width:100%; margin-top:6px; padding:9px 5px; border:1px solid #278fa0; background:#111d23; color:var(--cyan); font-size:9px; letter-spacing:.08em; }
+/* Boutons de skin : voir .btn-compact / .io-row (styles unifiés et compacts). */
 /* Emblème du skin : petit repère visuel de l'habillage en cours, posé à
    droite du sigle sans perturber la mise en page de l'en-tête. */
 .skin-badge { position:absolute; right:-15px; top:2px; width:14px; height:14px; display:block; pointer-events:none; opacity:.9; }
@@ -880,7 +895,17 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
   bottom:0;
   transform-origin:50% 50%;
 }
-.terminal-connector.skinned svg { width:100%; height:100%; display:block; }
+.terminal-connector.skinned svg {
+  width:100%; height:100%; display:block;
+  /* Le ratio d'échelle du skin s'applique ici (sur le SVG, pas sur le
+     conteneur) pour ne jamais entrer en conflit avec la rotation et le
+     décalage portés par le conteneur via son style inline. Au-delà de 100%,
+     le connecteur déborde volontairement de sa case vers la voie : c'est
+     cohérent avec le décalage vers la sortie, mais à surveiller si l'écart
+     entre deux entrées adjacentes est faible (croisement à 4 voies).
+  */
+  transform:scale(var(--skin-icon-scale)); transform-origin:50% 50%;
+}
 /* Les conteneurs .terminal ne couvrent pas exactement la case (remise 88%,
    gare 116% avec décalage) : on compense, sinon le connecteur ne serait plus
    aligné sur la voie qu'il prolonge. */
@@ -921,9 +946,19 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
 /* Bibliothèque de motifs du skin : présente dans le DOM pour que les url(#id)
    se résolvent, mais jamais visible. */
 .skin-patterns { position:absolute; width:0; height:0; overflow:hidden; pointer-events:none; }
-.skin-paste { width:100%; resize:vertical; min-height:56px; padding:7px; box-sizing:border-box; background:#0a1318; border:1px solid #2a3d47; color:#dbe9ee; font-family:inherit; font-size:10px; line-height:1.4; }
-.skin-paste-apply { width:100%; margin-top:6px; padding:9px 5px; border:1px solid #38505b; background:#111d23; color:inherit; font-size:9px; letter-spacing:.08em; }
-.skin-paste-apply:disabled { opacity:.4; cursor:not-allowed; }
+.skin-paste { width:100%; resize:vertical; min-height:40px; padding:7px; box-sizing:border-box; background:#0a1318; border:1px solid #2a3d47; color:#dbe9ee; font-family:inherit; font-size:10px; line-height:1.4; }
+/* Historique des skins : lignes cliquables, la plus récente en tête. */
+.skin-history { margin-top:12px; border-top:1px solid #263943; padding-top:8px; }
+.skin-history-head { display:flex; justify-content:space-between; align-items:center; margin-bottom:6px; }
+.skin-history-head h4 { font-size:9px; color:var(--muted); letter-spacing:.12em; margin:0; }
+.skin-history-row {
+  width:100%; display:flex; justify-content:space-between; align-items:baseline; gap:8px;
+  padding:6px 8px; margin-bottom:3px; border:1px solid #22333c; background:#0d151a; cursor:pointer;
+}
+.skin-history-row:hover { border-color:#38505b; }
+.skin-history-row.current { border-color:#278fa0; background:#0f1e24; }
+.skin-history-row b { font-size:9.5px; color:var(--text); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.skin-history-row small { font-size:8px; color:var(--muted); flex:0 0 auto; }
 
 /* Pastilles de couleur des sélecteurs de l'éditeur : aplat plein, sans
    symbole superposé (il nuisait à la lecture de la teinte elle-même). */
