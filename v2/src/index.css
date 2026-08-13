@@ -869,8 +869,23 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
 .terminal.skinned .terminal-dots { z-index:6; }
 /* Connecteur skinné : même géométrie que celui d'origine (pointe vers le
    haut, pivotée vers chaque entrée), seul le dessin change. */
-.terminal-connector.skinned { background:none; border:0; }
+/* Le connecteur par défaut est un trait fin (10 px de large) : une
+   illustration y serait écrasée et invisible. Un connecteur fourni par un
+   skin reçoit donc une zone CARRÉE, de la largeur du bâtiment, ancrée au
+   bord de la case et pivotée vers l'entrée. Le SVG est dessiné pointe vers
+   le haut, dans un viewBox 0 0 100 100. */
+.terminal-connector.skinned {
+  background:none; border:0; filter:none;
+  left:0; right:0; width:100%; height:100%;
+  bottom:0;
+  transform-origin:50% 50%;
+}
 .terminal-connector.skinned svg { width:100%; height:100%; display:block; }
+/* Les conteneurs .terminal ne couvrent pas exactement la case (remise 88%,
+   gare 116% avec décalage) : on compense, sinon le connecteur ne serait plus
+   aligné sur la voie qu'il prolonge. */
+.terminal.outlet .terminal-connector.skinned { left:-6.8%; width:113.6%; }
+.terminal.station .terminal-connector.skinned { left:6.9%; width:86.2%; }
 .tool-preview.skinned-preview svg { width:100%; height:100%; display:block; }
 /* Locomotive fournie par un skin : occupe la case, la rotation reste pilotée
    par le code. Un peu plus grande que la loco par défaut, qui n'occupe qu'une
