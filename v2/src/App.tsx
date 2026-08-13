@@ -1497,6 +1497,34 @@ export default function App() {
             .map((o) => pointKey([o.x, o.y])),
         );
 
+        const consumed = new Set<number>();
+
+        // --- Échange de case (croisement frontal sur un même rail) --------
+        // Deux trains allant l'un de X vers Y et l'autre de Y vers X ne
+        // partagent JAMAIS la même case de départ (l'un est en X, l'autre en
+        // Y) : le regroupement par case ci-dessous ne peut donc pas les voir.
+        // C'est pourtant la même règle au fond — ils occupent le même rail au
+        // même incrément — reconnue ici par un test purement topologique
+        // (comparaison de cases, pas de distance) : chaque paire est comparée
+        // une fois, coût négligeable vu le nombre de trains en jeu.
+        // Leurs sorties étant par construction toujours différentes (chacun
+        // continue vers la case d'où vient l'autre), ils mélangent leur
+        // couleur sans jamais fusionner.
+        for (let i = 0; i < advanced.length; i++) {
+          if (exemptCells.has(pointKey(advanced[i].cell)) || exemptCells.has(pointKey(advanced[i].next))) continue;
+          for (let j = i + 1; j < advanced.length; j++) {
+            const a = advanced[i], b = advanced[j];
+            if (!(samePoint(a.cell, b.next) && samePoint(a.next, b.cell))) continue;
+            if (areSplitterSiblings(a, b)) continue;
+            const mixedColor = mixColors(a.color, b.color);
+            advanced[i] = { ...a, color: mixedColor };
+            advanced[j] = { ...b, color: mixedColor };
+            const midX = (a.cell[0] + a.next[0]) / 2, midY = (a.cell[1] + a.next[1]) / 2;
+            addColorBurst(midX, midY, mixedColor, "mix");
+            playEffect("pass");
+          }
+        }
+
         const byCell = new Map<string, number[]>();
         advanced.forEach((train, index) => {
           const key = pointKey(train.cell);
@@ -1505,7 +1533,6 @@ export default function App() {
           byCell.set(key, list);
         });
 
-        const consumed = new Set<number>();
         for (const [cellKey, indices] of byCell) {
           if (indices.length < 2 || exemptCells.has(cellKey)) continue;
 
