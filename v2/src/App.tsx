@@ -1300,6 +1300,18 @@ export default function App() {
 
       const advanced: MovingTrain[] = [];
       const stationArrivals = new Map<string, MovingTrain[]>();
+      // Identifiants des trains ayant fraîchement transité CE tick (phase 3
+      // ci-dessous), par opposition à ceux qui continuent simplement leur
+      // trajectoire entamée à un tick antérieur. Essentiel pour les
+      // interactions : le champ `cell` d'un train reste égal à la case qu'il
+      // vient de quitter pendant TOUTE la traversée du segment suivant — pas
+      // seulement à l'instant de son passage. Sans cette distinction, un
+      // train qui a quitté une case depuis longtemps (et se trouve déjà loin,
+      // en cours de traversée du segment d'après) serait à tort considéré
+      // comme « dans la case » simplement parce que son champ `cell` vaut
+      // encore cette case, et mélangerait sa couleur avec un train qui y
+      // arrive réellement au même instant.
+      const freshIds = new Set<string>();
 
       // --- Phase 1 : avancer, et séparer ceux qui changent de case ---------
       const pending: MovingTrain[] = [];
@@ -1380,6 +1392,7 @@ export default function App() {
           const next = add(current, exitSide);
           const nextAngle = DIR_ANGLE[exitSide];
           advanced.push({ ...moved, previous: from, cell: current, next, progress: moved.progress - 1, fromAngle: moved.angle, angle: nextAngle });
+          freshIds.add(moved.id);
           continue;
         }
         if (object?.type === "splitter") {
@@ -1395,9 +1408,10 @@ export default function App() {
           }
           splitOutputs.forEach((splitOutput, index) => {
             const next = add(current, splitOutput.direction);
+            const splitId = `${moved.id}-split-${index}-${Date.now()}`;
             advanced.push({
               ...moved,
-              id: `${moved.id}-split-${index}-${Date.now()}`,
+              id: splitId,
               color: splitOutput.color,
               previous: from,
               cell: current,
@@ -1406,6 +1420,7 @@ export default function App() {
               angle: DIR_ANGLE[splitOutput.direction],
               fromAngle: moved.angle,
             });
+            freshIds.add(splitId);
           });
           addColorBurst(current[0], current[1], moved.color, "split");
           playEffect("split");
@@ -1437,6 +1452,7 @@ export default function App() {
         const next = add(current, exit);
         const nextAngle = DIR_ANGLE[directionBetween(current, next)];
         advanced.push({ ...moved, previous: from, cell: current, next, progress: moved.progress - 1, fromAngle: moved.angle, angle: nextAngle });
+        freshIds.add(moved.id);
       }
 
       // Bascules d'aiguillage appliquées une fois toutes les orientations
@@ -1511,8 +1527,10 @@ export default function App() {
         // continue vers la case d'où vient l'autre), ils mélangent leur
         // couleur sans jamais fusionner.
         for (let i = 0; i < advanced.length; i++) {
+          if (!freshIds.has(advanced[i].id)) continue;
           if (exemptCells.has(pointKey(advanced[i].cell)) || exemptCells.has(pointKey(advanced[i].next))) continue;
           for (let j = i + 1; j < advanced.length; j++) {
+            if (!freshIds.has(advanced[j].id)) continue;
             const a = advanced[i], b = advanced[j];
             if (!(samePoint(a.cell, b.next) && samePoint(a.next, b.cell))) continue;
             if (areSplitterSiblings(a, b)) continue;
@@ -1527,6 +1545,11 @@ export default function App() {
 
         const byCell = new Map<string, number[]>();
         advanced.forEach((train, index) => {
+          // Seuls les trains qui viennent de transiter CE tick participent :
+          // un train qui continue simplement sa traversée (arrivé il y a
+          // plusieurs ticks) a déjà eu son occasion d'interagir, sur le tick
+          // de son arrivée — le revoir ici serait la source exacte du bug.
+          if (!freshIds.has(train.id)) return;
           const key = pointKey(train.cell);
           const list = byCell.get(key) ?? [];
           list.push(index);

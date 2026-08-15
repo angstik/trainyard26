@@ -279,6 +279,23 @@ function isSafeCssValue(value: string): boolean {
   return !/url\s*\(/i.test(withoutLocalRefs);
 }
 
+/**
+ * Même principe que isSafeCssValue, mais pour un BLOC de style entier (donc
+ * sans la limite de longueur ni l'interdiction des accolades, qui sont la
+ * syntaxe normale d'une feuille de style). Utilisé pour valider le contenu
+ * d'une balise <style> à l'intérieur d'un SVG de skin — les animations CSS
+ * (@keyframes, animation, transform) y sont explicitement autorisées, mais
+ * toute ressource externe (@import, url() non local) reste interdite, tout
+ * comme pour les variables de couleur : un skin importé reste non fiable.
+ */
+function isSafeStyleBlock(css: string): boolean {
+  if (css.length > 20_000) return false;
+  if (/expression\s*\(|javascript:|<\/style/i.test(css)) return false;
+  if (/@import/i.test(css)) return false;
+  const withoutLocalRefs = css.replace(/url\(\s*['"]?#[A-Za-z][\w-]*['"]?\s*\)/g, "");
+  return !/url\s*\(/i.test(withoutLocalRefs);
+}
+
 /** Bornes des valeurs numériques, pour éviter des réglages inexploitables. */
 const CLAMPED_VARIABLES: Partial<Record<SkinnableVariable, { min: number; max: number; unit: string }>> = {
   "skin-icon-scale": { min: 70, max: 150, unit: "%" },
@@ -303,7 +320,20 @@ function clampVariable(key: SkinnableVariable, value: string): string | null {
 function isSafeSvg(svg: string): boolean {
   if (svg.length > 200_000) return false;
   if (!/^\s*<svg[\s>]/i.test(svg.trim())) return false;
-  return !/<script|<foreignObject|<iframe|on\w+\s*=|javascript:|<!ENTITY|xlink:href\s*=\s*["']?(?!#)/i.test(svg);
+  if (/<script|<foreignObject|<iframe|on\w+\s*=|javascript:|<!ENTITY|xlink:href\s*=\s*["']?(?!#)/i.test(svg)) return false;
+  // Les animations CSS (@keyframes, animation, transform) sont autorisées à
+  // l'intérieur d'une balise <style> : c'est la méthode déjà utilisée par
+  // l'application elle-même pour ses propres assets (cuve du peintre,
+  // estompage de la branche dormante d'un aiguillage). Mais ce contenu n'est
+  // pas balayé par les règles ci-dessus (elles ne cherchent pas à l'intérieur
+  // d'un <style>) : on le valide donc séparément, avec les mêmes exigences
+  // que pour les variables de couleur — aucune ressource externe.
+  const styleBlocks = svg.match(/<style[^>]*>([\s\S]*?)<\/style>/gi) ?? [];
+  for (const block of styleBlocks) {
+    const content = block.replace(/^<style[^>]*>/i, "").replace(/<\/style>$/i, "");
+    if (!isSafeStyleBlock(content)) return false;
+  }
+  return true;
 }
 
 export type SkinParseResult =

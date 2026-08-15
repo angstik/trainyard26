@@ -119,6 +119,35 @@ Gares, remises et locomotives suivront dans une prochaine étape ; ils
 demandent des surcouches dynamiques (connecteurs orientables, points de
 couleur, zone de teinte du train) qui restent à définir.
 
+## Animer un élément
+
+Un élément graphique peut contenir une balise `<style>` avec des animations
+CSS (`@keyframes` + `animation`), ou des balises SMIL natives
+(`<animate>`, `<animateTransform>`). C'est la méthode déjà utilisée par
+l'application elle-même sur ses propres éléments (la cuve du peintre, le
+glissement de la branche dormante d'un aiguillage).
+
+**Sans coût de performance, à une condition** : n'animez que `transform`
+(translate/rotate/scale) et `opacity`. Le navigateur les traite sur un thread
+séparé, sans recalcul de mise en page. Tout le reste — une largeur, un
+`stroke-width`, les coordonnées d'un `path`, un `filter` — force un nouveau
+calcul à chaque image, potentiellement coûteux si plusieurs éléments animés
+sont visibles à la fois sur le plateau.
+
+```xml
+<svg viewBox="0 0 100 100">
+  <style>
+    @keyframes pulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+    .coeur { transform-origin: 50% 50%; animation: pulse 2s ease-in-out infinite; }
+  </style>
+  <circle class="coeur" cx="50" cy="50" r="20" fill="currentColor"/>
+</svg>
+```
+
+Comme pour les variables de couleur, aucune ressource externe n'est autorisée
+dans une balise `<style>` : ni `@import`, ni `url()` en dehors d'une
+référence locale (`url(#mon-motif)`) vers un élément déclaré dans `patterns`.
+
 ## Partir d'un modèle
 
 Le plus simple pour créer un skin est d'utiliser le bouton
