@@ -922,9 +922,12 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
   position:absolute; left:0; top:0; width:11%; height:11%; margin:1.5% 0 0 1.5%;
   transform-origin:50% 50%; pointer-events:none; will-change:transform;
 }
+/* Enveloppe interne, mémoïsée côté React : porte la couleur et le contenu SVG
+   lui-même, jamais la rotation (qui reste sur .loco-skinned, ci-dessus). */
+.loco-skinned-inner { width:100%; height:100%; }
 /* Le ratio s'applique à l'intérieur, pour ne pas perturber la rotation
    portée par l'élément lui-même. */
-.loco-skinned > svg { transform:scale(var(--skin-loco-scale)); transform-origin:50% 50%; }
+.loco-skinned .loco-skinned-inner > svg { transform:scale(var(--skin-loco-scale)); transform-origin:50% 50%; }
 .loco-skinned svg {
   width:100%; height:100%; display:block;
   /* !important pour neutraliser un éventuel style="color:…" laissé sur le

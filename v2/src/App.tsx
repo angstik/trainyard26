@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { memo, useEffect, useMemo, useRef, useState } from "react";
 // Source unique du numéro de version : le fichier VERSION à la racine du
 // projet, également lisible directement dans le dépôt. Évite toute dérive
 // entre le fichier et le numéro affiché dans l'application.
@@ -412,6 +412,27 @@ function Dots({ colors, done = 0, layout = "grid" }: { colors: TrainColor[]; don
   );
 }
 
+/**
+ * Composants mémoïsés portant le contenu SVG injecté par un skin.
+ *
+ * Sans cette isolation, une locomotive ou un rocher animé se voit
+ * régulièrement recréé/retouché par React à chaque image (le composant
+ * parent se re-rend en continu pendant une simulation, pour des raisons sans
+ * rapport — position des trains, chrono…), ce qui interrompt ou redémarre
+ * toute animation CSS portée par ce contenu, même si le SVG lui-même est
+ * strictement identique d'une image à l'autre.
+ * `React.memo` garantit que ce sous-arbre n'est reconstruit que si la valeur
+ * qui l'anime (le SVG, ou la couleur pour la locomotive) change réellement —
+ * jamais à cause d'un re-rendu du reste de l'application.
+ */
+const SkinnedAsset = memo(function SkinnedAsset({ svg, className, ...rest }: { svg: string; className: string } & React.HTMLAttributes<HTMLSpanElement>) {
+  return <span className={className} dangerouslySetInnerHTML={{ __html: svg }} {...rest} />;
+});
+
+const SkinnedLocoBody = memo(function SkinnedLocoBody({ svg, color }: { svg: string; color: string }) {
+  return <div className="loco-skinned-inner" style={{ color }} dangerouslySetInnerHTML={{ __html: svg }} />;
+});
+
 function SteamLoco({ train, future }: { train: MovingTrain; future?: Point }) {
   const incoming = train.previous ?? [
     train.cell[0] - (train.next[0] - train.cell[0]),
@@ -437,9 +458,10 @@ function SteamLoco({ train, future }: { train: MovingTrain; future?: Point }) {
             fournie par un tiers. */}
         <div
           className="loco-skinned"
-          style={{ transform: `rotate(${displayAngle}deg)`, color: COLOR_HEX[train.color] }}
-          dangerouslySetInnerHTML={{ __html: locoSvg }}
-        />
+          style={{ transform: `rotate(${displayAngle}deg)` }}
+        >
+          <SkinnedLocoBody svg={locoSvg} color={COLOR_HEX[train.color]} />
+        </div>
       </div>
     );
   }
@@ -475,7 +497,7 @@ function TerminalBuilding({ object, done = 0 }: { object: Extract<LevelObject, {
       // la rotation, donc dans le repère local du connecteur (dessiné pointe
       // vers le haut) — translateY pousse alors bien vers l'extérieur, quelle
       // que soit l'entrée concernée.
-      ? <span key={facing} className="terminal-connector skinned" style={{ transform: `rotate(${DIR_ANGLE[facing]}deg) translateY(-6px)` }} dangerouslySetInnerHTML={{ __html: connectorSvg }} />
+      ? <span key={facing} className="terminal-connector skinned" style={{ transform: `rotate(${DIR_ANGLE[facing]}deg) translateY(-6px)` }}><SkinnedAsset svg={connectorSvg} className="skin-asset" /></span>
       : <span key={facing} className="terminal-connector" style={{ transform: `rotate(${DIR_ANGLE[facing]}deg)` }} />
   ));
 
@@ -492,7 +514,7 @@ function TerminalBuilding({ object, done = 0 }: { object: Extract<LevelObject, {
     return (
       <div className={`terminal ${object.type} skinned`}>
         {connectors}
-        <span className="terminal-art" dangerouslySetInnerHTML={{ __html: buildingSvg }} />
+        <SkinnedAsset svg={buildingSvg} className="terminal-art" />
         {dots}
       </div>
     );
@@ -544,7 +566,7 @@ function ToolIcon({ tool }: { tool: EditorTool }) {
   if (tool === "splitter") return <span className="tool-preview"><SplitterPiece object={{ id: "tool-splitter", type: "splitter", x: 0, y: 0, orientation: "H" }} /></span>;
   if (tool === "obstacle") {
     const rock = skinAsset("rock");
-    if (rock) return <span className="tool-preview skinned-preview" dangerouslySetInnerHTML={{ __html: rock }} />;
+    if (rock) return <span className="tool-preview skinned-preview"><SkinnedAsset svg={rock} className="skin-asset" /></span>;
     return <span className="tool-preview rock-preview" />;
   }
   if (tool === "select") return <span className="tool-preview select-preview"><span className="select-arrow n" /><span className="select-arrow e" /><span className="select-arrow s" /><span className="select-arrow w" /><span className="select-hub" /></span>;
@@ -2132,7 +2154,7 @@ export default function App() {
       {/* Motifs déclarés par le skin : injectés une fois, invisibles, pour que
           les références url(#id) des variables de couleur se résolvent. */}
       {skinAssets.patterns && (
-        <div className="skin-patterns" aria-hidden="true" dangerouslySetInnerHTML={{ __html: skinAssets.patterns }} />
+        <SkinnedAsset svg={skinAssets.patterns} className="skin-patterns" aria-hidden="true" />
       )}
 
       {installHint && (() => {
@@ -2176,7 +2198,7 @@ export default function App() {
           <span className="sigil">
             ✣<button className="version-tag" title="Vérifier les mises à jour" aria-label={`Version ${APP_VERSION} — vérifier les mises à jour`} onClick={() => void checkForUpdate()}>v{APP_VERSION}</button>
             {skinAssets.badge && (
-              <span className="skin-badge" title={`Skin : ${skin?.name ?? ""}`} aria-label={`Skin appliqué : ${skin?.name ?? ""}`} dangerouslySetInnerHTML={{ __html: skinAssets.badge }} />
+              <SkinnedAsset svg={skinAssets.badge} className="skin-badge" title={`Skin : ${skin?.name ?? ""}`} aria-label={`Skin appliqué : ${skin?.name ?? ""}`} />
             )}
             {updateState.status !== "idle" && (
               <div className="update-toast" role="status">
@@ -2305,7 +2327,7 @@ export default function App() {
               const invalid = mode === "editor" && invalidObjectIds.has(object.id);
               const moving = movingObjectId === object.id ? "moving-object" : "";
               if (object.type === "obstacle") return <button key={object.id} aria-label="Obstacle" className={`obstacle ${skinAssets.rock ? "skinned" : ""} ${selectedObject === object.id ? "selected-object" : ""} ${invalid ? "invalid-object" : ""} ${moving}`} onClick={objectClick} style={{ left: `${object.x * 100 / GRID}%`, top: `${object.y * 100 / GRID}%` }}>
-                {skinAssets.rock && <span className="skin-asset" dangerouslySetInnerHTML={{ __html: skinAssets.rock }} />}
+                {skinAssets.rock && <SkinnedAsset svg={skinAssets.rock} className="skin-asset" />}
               </button>;
               if (object.type === "painter") return <button key={object.id} aria-label={`Peinture ${COLOR_LABELS[object.color]}`} className={`object fixed-piece ${selectedObject === object.id ? "selected-object" : ""} ${invalid ? "invalid-object" : ""} ${moving}`} onClick={objectClick} style={{ left: `${object.x * 100 / GRID}%`, top: `${object.y * 100 / GRID}%` }}><PainterPiece object={object} /></button>;
               if (object.type === "splitter") return <button key={object.id} aria-label={`Splitter ${object.orientation}`} className={`object fixed-piece ${invalid ? "invalid-object" : ""} ${moving}`} onClick={objectClick} style={{ left: `${object.x * 100 / GRID}%`, top: `${object.y * 100 / GRID}%` }}><SplitterPiece object={object} /></button>;
