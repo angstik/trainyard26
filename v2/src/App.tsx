@@ -703,6 +703,8 @@ export default function App() {
   const nextTrainsRef = useRef<MovingTrain[]>([]);
   const tickTimeRef = useRef<number>(Date.now());
   const tickIntervalRef = useRef<number>(25);
+  /** Horodatage du début de la pause en cours, null hors pause. */
+  const pausedAtRef = useRef<number | null>(null);
   // Snapshot des positions d'aiguillage produit par le tick physique, publié
   // vers le rendu par la boucle d'animation (et non directement) : trains et
   // aiguillages doivent être commités dans le MÊME rendu, sinon il existe des
@@ -944,6 +946,7 @@ export default function App() {
   function resetSimulation(initialSwitches: Record<string, number> = switchPositions) {
     setRunning(false);
     setPaused(false);
+    pausedAtRef.current = null;
     setTrains([]);
     nextTrainsRef.current = [];
     setExplosions([]);
@@ -1239,6 +1242,7 @@ export default function App() {
     nextSwitchesRef.current = { ...switchPositions };
     publishedSwitchesRef.current = null;
     tickTimeRef.current = Date.now();
+    pausedAtRef.current = null;
     setDisplaySwitchPositions({ ...switchPositions });
     setTrains([]);
     setExplosions([]);
@@ -1250,6 +1254,26 @@ export default function App() {
     setPaused(false);
     setRunning(true);
   }
+
+  /**
+   * La pause fige l'affichage (la boucle de rendu s'arrête), mais le temps
+   * réel continue de s'écouler. Sans ce correctif, à la reprise, l'horloge de
+   * référence du rendu (`tickTimeRef`) reste sur sa valeur d'avant la pause :
+   * l'écart avec l'heure réelle explose d'un coup, la progression est donc
+   * lue comme « terminée » (bornée à 1) — la représentation saute directement
+   * à la fin du segment en cours, puis saute une seconde fois quand le tick
+   * physique suivant arrive enfin. En décalant `tickTimeRef` de la durée
+   * exacte de la pause, la reprise continue exactement là où l'affichage
+   * s'était figé, sans qu'aucune progression ne soit perdue.
+   */
+  useEffect(() => {
+    if (paused) {
+      pausedAtRef.current = Date.now();
+    } else if (pausedAtRef.current !== null) {
+      tickTimeRef.current += Date.now() - pausedAtRef.current;
+      pausedAtRef.current = null;
+    }
+  }, [paused]);
 
   useEffect(() => {
     if (!running || paused) return;
