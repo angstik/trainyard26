@@ -528,10 +528,6 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
   background:rgba(4,10,13,.96); border:1px solid #53d98c; box-shadow:0 14px 42px #000,0 0 28px #174d35;
 }
 .result-card.failed { border-color:#ff584d; box-shadow:0 0 55px #6e1711; }
-/* Comparaison "Meilleure" : contenu plus riche (tableau + 2 actions) que le
-   simple small/b/bouton de l'écran de succès standard — mise en page dédiée
-   plutôt que de forcer 4 éléments dans une grille à 3 colonnes. */
-.result-card.compare { grid-template-columns:1fr; grid-auto-rows:auto; row-gap:8px; }
 .best-comparison { display:flex; gap:16px; }
 .best-comparison-col { display:flex; flex-direction:column; gap:2px; font-size:11px; color:var(--muted); min-width:110px; }
 .best-comparison-col small { color:#71838d; letter-spacing:.12em; font-size:9px; }
@@ -805,6 +801,13 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .dialog-body .validate { width:100%; margin-top:18px; padding:12px; color:var(--cyan); border:1px solid #1e8ca0; background:#101b21; }
 .dialog-footer { display:flex; justify-content:flex-end; padding:12px 18px; border-top:1px solid #29414b; background:#070d11; }
 .dialog-footer button { min-width:128px; padding:10px 18px; border:1px solid #278fa0; background:#10242b; color:var(--cyan); }
+/* Les deux actions de la comparaison remplissent le pied plutôt que d'être
+   alignées à droite (comportement par défaut de .dialog-footer) — priment
+   sur les styles génériques ci-dessus grâce à la seconde classe. */
+.dialog-footer.best-comparison-actions { justify-content:stretch; gap:10px; }
+.dialog-footer.best-comparison-actions button { flex:1; min-width:0; border-color:#38505b; background:#10261d; color:inherit; }
+.dialog-footer.best-comparison-actions button:last-child { border-color:#1e8ca0; color:#53d98c; }
+.best-comparison-dialog .dialog-body { display:flex; justify-content:center; padding:22px 18px; }
 .editor-dialog .selected-properties { margin:0; padding:16px; }
 .editor-dialog .family-repo { max-height:180px; overflow:auto; padding-right:6px; }
 .empty-dialog { min-height:120px; display:grid; place-items:center; color:var(--muted); }

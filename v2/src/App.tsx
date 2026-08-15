@@ -792,6 +792,27 @@ export default function App() {
   const [movingObjectId, setMovingObjectId] = useState<string | null>(null);
   const [moveGhostCell, setMoveGhostCell] = useState<Point | null>(null);
   const simRef = useRef<SimData>(createEmptySim(DEFAULT_LEVEL.objects));
+  /**
+   * `persistAttempt` est appelée depuis la boucle de jeu (l'effet du tick,
+   * dont les dépendances n'incluent ni `activeLevel` ni les compteurs de
+   * temps). Sans ces refs, elle lirait ces valeurs telles qu'elles étaient
+   * au moment où l'effet a été configuré (au lancement), pas leur valeur
+   * réelle au moment de la réussite — risque de sauvegarder sous le mauvais
+   * niveau, ou avec un temps figé à sa valeur de départ.
+   */
+  const activeLevelRef = useRef(activeLevel);
+  const editingElapsedMsRef = useRef(0);
+  const totalElapsedMsRef = useRef(0);
+  /** `switchPositions` n'est pas non plus dans les dépendances de l'effet du
+   *  tick : même risque que ci-dessus si le joueur ajuste un aiguillage sans
+   *  toucher au reste du tracé. */
+  const switchPositionsRef = useRef<Record<string, number>>({});
+  useEffect(() => {
+    activeLevelRef.current = activeLevel;
+    editingElapsedMsRef.current = editingElapsedMs;
+    totalElapsedMsRef.current = totalElapsedMs;
+    switchPositionsRef.current = switchPositions;
+  }, [activeLevel, editingElapsedMs, totalElapsedMs, switchPositions]);
   const nextTrainsRef = useRef<MovingTrain[]>([]);
   const tickTimeRef = useRef<number>(Date.now());
   const tickIntervalRef = useRef<number>(25);
@@ -1086,6 +1107,7 @@ export default function App() {
   function loadLevel(source: LevelSource) {
     const level = hydrateLevel(source);
     if (activeLevel.id !== level.id) persistAttempt(false);
+    setBestComparison(null);
     setActiveLevel(level);
     setEdges(new Set(level.savedEdges ?? []));
     setJunctionModes(level.junctionModes ?? {});
@@ -1197,15 +1219,16 @@ export default function App() {
   }
 
   function persistAttempt(success: boolean) {
+    const levelId = activeLevelRef.current.id;
     const construction: LevelConstruction = {
       edges: [...edges],
       junctionModes: { ...junctionModes },
       switchToes: { ...switchToes },
-      switchPositions: { ...switchPositions },
+      switchPositions: { ...switchPositionsRef.current },
       rails: totalSegments,
       cells: trackCells,
       switchCells: switchCells,
-      timeMs: editingElapsedMs,
+      timeMs: editingElapsedMsRef.current,
     };
     // La décision (première réussite ? amélioration ?) doit se baser sur
     // l'état RÉELLEMENT à jour, pas sur `levelProgress` lu depuis la
@@ -1213,10 +1236,14 @@ export default function App() {
     // jeu (setInterval), dont la fermeture peut être plus ancienne que le
     // dernier setLevelProgress. Tout se calcule donc à l'intérieur de
     // l'updater, sur son paramètre `current` — seule source garantie à jour.
+    // Même raisonnement pour `levelId` et le temps ci-dessus : lus via des
+    // refs tenues à jour à chaque rendu (voir activeLevelRef), jamais depuis
+    // la fermeture — `activeLevel` n'entre pas dans les dépendances de
+    // l'effet du tick, donc rien ne garantit qu'il y soit à jour.
     let pendingComparison: { levelId: string; previous: LevelConstruction; candidate: LevelConstruction } | null = null;
 
     setLevelProgress((current) => {
-      const previous = current[activeLevel.id];
+      const previous = current[levelId];
       const previousBest = previous?.best ?? null;
       const isFirstSuccess = success && !previousBest;
       // Amélioration = moins de cases que la meilleure enregistrée (le
@@ -1225,15 +1252,15 @@ export default function App() {
       // en place sans solliciter le joueur pour rien.
       const isImprovement = success && previousBest != null && construction.cells < previousBest.cells;
       if (isImprovement && previousBest) {
-        pendingComparison = { levelId: activeLevel.id, previous: previousBest, candidate: construction };
+        pendingComparison = { levelId, previous: previousBest, candidate: construction };
       }
       const nextEntry: LevelProgress = {
         completed: previous?.completed === true || success,
-        thinkingMs: totalElapsedMs,
+        thinkingMs: totalElapsedMsRef.current,
         last: construction,
         best: isFirstSuccess ? construction : previousBest,
       };
-      const next = { ...current, [activeLevel.id]: nextEntry };
+      const next = { ...current, [levelId]: nextEntry };
       window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(next));
       return next;
     });
@@ -2525,43 +2552,55 @@ export default function App() {
             {explosions.map((blast) => <div key={blast.id} className="explosion" style={{ left: `${blast.x * 100 / GRID}%`, top: `${blast.y * 100 / GRID}%` }}><i /><i /><i /><i /><span>✹</span></div>)}
           </div>
           {result !== "idle" && (
-            <div className={`result-card ${result} ${bestComparison && bestComparison.levelId === activeLevel.id ? "compare" : ""}`}>
-              {result === "success" && bestComparison && bestComparison.levelId === activeLevel.id ? (
-                <>
-                  <small>NOUVELLE MEILLEURE SOLUTION POSSIBLE</small>
-                  <b>MOINS DE CASES QU’AVANT</b>
-                  <div className="best-comparison">
-                    <div className="best-comparison-col">
-                      <small>ANCIENNE</small>
-                      <span>{bestComparison.previous.cells} cases</span>
-                      <span>{bestComparison.previous.rails} rails</span>
-                      <span>{bestComparison.previous.switchCells} croisements</span>
-                      <span>{formatTime(bestComparison.previous.timeMs)}</span>
-                    </div>
-                    <div className="best-comparison-col new">
-                      <small>NOUVELLE</small>
-                      <span>{bestComparison.candidate.cells} cases</span>
-                      <span>{bestComparison.candidate.rails} rails</span>
-                      <span>{bestComparison.candidate.switchCells} croisements</span>
-                      <span>{formatTime(bestComparison.candidate.timeMs)}</span>
-                    </div>
-                  </div>
-                  <div className="best-comparison-actions">
-                    <button onClick={keepPreviousBest}>GARDER L’ANCIENNE</button>
-                    <button onClick={adoptNewBest}>ADOPTER LA NOUVELLE</button>
-                  </div>
-                </>
-              ) : (
-                <>
-                  <small>{result === "success" ? "TOUS LES TRAINS SONT ARRIVÉS" : status.startsWith("GARES EN ATTENTE") ? "PLUS AUCUN TRAIN EN CIRCULATION" : "INCIDENT SUR LE RÉSEAU"}</small>
-                  <b>{result === "success" ? "NIVEAU RÉUSSI" : status}</b>
-                  <button onClick={() => resetSimulation()}>RETOUR AU PLAN</button>
-                </>
-              )}
+            <div className={`result-card ${result}`}>
+              <small>{result === "success" ? "TOUS LES TRAINS SONT ARRIVÉS" : status.startsWith("GARES EN ATTENTE") ? "PLUS AUCUN TRAIN EN CIRCULATION" : "INCIDENT SUR LE RÉSEAU"}</small>
+              <b>{result === "success" ? "NIVEAU RÉUSSI" : status}</b>
+              <button onClick={() => resetSimulation()}>RETOUR AU PLAN</button>
             </div>
           )}
         </div>
         </div>
+
+        {/* Dialogue autonome plutôt qu'imbriqué dans la petite carte de
+            résultat : celle-ci est trop étroite pour ce contenu plus riche
+            (tableau + deux actions) — sur mobile, elle se retrouvait
+            partiellement masquée par la barre de boutons du bas. Réutilise
+            le système de dialogue déjà éprouvé ailleurs dans l'app (hauteur
+            maximale + défilement gérés correctement en mobile). */}
+        {bestComparison && (
+          <div className="dialog-backdrop" role="presentation">
+            <section className="editor-dialog best-comparison-dialog" role="dialog" aria-modal="true" aria-labelledby="best-comparison-title">
+              <div className="dialog-heading">
+                <div>
+                  <small>NOUVELLE MEILLEURE SOLUTION POSSIBLE</small>
+                  <h2 id="best-comparison-title">MOINS DE CASES QU’AVANT</h2>
+                </div>
+              </div>
+              <div className="dialog-body">
+                <div className="best-comparison">
+                  <div className="best-comparison-col">
+                    <small>ANCIENNE</small>
+                    <span>{bestComparison.previous.cells} cases</span>
+                    <span>{bestComparison.previous.rails} rails</span>
+                    <span>{bestComparison.previous.switchCells} croisements</span>
+                    <span>{formatTime(bestComparison.previous.timeMs)}</span>
+                  </div>
+                  <div className="best-comparison-col new">
+                    <small>NOUVELLE</small>
+                    <span>{bestComparison.candidate.cells} cases</span>
+                    <span>{bestComparison.candidate.rails} rails</span>
+                    <span>{bestComparison.candidate.switchCells} croisements</span>
+                    <span>{formatTime(bestComparison.candidate.timeMs)}</span>
+                  </div>
+                </div>
+              </div>
+              <div className="dialog-footer best-comparison-actions">
+                <button onClick={keepPreviousBest}>GARDER L’ANCIENNE</button>
+                <button onClick={adoptNewBest}>ADOPTER LA NOUVELLE</button>
+              </div>
+            </section>
+          </div>
+        )}
 
         {editorDialog && (
           <div className="dialog-backdrop" role="presentation" onPointerDown={(event) => { if (event.target === event.currentTarget) cancelDialog(); }}>
