@@ -29,20 +29,34 @@ type MovingTrain = {
 type Explosion = { id: number; x: number; y: number; reason: string };
 type ColorBurst = { id: number; x: number; y: number; color: TrainColor; kind: "paint" | "mix" | "split" | "cross" };
 type SoundKind = "unmute" | "switch" | "brake" | "explosion" | "split" | "paint" | "station" | "pass";
-type LevelProgress = {
-  minimumRails: number | null;
-  occupiedCells: number | null;
-  doubleCells: number | null;
-  lastRails: number;
-  completed: boolean;
-  lastTimeMs: number;
-  bestTimeMs: number | null;
-  /** Durée de réflexion cumulée sur ce niveau, reprise à chaque retour. */
-  thinkingMs: number;
+/**
+ * Un tracé complet de rails, avec les statistiques de l'essai qui l'a produit.
+ * Deux exemplaires sont conservés par niveau (voir LevelProgress) plutôt
+ * qu'un seul écrasé à chaque tentative : « Dernière » perd sinon le tracé
+ * d'une réussite dès que le joueur retouche le plateau ensuite.
+ */
+type LevelConstruction = {
   edges: string[];
   junctionModes: Record<string, JunctionMode>;
   switchToes: Record<string, Direction>;
   switchPositions: Record<string, number>;
+  rails: number;
+  cells: number;
+  switchCells: number;
+  timeMs: number;
+};
+type LevelProgress = {
+  completed: boolean;
+  /** Durée de réflexion cumulée sur ce niveau, reprise à chaque retour. */
+  thinkingMs: number;
+  /** Dernier tracé quitté, réussite ou non — chargé par REPRENDRE. */
+  last: LevelConstruction;
+  /**
+   * Tracé de la réussite au moins de cases (voir persistAttempt) : ne change
+   * que sur amélioration confirmée par le joueur, jamais silencieusement.
+   * null tant qu'aucune réussite n'a eu lieu.
+   */
+  best: LevelConstruction | null;
 };
 type SimData = {
   trains: MovingTrain[];
@@ -59,7 +73,45 @@ const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], 
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
 const OPPOSITE: Record<Direction, Direction> = { N: "S", E: "W", S: "N", W: "E" };
 const COLORS = TRAIN_COLORS;
-const PROGRESS_STORAGE_KEY = "signal-nocturne-progress-v1";
+const PROGRESS_STORAGE_KEY = "signal-nocturne-progress-v2";
+const LEGACY_PROGRESS_STORAGE_KEY = "signal-nocturne-progress-v1";
+
+/**
+ * Convertit une entrée de progression au format v1 (un seul tracé, plus des
+ * statistiques numériques de meilleure performance sans le tracé associé) en
+ * une entrée v2 (deux tracés nommés). Le tracé de « Meilleure » issu de la
+ * migration reste approximatif : l'ancien format n'a jamais conservé le
+ * tracé exact qui a produit le meilleur score, seulement ses chiffres — on
+ * ne peut donc reconstituer que les statistiques, pas le dessin d'origine.
+ * Les parties jouées après cette mise à jour suivent les deux exactement.
+ */
+function migrateLegacyProgress(raw: unknown): Record<string, LevelProgress> {
+  const out: Record<string, LevelProgress> = {};
+  if (!raw || typeof raw !== "object") return out;
+  for (const [id, value] of Object.entries(raw as Record<string, unknown>)) {
+    const entry = value as Record<string, unknown>;
+    const last: LevelConstruction = {
+      edges: Array.isArray(entry.edges) ? (entry.edges as string[]) : [],
+      junctionModes: (entry.junctionModes as Record<string, JunctionMode>) ?? {},
+      switchToes: (entry.switchToes as Record<string, Direction>) ?? {},
+      switchPositions: (entry.switchPositions as Record<string, number>) ?? {},
+      rails: typeof entry.lastRails === "number" ? entry.lastRails : 0,
+      cells: typeof entry.occupiedCells === "number" ? entry.occupiedCells : 0,
+      switchCells: typeof entry.doubleCells === "number" ? entry.doubleCells : 0,
+      timeMs: typeof entry.lastTimeMs === "number" ? entry.lastTimeMs : 0,
+    };
+    const completed = entry.completed === true || entry.minimumRails != null;
+    const best: LevelConstruction | null = completed
+      ? {
+          ...last,
+          rails: typeof entry.minimumRails === "number" ? entry.minimumRails : last.rails,
+          timeMs: typeof entry.bestTimeMs === "number" ? entry.bestTimeMs : last.timeMs,
+        }
+      : null;
+    out[id] = { completed, thinkingMs: typeof entry.thinkingMs === "number" ? entry.thinkingMs : 0, last, best };
+  }
+  return out;
+}
 const COLOR_LABELS: Record<TrainColor, string> = {
   red: "Rouge", blue: "Bleu", yellow: "Jaune", orange: "Orange", green: "Vert",
   purple: "Violet", brown: "Marron", pink: "Rose", cyan: "Cyan", white: "Blanc",
@@ -692,6 +744,13 @@ export default function App() {
   const [newFamilyName, setNewFamilyName] = useState("");
   const [saveStatus, setSaveStatus] = useState("");
   const [levelProgress, setLevelProgress] = useState<Record<string, LevelProgress>>({});
+  /** Comparaison en attente : une réussite bat "Meilleure" en cases, le choix
+   *  de la conserver revient au joueur (voir l'écran de succès). */
+  const [bestComparison, setBestComparison] = useState<{
+    levelId: string;
+    previous: LevelConstruction;
+    candidate: LevelConstruction;
+  } | null>(null);
   const [editingElapsedMs, setEditingElapsedMs] = useState(0);
   const [totalElapsedMs, setTotalElapsedMs] = useState(0);
   // Pas de simulation écoulés depuis le lancement. Comptés dans la boucle
@@ -817,7 +876,16 @@ export default function App() {
           setFamilies([...LEVEL_FAMILIES, ...localFamilies.filter((item) => !bundled.has(item.id))]);
         }
         const storedProgress = window.localStorage.getItem(PROGRESS_STORAGE_KEY);
-        if (storedProgress) setLevelProgress(JSON.parse(storedProgress) as Record<string, LevelProgress>);
+        if (storedProgress) {
+          setLevelProgress(JSON.parse(storedProgress) as Record<string, LevelProgress>);
+        } else {
+          const legacy = window.localStorage.getItem(LEGACY_PROGRESS_STORAGE_KEY);
+          if (legacy) {
+            const migrated = migrateLegacyProgress(JSON.parse(legacy));
+            setLevelProgress(migrated);
+            window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(migrated));
+          }
+        }
         const storedLibraryFamily = window.localStorage.getItem("signal-nocturne-library-family");
         if (storedLibraryFamily) setLibraryFamilyId(storedLibraryFamily);
         const storedLibraryOffsets = window.sessionStorage.getItem("signal-nocturne-library-scroll");
@@ -967,11 +1035,33 @@ export default function App() {
     setColorBursts([]);
     setResult("idle");
     setStatus("PRÊT À LANCER");
+    setBestComparison(null);
     setDisplaySwitchPositions({ ...initialSwitches });
     const empty = createEmptySim(objects, initialSwitches);
     simRef.current = empty;
     setEmitted(empty.emitted);
     setReceived(empty.received);
+  }
+
+  /** Le joueur garde la solution déjà enregistrée comme "Meilleure". */
+  function keepPreviousBest() {
+    setBestComparison(null);
+    resetSimulation();
+  }
+
+  /** Le joueur adopte la nouvelle réussite comme "Meilleure". */
+  function adoptNewBest() {
+    if (!bestComparison) return;
+    const { levelId, candidate } = bestComparison;
+    setLevelProgress((current) => {
+      const previous = current[levelId];
+      if (!previous) return current;
+      const next = { ...current, [levelId]: { ...previous, best: candidate } };
+      window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(next));
+      return next;
+    });
+    setBestComparison(null);
+    resetSimulation();
   }
 
   function loadLevel(source: LevelSource) {
@@ -1066,39 +1156,64 @@ export default function App() {
     const saved = levelProgress[level.id];
     loadLevel(level);
     if (!saved) return;
-    setEdges(new Set(saved.edges));
-    setJunctionModes(saved.junctionModes);
-    setSwitchToes(saved.switchToes);
-    setSwitchPositions(saved.switchPositions);
-    setDisplaySwitchPositions(saved.switchPositions);
+    setEdges(new Set(saved.last.edges));
+    setJunctionModes(saved.last.junctionModes);
+    setSwitchToes(saved.last.switchToes);
+    setSwitchPositions(saved.last.switchPositions);
+    setDisplaySwitchPositions(saved.last.switchPositions);
     setStatus("DERNIER TABLEAU RESTAURÉ");
   }
 
+  /** Charge le tracé "Meilleure" (voir l'étoile dans la bibliothèque). */
+  function loadBestSolution(level: LevelSource) {
+    const saved = levelProgress[level.id];
+    loadLevel(level);
+    if (!saved?.best) return;
+    setEdges(new Set(saved.best.edges));
+    setJunctionModes(saved.best.junctionModes);
+    setSwitchToes(saved.best.switchToes);
+    setSwitchPositions(saved.best.switchPositions);
+    setDisplaySwitchPositions(saved.best.switchPositions);
+    setStatus("MEILLEURE SOLUTION CHARGÉE");
+  }
+
   function persistAttempt(success: boolean) {
+    const construction: LevelConstruction = {
+      edges: [...edges],
+      junctionModes: { ...junctionModes },
+      switchToes: { ...switchToes },
+      switchPositions: { ...switchPositions },
+      rails: totalSegments,
+      cells: trackCells,
+      switchCells: switchCells,
+      timeMs: editingElapsedMs,
+    };
+    const previousBest = levelProgress[activeLevel.id]?.best ?? null;
+    const isFirstSuccess = success && !previousBest;
+    // Amélioration = moins de cases que la meilleure enregistrée (le critère
+    // choisi, celui déjà affiché en CASES/CIBLE). Une égalité ne compte pas
+    // comme amélioration : la meilleure déjà enregistrée reste en place sans
+    // solliciter le joueur pour rien.
+    const isImprovement = success && previousBest != null && trackCells < previousBest.cells;
+
     setLevelProgress((current) => {
       const previous = current[activeLevel.id];
-      const previousMinimum = previous?.minimumRails ?? Number.POSITIVE_INFINITY;
-      const isNewBest = success && totalSegments < previousMinimum;
       const nextEntry: LevelProgress = {
-        minimumRails: success ? Math.min(previousMinimum, totalSegments) : previous?.minimumRails ?? null,
-        occupiedCells: isNewBest ? trackCells : previous?.occupiedCells ?? null,
-        doubleCells: isNewBest ? switchCells : previous?.doubleCells ?? null,
-        lastRails: totalSegments,
-        completed: previous?.completed === true || previous?.minimumRails != null || success,
-        lastTimeMs: editingElapsedMs,
-        bestTimeMs: success
-          ? Math.min(previous?.bestTimeMs ?? Number.POSITIVE_INFINITY, editingElapsedMs)
-          : previous?.bestTimeMs ?? null,
+        completed: previous?.completed === true || success,
         thinkingMs: totalElapsedMs,
-        edges: [...edges],
-        junctionModes: { ...junctionModes },
-        switchToes: { ...switchToes },
-        switchPositions: { ...switchPositions },
+        last: construction,
+        best: isFirstSuccess ? construction : (previous?.best ?? null),
       };
       const next = { ...current, [activeLevel.id]: nextEntry };
       window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(next));
       return next;
     });
+
+    // Une amélioration ne remplace jamais Meilleure en silence : le choix
+    // revient au joueur (voir la carte de comparaison sur l'écran de succès).
+    if (isImprovement && previousBest) {
+      setBestComparison({ levelId: activeLevel.id, previous: previousBest, candidate: construction });
+    }
   }
 
   function changeMode(nextMode: "play" | "editor") {
@@ -2381,10 +2496,39 @@ export default function App() {
             {explosions.map((blast) => <div key={blast.id} className="explosion" style={{ left: `${blast.x * 100 / GRID}%`, top: `${blast.y * 100 / GRID}%` }}><i /><i /><i /><i /><span>✹</span></div>)}
           </div>
           {result !== "idle" && (
-            <div className={`result-card ${result}`}>
-              <small>{result === "success" ? "TOUS LES TRAINS SONT ARRIVÉS" : status.startsWith("GARES EN ATTENTE") ? "PLUS AUCUN TRAIN EN CIRCULATION" : "INCIDENT SUR LE RÉSEAU"}</small>
-              <b>{result === "success" ? "NIVEAU RÉUSSI" : status}</b>
-              <button onClick={() => resetSimulation()}>RETOUR AU PLAN</button>
+            <div className={`result-card ${result} ${bestComparison && bestComparison.levelId === activeLevel.id ? "compare" : ""}`}>
+              {result === "success" && bestComparison && bestComparison.levelId === activeLevel.id ? (
+                <>
+                  <small>NOUVELLE MEILLEURE SOLUTION POSSIBLE</small>
+                  <b>MOINS DE CASES QU’AVANT</b>
+                  <div className="best-comparison">
+                    <div className="best-comparison-col">
+                      <small>ANCIENNE</small>
+                      <span>{bestComparison.previous.cells} cases</span>
+                      <span>{bestComparison.previous.rails} rails</span>
+                      <span>{bestComparison.previous.switchCells} croisements</span>
+                      <span>{formatTime(bestComparison.previous.timeMs)}</span>
+                    </div>
+                    <div className="best-comparison-col new">
+                      <small>NOUVELLE</small>
+                      <span>{bestComparison.candidate.cells} cases</span>
+                      <span>{bestComparison.candidate.rails} rails</span>
+                      <span>{bestComparison.candidate.switchCells} croisements</span>
+                      <span>{formatTime(bestComparison.candidate.timeMs)}</span>
+                    </div>
+                  </div>
+                  <div className="best-comparison-actions">
+                    <button onClick={keepPreviousBest}>GARDER L’ANCIENNE</button>
+                    <button onClick={adoptNewBest}>ADOPTER LA NOUVELLE</button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <small>{result === "success" ? "TOUS LES TRAINS SONT ARRIVÉS" : status.startsWith("GARES EN ATTENTE") ? "PLUS AUCUN TRAIN EN CIRCULATION" : "INCIDENT SUR LE RÉSEAU"}</small>
+                  <b>{result === "success" ? "NIVEAU RÉUSSI" : status}</b>
+                  <button onClick={() => resetSimulation()}>RETOUR AU PLAN</button>
+                </>
+              )}
             </div>
           )}
         </div>
@@ -2411,16 +2555,13 @@ export default function App() {
                   <button className="library-io-trigger" onClick={() => setEditorDialog("io")}><span className="tool-glyph">⇄</span> IMPORTER / EXPORTER UN NIVEAU</button>
                   {!libraryFamily && <div className="library-family-index">
                     {visibleFamilies.map((item) => {
-                      const completedLevels = item.levels.filter((level) => {
-                        const progress = levelProgress[level.id];
-                        return progress?.completed ?? (progress?.minimumRails != null);
-                      });
+                      const completedLevels = item.levels.filter((level) => levelProgress[level.id]?.best != null);
                       const completed = completedLevels.length;
                       const completionRate = item.levels.length ? completed / item.levels.length : 0;
                       const qualityScores = completedLevels
                         .map((level) => {
-                          const progress = levelProgress[level.id];
-                          return progress?.minimumRails && level.optimalRails ? Math.min(1, level.optimalRails / progress.minimumRails) : null;
+                          const best = levelProgress[level.id]?.best;
+                          return best && level.optimalRails ? Math.min(1, level.optimalRails / best.rails) : null;
                         })
                         .filter((value): value is number => value != null);
                       const avgQuality = qualityScores.length ? qualityScores.reduce((a, b) => a + b, 0) / qualityScores.length : null;
@@ -2465,11 +2606,11 @@ export default function App() {
                           onClick={() => selectLibraryFamily(visibleFamilies[visibleFamilies.findIndex((f) => f.id === libraryFamily.id) + 1]?.id ?? null)}
                         >→</button>
                       </div>
-                      <div className="library-progress-heading"><span>Niveau</span><span>Diff.</span><span>OK</span><span>Mini/Opt.</span><span>Aig./Cible</span><span>Tableau</span></div>
+                      <div className="library-progress-heading"><span>Niveau</span><span>Diff.</span><span>★</span><span>Mini/Opt.</span><span>Aig./Cible</span><span>Tableau</span></div>
                       <div className="library-levels">
                         {libraryFamily.levels.map((level) => {
                           const progress = levelProgress[level.id];
-                          const completed = progress?.completed ?? (progress?.minimumRails != null);
+                          const best = progress?.best ?? null;
                           return (
                             <div key={level.id} className={`library-level-row ${activeLevel.id === level.id ? "current" : ""}`}>
                               <button className="library-level-open" onClick={() => { loadLevel(level); setEditorDialog(null); }}>
@@ -2479,22 +2620,30 @@ export default function App() {
                               {level.wrenches != null
                                 ? <b className="difficulty-stat" style={{ color: difficultyColor(level.wrenches) }}>{difficultyScale(level.wrenches)}</b>
                                 : <b className="difficulty-stat">—</b>}
-                              <b className={`completion-stat ${completed ? "ok" : "ko"}`}>{completed ? "OK" : "KO"}</b>
+                              {best ? (
+                                <button
+                                  className="completion-stat ok star"
+                                  title={`Charger la meilleure solution (${best.cells} cases, ${formatTime(best.timeMs)})`}
+                                  onClick={() => { loadBestSolution(level); setEditorDialog(null); }}
+                                >★</button>
+                              ) : (
+                                <b className="completion-stat ko">KO</b>
+                              )}
                               <b
                                 className="rail-stat"
-                                style={progress?.minimumRails != null && level.optimalRails ? { color: metricColor(progress.minimumRails, level.optimalRails) } : undefined}
+                                style={best != null && level.optimalRails ? { color: metricColor(best.rails, level.optimalRails) } : undefined}
                               >
-                                {progress?.minimumRails ?? "—"}{level.optimalRails ? `/${level.optimalRails}` : ""}
+                                {best?.rails ?? "—"}{level.optimalRails ? `/${level.optimalRails}` : ""}
                               </b>
                               <b
                                 className="rail-stat"
-                                style={progress?.doubleCells != null && level.optimalSwitchCells != null ? { color: metricColor(progress.doubleCells, level.optimalSwitchCells) } : undefined}
+                                style={best != null && level.optimalSwitchCells != null ? { color: metricColor(best.switchCells, level.optimalSwitchCells) } : undefined}
                               >
-                                {progress?.doubleCells ?? "—"}{level.optimalSwitchCells != null ? `/${level.optimalSwitchCells}` : ""}
+                                {best?.switchCells ?? "—"}{level.optimalSwitchCells != null ? `/${level.optimalSwitchCells}` : ""}
                               </b>
                               <button
                                 className="resume-board"
-                                disabled={!progress?.edges.length}
+                                disabled={!progress?.last.edges.length}
                                 onClick={() => { resumeLevel(level); setEditorDialog(null); }}
                               >REPRENDRE</button>
                             </div>
