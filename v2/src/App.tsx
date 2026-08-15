@@ -448,6 +448,18 @@ function SteamLoco({ train, future }: { train: MovingTrain; future?: Point }) {
   const x = ((front[0] + rear[0]) / 2) * (100 / GRID);
   const y = ((front[1] + rear[1]) / 2) * (100 / GRID);
   const displayAngle = Math.atan2(front[0] - rear[0], rear[1] - front[1]) * 180 / Math.PI;
+  const normalizedAngle = ((displayAngle % 360) + 360) % 360;
+  // Pour une illustration asymétrique gauche-droite (un skin peut fournir un
+  // dessin qui ne l'est plus), une simple rotation ne suffit pas au-delà de
+  // 180° : le détail asymétrique se retrouve sous la coque plutôt qu'au-dessus
+  // dès que le déplacement passe côté ouest — le résultat semble à l'envers.
+  // Vérifié par rendu : au-delà de 90° et en-deçà de 270°, on prend plutôt le
+  // symétrique de la case miroir, avec la rotation correspondante — jamais de
+  // bascule en cours de virage, puisque les courbes de ce jeu ne relient que
+  // des directions cardinales adjacentes et que ce seuil tombe pile sur
+  // Est/Ouest, aux points où les virages commencent ou finissent déjà.
+  const mirrored = normalizedAngle > 90 && normalizedAngle < 270;
+  const rotationAngle = mirrored ? (360 - normalizedAngle) % 360 : normalizedAngle;
   const locoSvg = skinAsset("loco");
   if (locoSvg) {
     return (
@@ -456,11 +468,13 @@ function SteamLoco({ train, future }: { train: MovingTrain; future?: Point }) {
             récupère par `currentColor` sur les parties à teinter. C'est le
             seul moyen de recolorer une zone désignée d'une illustration
             fournie par un tiers. */}
-        <div
-          className="loco-skinned"
-          style={{ transform: `rotate(${displayAngle}deg)` }}
-        >
-          <SkinnedLocoBody svg={locoSvg} color={COLOR_HEX[train.color]} />
+        <div className={mirrored ? "loco-mirror" : undefined}>
+          <div
+            className="loco-skinned"
+            style={{ transform: `rotate(${rotationAngle}deg)` }}
+          >
+            <SkinnedLocoBody svg={locoSvg} color={COLOR_HEX[train.color]} />
+          </div>
         </div>
       </div>
     );

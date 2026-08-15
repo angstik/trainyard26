@@ -918,6 +918,11 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
 /* Locomotive fournie par un skin : classe DÉDIÉE, sans aucune règle de la
    loco par défaut. Celle-ci dessine sa carrosserie en ::before, qui
    recouvrirait entièrement le SVG du skin. */
+/* Enveloppe de mise en miroir (déplacement côté ouest) : extérieure au
+   conteneur qui pivote, pour que le miroir s'applique APRÈS la rotation
+   (ordre vérifié par rendu). Sans elle, une illustration asymétrique se
+   retrouve à l'envers passé 90°/270°. */
+.loco-mirror { width:100%; height:100%; transform:scaleX(-1); transform-origin:50% 50%; }
 .loco-skinned {
   position:absolute; left:0; top:0; width:11%; height:11%; margin:1.5% 0 0 1.5%;
   transform-origin:50% 50%; pointer-events:none; will-change:transform;

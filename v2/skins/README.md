@@ -148,6 +148,24 @@ Comme pour les variables de couleur, aucune ressource externe n'est autorisée
 dans une balise `<style>` : ni `@import`, ni `url()` en dehors d'une
 référence locale (`url(#mon-motif)`) vers un élément déclaré dans `patterns`.
 
+### Limite connue : les motifs (`patterns`) n'animent pas
+
+Testé et confirmé à deux reprises, avec deux mécanismes différents (animation
+CSS sur le contenu d'un `<pattern>`, puis `<animateTransform>` natif sur son
+`patternTransform`) : un contenu confiné à l'intérieur d'une définition de
+motif ne s'anime pas de façon fiable dans ce contexte de rendu, quelle que
+soit la technique employée.
+
+**Les éléments directement rendus (`rock`, `badge`, `outlet`, `station`,
+`connector`, `loco`) s'animent correctement** — c'est uniquement le contenu
+*à l'intérieur* d'un `<pattern>` référencé depuis une variable de couleur
+(`url(#mon-motif)`) qui pose problème.
+
+En pratique : concevez vos motifs comme des textures **statiques**, aussi
+riches que nécessaire pour rester lisibles sans mouvement (plusieurs formes
+superposées, dégradé de tons), et réservez l'animation aux éléments
+graphiques eux-mêmes.
+
 ## Partir d'un modèle
 
 Le plus simple pour créer un skin est d'utiliser le bouton
