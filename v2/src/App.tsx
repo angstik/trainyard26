@@ -25,14 +25,6 @@ type MovingTrain = {
   progress: number;
   angle: number;
   fromAngle: number;
-  /**
-   * Uniquement pour le rendu : case suivant `next`, connue de façon
-   * autoritative parce que la décision d'aiguillage a déjà été prise par la
-   * simulation. Évite de la recalculer depuis l'état d'aiguillage courant,
-   * qui a déjà été incrémenté par ce même passage et désignerait donc la
-   * branche du passage suivant.
-   */
-  renderFuture?: Point;
 };
 type Explosion = { id: number; x: number; y: number; reason: string };
 type ColorBurst = { id: number; x: number; y: number; color: TrainColor; kind: "paint" | "mix" | "split" | "cross" };
@@ -56,19 +48,12 @@ type SimData = {
   trains: MovingTrain[];
   emitted: Record<string, number>;
   received: Record<string, number>;
-  outletClocks: Record<string, number>;
   switches: Record<string, number>;
   interactions: Set<string>;
   failed: boolean;
 };
 
 const GRID = 7;
-/**
- * Fraction de case parcourue par unité de temps de simulation. Source unique :
- * sert à la fois au déplacement des trains et au comptage des pas, qui restent
- * ainsi cohérents si la valeur est un jour ajustée.
- */
-const TRAIN_SPEED = 1.15;
 const APP_VERSION = versionFile.trim();
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
@@ -305,7 +290,6 @@ function createEmptySim(objects: LevelObject[], switches: Record<string, number>
     trains: [],
     emitted: Object.fromEntries(objects.filter((o) => o.type === "outlet").map((o) => [o.id, 0])),
     received: Object.fromEntries(objects.filter((o) => o.type === "station").map((o) => [o.id, 0])),
-    outletClocks: Object.fromEntries(objects.filter((o) => o.type === "outlet").map((o) => [o.id, 999])),
     switches: { ...switches },
     interactions: new Set(),
     failed: false,
@@ -679,8 +663,6 @@ export default function App() {
   // publiés avec le reste de l'état de rendu.
   const [simSteps, setSimSteps] = useState(0);
   const simStepsRef = useRef(0);
-  /** Fraction de case parcourue depuis le dernier pas complet. */
-  const simStepAccumRef = useRef(0);
   const [libraryFamilyId, setLibraryFamilyId] = useState<string | null>(null);
   const [importText, setImportText] = useState("");
   const [importFeedback, setImportFeedback] = useState("");
@@ -696,7 +678,6 @@ export default function App() {
   const [movingObjectId, setMovingObjectId] = useState<string | null>(null);
   const [moveGhostCell, setMoveGhostCell] = useState<Point | null>(null);
   const simRef = useRef<SimData>(createEmptySim(DEFAULT_LEVEL.objects));
-  const prevTrainsRef = useRef<MovingTrain[]>([]);
   const nextTrainsRef = useRef<MovingTrain[]>([]);
   const tickTimeRef = useRef<number>(Date.now());
   const tickIntervalRef = useRef<number>(25);
@@ -942,7 +923,6 @@ export default function App() {
     setRunning(false);
     setPaused(false);
     setTrains([]);
-    prevTrainsRef.current = [];
     nextTrainsRef.current = [];
     setExplosions([]);
     setColorBursts([]);
@@ -978,7 +958,6 @@ export default function App() {
     setRunning(false);
     setPaused(false);
     setTrains([]);
-    prevTrainsRef.current = [];
     nextTrainsRef.current = [];
     setExplosions([]);
     setColorBursts([]);
@@ -1232,10 +1211,8 @@ export default function App() {
     persistAttempt(false);
     const clean = createEmptySim(objects, switchPositions);
     simRef.current = clean;
-    prevTrainsRef.current = [];
     nextTrainsRef.current = [];
     simStepsRef.current = 0;
-    simStepAccumRef.current = 0;
     setSimSteps(0);
     nextSwitchesRef.current = { ...switchPositions };
     publishedSwitchesRef.current = null;
@@ -1254,74 +1231,30 @@ export default function App() {
 
   useEffect(() => {
     if (!running || paused) return;
+    // Durée d'un pas de jeu à vitesse 1 (une case entière franchie par tous
+    // les trains) : choisie pour retrouver la cadence déjà éprouvée avant ce
+    // modèle discret. La vitesse ne fait plus que diviser cette durée.
+    const BASE_STEP_MS = 900;
     const timer = window.setInterval(() => {
       const sim = simRef.current;
       if (sim.failed) return;
-      // Pas de temps FIXE, identique quelle que soit la vitesse : la vitesse
-      // ne fait que multiplier le nombre de sous-pas joués par tick. Un pas
-      // proportionnel à la vitesse ferait franchir aux trains une distance
-      // supérieure au rayon de détection des interactions (0.22), qui
-      // seraient alors traversées sans être détectées — les fusions et
-      // croisements seraient manqués aux vitesses élevées.
-      const dt = 0.025;
-      const subSteps = Math.max(1, Math.round(speed));
 
-      for (let step = 0; step < subSteps && !sim.failed; step++) {
-      // Un « pas » = une case parcourue, pas un sous-pas de calcul. Tous les
-      // trains avançant au même rythme, il suffit d'accumuler la distance
-      // parcourue et d'incrémenter à chaque case complète. C'est la métrique
-      // du catalogue officiel (« durée en pas de simulation »), donc
-      // comparable d'une partie à l'autre et indépendante de la vitesse.
-      simStepAccumRef.current += dt * TRAIN_SPEED;
-      if (simStepAccumRef.current >= 1) {
-        const whole = Math.floor(simStepAccumRef.current);
-        simStepsRef.current += whole;
-        simStepAccumRef.current -= whole;
-      }
+      // ----------------------------------------------------------------
+      // Modèle DISCRET PAR CASE : un pas de jeu = tous les trains en piste
+      // franchissent intégralement la case qu'ils occupaient. Aucune notion
+      // de progression fractionnaire n'intervient dans le calcul d'état —
+      // un train est soit sur une case, soit vient de basculer sur la
+      // suivante, jamais entre les deux. C'est ce même compteur de pas qui
+      // est déjà affiché dans le HUD (« PAS »).
+      // L'animation fluide du glissement entre deux cases est entièrement
+      // déléguée à la boucle de rendu séparée (interpolation par image) :
+      // elle ne participe JAMAIS au calcul de l'état du jeu.
+      // ----------------------------------------------------------------
+      simStepsRef.current += 1;
 
-      outlets.forEach((outlet) => {
-        const index = sim.emitted[outlet.id] ?? 0;
-        sim.outletClocks[outlet.id] = (sim.outletClocks[outlet.id] ?? 999) + dt;
-        if (index < outlet.trains.length && sim.outletClocks[outlet.id] >= 0.9) {
-          const next = add([outlet.x, outlet.y], outlet.facing);
-          sim.trains.push({
-            id: `${outlet.id}-${index}-${Date.now()}`,
-            color: outlet.trains[index],
-            cell: [outlet.x, outlet.y],
-            next,
-            progress: 0,
-            angle: DIR_ANGLE[outlet.facing],
-            fromAngle: DIR_ANGLE[outlet.facing],
-          });
-          sim.emitted[outlet.id] = index + 1;
-          sim.outletClocks[outlet.id] = 0;
-        }
-      });
+      const existing = sim.trains;
 
-      const advanced: MovingTrain[] = [];
-      const stationArrivals = new Map<string, MovingTrain[]>();
-      // Identifiants des trains ayant fraîchement transité CE tick (phase 3
-      // ci-dessous), par opposition à ceux qui continuent simplement leur
-      // trajectoire entamée à un tick antérieur. Essentiel pour les
-      // interactions : le champ `cell` d'un train reste égal à la case qu'il
-      // vient de quitter pendant TOUTE la traversée du segment suivant — pas
-      // seulement à l'instant de son passage. Sans cette distinction, un
-      // train qui a quitté une case depuis longtemps (et se trouve déjà loin,
-      // en cours de traversée du segment d'après) serait à tort considéré
-      // comme « dans la case » simplement parce que son champ `cell` vaut
-      // encore cette case, et mélangerait sa couleur avec un train qui y
-      // arrive réellement au même instant.
-      const freshIds = new Set<string>();
-
-      // --- Phase 1 : avancer, et séparer ceux qui changent de case ---------
-      const pending: MovingTrain[] = [];
-      for (const train of sim.trains) {
-        const moved = { ...train, progress: train.progress + dt * TRAIN_SPEED };
-        if (moved.progress < 1) advanced.push(moved);
-        else pending.push(moved);
-      }
-
-      // --- Phase 2 : FUSION AVANT TRAITEMENT -------------------------------
+      // --- Fusion avant traitement -----------------------------------
       // Ne fusionnent que les trains qui empruntent le MÊME SEGMENT DANS LE
       // MÊME SENS (même case de départ ET même case d'arrivée) : ils roulent
       // sur la même voie et n'en forment donc qu'un seul, qui sera ensuite
@@ -1331,10 +1264,10 @@ export default function App() {
       // arrivées simultanées d'une gare multi-entrées — lesquelles doivent
       // rester distinctes pour être arbitrées une à une (voir plus bas).
       const bySegment = new Map<string, MovingTrain[]>();
-      for (const moved of pending) {
-        const key = `${pointKey(moved.cell)}>${pointKey(moved.next)}`;
+      for (const train of existing) {
+        const key = `${pointKey(train.cell)}>${pointKey(train.next)}`;
         const list = bySegment.get(key) ?? [];
-        list.push(moved);
+        list.push(train);
         bySegment.set(key, list);
       }
       const arriving: MovingTrain[] = [];
@@ -1345,13 +1278,14 @@ export default function App() {
         arriving.push({ ...group[0], id: group.map((item) => item.id).join("+"), color: mixedColor });
       }
 
-      // --- Phase 3 : traitement des destinations ---------------------------
+      // --- Traitement des destinations ---------------------------------
       // L'état des aiguillages est FIGÉ pendant cette phase : deux trains
-      // atteignant le même aiguillage au même instant sont orientés selon la
+      // atteignant le même aiguillage au même pas sont orientés selon la
       // même position, les bascules n'étant appliquées qu'après.
+      const advanced: MovingTrain[] = [];
+      const stationArrivals = new Map<string, MovingTrain[]>();
       const switchFlips = new Map<string, number>();
       for (let moved of arriving) {
-
         const from = moved.cell;
         const current = moved.next;
         if (current[0] < 0 || current[0] >= GRID || current[1] < 0 || current[1] >= GRID
@@ -1366,7 +1300,7 @@ export default function App() {
           break;
         }
         if (object?.type === "station") {
-          // Décision différée : plusieurs trains peuvent arriver au même tick depuis
+          // Décision différée : plusieurs trains peuvent arriver au même pas depuis
           // des entrées différentes d'une gare multi-entrées. Voir résolution groupée
           // juste après cette boucle (règle : priorité à la couleur attendue, quelle
           // que soit l'entrée d'où elle arrive).
@@ -1391,8 +1325,7 @@ export default function App() {
           const exitSide = object.sides.find((side) => side !== entry)!;
           const next = add(current, exitSide);
           const nextAngle = DIR_ANGLE[exitSide];
-          advanced.push({ ...moved, previous: from, cell: current, next, progress: moved.progress - 1, fromAngle: moved.angle, angle: nextAngle });
-          freshIds.add(moved.id);
+          advanced.push({ ...moved, previous: from, cell: current, next, progress: 0, fromAngle: moved.angle, angle: nextAngle });
           continue;
         }
         if (object?.type === "splitter") {
@@ -1408,19 +1341,17 @@ export default function App() {
           }
           splitOutputs.forEach((splitOutput, index) => {
             const next = add(current, splitOutput.direction);
-            const splitId = `${moved.id}-split-${index}-${Date.now()}`;
             advanced.push({
               ...moved,
-              id: splitId,
+              id: `${moved.id}-split-${index}-${Date.now()}`,
               color: splitOutput.color,
               previous: from,
               cell: current,
               next,
-              progress: moved.progress - 1,
+              progress: 0,
               angle: DIR_ANGLE[splitOutput.direction],
               fromAngle: moved.angle,
             });
-            freshIds.add(splitId);
           });
           addColorBurst(current[0], current[1], moved.color, "split");
           playEffect("split");
@@ -1451,12 +1382,11 @@ export default function App() {
         }
         const next = add(current, exit);
         const nextAngle = DIR_ANGLE[directionBetween(current, next)];
-        advanced.push({ ...moved, previous: from, cell: current, next, progress: moved.progress - 1, fromAngle: moved.angle, angle: nextAngle });
-        freshIds.add(moved.id);
+        advanced.push({ ...moved, previous: from, cell: current, next, progress: 0, fromAngle: moved.angle, angle: nextAngle });
       }
 
       // Bascules d'aiguillage appliquées une fois toutes les orientations
-      // décidées (voir phase 3).
+      // décidées (voir traitement des destinations ci-dessus).
       for (const [switchKey, count] of switchFlips) {
         const cellDirs = directionsForCell(...(switchKey.split(",").map(Number) as [number, number]));
         const geometry = switchGeometry(cellDirs, switchToes[switchKey]);
@@ -1491,8 +1421,11 @@ export default function App() {
       if (!sim.failed) {
         // ------------------------------------------------------------------
         // Interactions entre trains — règles PUREMENT DISCRÈTES, à la case.
-        // Aucune notion de distance n'intervient : deux trains interagissent
-        // s'ils occupent la même case au même incrément, point.
+        // Aucune notion de distance NI de timing fin n'intervient : tous les
+        // trains dans `advanced` viennent de franchir leur case À CE PAS-CI,
+        // exactement — le modèle n'admet plus d'état intermédiaire, donc plus
+        // besoin d'un seuil pour distinguer une arrivée franche d'un train
+        // simplement en cours de route : cette distinction n'existe plus.
         //
         //  1. FUSION  : même case ET même côté de sortie -> un seul train,
         //               de la couleur mélangée.
@@ -1520,17 +1453,15 @@ export default function App() {
         // partagent JAMAIS la même case de départ (l'un est en X, l'autre en
         // Y) : le regroupement par case ci-dessous ne peut donc pas les voir.
         // C'est pourtant la même règle au fond — ils occupent le même rail au
-        // même incrément — reconnue ici par un test purement topologique
-        // (comparaison de cases, pas de distance) : chaque paire est comparée
-        // une fois, coût négligeable vu le nombre de trains en jeu.
+        // même pas — reconnue ici par un test purement topologique
+        // (comparaison de cases, ni distance ni timing) : chaque paire est
+        // comparée une fois, coût négligeable vu le nombre de trains en jeu.
         // Leurs sorties étant par construction toujours différentes (chacun
         // continue vers la case d'où vient l'autre), ils mélangent leur
         // couleur sans jamais fusionner.
         for (let i = 0; i < advanced.length; i++) {
-          if (!freshIds.has(advanced[i].id)) continue;
           if (exemptCells.has(pointKey(advanced[i].cell)) || exemptCells.has(pointKey(advanced[i].next))) continue;
           for (let j = i + 1; j < advanced.length; j++) {
-            if (!freshIds.has(advanced[j].id)) continue;
             const a = advanced[i], b = advanced[j];
             if (!(samePoint(a.cell, b.next) && samePoint(a.next, b.cell))) continue;
             if (areSplitterSiblings(a, b)) continue;
@@ -1545,11 +1476,6 @@ export default function App() {
 
         const byCell = new Map<string, number[]>();
         advanced.forEach((train, index) => {
-          // Seuls les trains qui viennent de transiter CE tick participent :
-          // un train qui continue simplement sa traversée (arrivé il y a
-          // plusieurs ticks) a déjà eu son occasion d'interagir, sur le tick
-          // de son arrivée — le revoir ici serait la source exacte du bug.
-          if (!freshIds.has(train.id)) return;
           const key = pointKey(train.cell);
           const list = byCell.get(key) ?? [];
           list.push(index);
@@ -1594,19 +1520,38 @@ export default function App() {
         resolved = advanced.filter((_, index) => !consumed.has(index));
       }
 
+      // --- Émission des nouveaux trains, pour le pas SUIVANT ---------------
+      // Un train nouvellement émis n'a encore franchi aucune case : il ne
+      // participe pas aux interactions de ce pas-ci, seulement à partir du
+      // suivant. Un train par remise et par pas tant qu'il en reste à émettre
+      // — l'ancienne cadence (0.9 unité de temps) correspondait déjà, dans
+      // les faits, à peu près à une traversée de case complète.
+      if (!sim.failed) {
+        outlets.forEach((outlet) => {
+          const index = sim.emitted[outlet.id] ?? 0;
+          if (index >= outlet.trains.length) return;
+          const next = add([outlet.x, outlet.y], outlet.facing);
+          resolved.push({
+            id: `${outlet.id}-${index}-${Date.now()}`,
+            color: outlet.trains[index],
+            cell: [outlet.x, outlet.y],
+            next,
+            progress: 0,
+            angle: DIR_ANGLE[outlet.facing],
+            fromAngle: DIR_ANGLE[outlet.facing],
+          });
+          sim.emitted[outlet.id] = index + 1;
+        });
+      }
+
       sim.trains = sim.failed ? [] : resolved;
-
-      } // fin de la boucle de sous-pas
-
-      prevTrainsRef.current = nextTrainsRef.current;
       nextTrainsRef.current = [...sim.trains];
       const nowMs = Date.now();
-      // Durée réelle du tick : setInterval(25) dérive (charge, throttling
-      // navigateur). Supposer 25 ms fait saturer l'interpolation avant
-      // l'arrivée du tick suivant — tous les trains se figent brièvement
-      // puis sautent, simultanément. Bornée pour absorber les pauses longues
-      // (onglet en arrière-plan) sans étirer l'interpolation.
-      tickIntervalRef.current = Math.min(120, Math.max(8, nowMs - tickTimeRef.current));
+      // Durée réelle du pas : setInterval dérive (charge, throttling
+      // navigateur). Supposer la durée nominale fait saturer l'interpolation
+      // avant l'arrivée du pas suivant. Bornée pour absorber les pauses
+      // longues (onglet en arrière-plan) sans étirer l'interpolation.
+      tickIntervalRef.current = Math.min(2000, Math.max(40, nowMs - tickTimeRef.current));
       tickTimeRef.current = nowMs;
       nextSwitchesRef.current = { ...sim.switches };
       setSimSteps(simStepsRef.current);
@@ -1619,7 +1564,6 @@ export default function App() {
         // La boucle d'animation s'arrête avec `running` : sans ce nettoyage,
         // l'affichage resterait figé sur la dernière image, trains compris,
         // alors que la simulation n'en a plus aucun.
-        prevTrainsRef.current = [];
         nextTrainsRef.current = [];
         setTrains([]);
         const allReceived = stations.every((station) => (sim.received[station.id] ?? 0) >= station.expects.length);
@@ -1633,7 +1577,7 @@ export default function App() {
           setStatus("GARES EN ATTENTE — NIVEAU PERDU");
         }
       }
-    }, 25);
+    }, BASE_STEP_MS / speed);
     return () => window.clearInterval(timer);
   // The interval deliberately restarts when the editable topology changes.
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -1657,31 +1601,15 @@ export default function App() {
         publishedSwitchesRef.current = nextSwitchesRef.current;
         setDisplaySwitchPositions(nextSwitchesRef.current);
       }
-      const previousById = new Map(prevTrainsRef.current.map((item) => [item.id, item]));
-      setTrains(nextTrainsRef.current.map((train) => {
-        const previous = previousById.get(train.id);
-        if (!previous) return train;
-        const sameSegment = previous.cell[0] === train.cell[0] && previous.cell[1] === train.cell[1]
-          && previous.next[0] === train.next[0] && previous.next[1] === train.next[1];
-        if (sameSegment) {
-          return { ...train, progress: previous.progress + (train.progress - previous.progress) * alpha };
-        }
-        // Le train a franchi une limite de case pendant ce tick. On interpole
-        // en abscisse curviligne (distance parcourue) plutôt que de sauter
-        // directement à la position de fin : tant que la distance couverte
-        // reste sur l'ancien segment on l'y affiche, ensuite on bascule sur
-        // le nouveau. Le mouvement reste continu au passage d'un rail à
-        // l'autre.
-        const remainingOnPrevious = 1 - previous.progress;
-        const travelled = (remainingOnPrevious + train.progress) * alpha;
-        if (travelled < remainingOnPrevious) {
-          // Encore affiché sur le segment d'approche : la case qui suit est
-          // déjà connue (c'est `train.next`, la sortie que la simulation a
-          // retenue), donc on la transmet au lieu de la laisser recalculer.
-          return { ...previous, progress: previous.progress + travelled, renderFuture: train.next };
-        }
-        return { ...train, progress: Math.min(train.progress, travelled - remainingOnPrevious) };
-      }));
+      // Un pas d'état = une case entière franchie, toujours. Le train commité
+      // décrit donc intégralement, à lui seul, le trajet de cette fenêtre de
+      // rendu (`cell` -> `next`) : l'affichage n'a plus besoin de comparer au
+      // tick précédent ni de gérer un franchissement en cours de fenêtre —
+      // il ne peut structurellement plus s'en produire. Seul le calcul de
+      // l'état (plus haut) détermine QUAND une case est franchie ; cette
+      // boucle ne fait qu'animer, à l'écran, une traversée déjà entièrement
+      // connue.
+      setTrains(nextTrainsRef.current.map((train) => ({ ...train, progress: alpha })));
       frame = window.requestAnimationFrame(render);
     };
     frame = window.requestAnimationFrame(render);
@@ -2165,15 +2093,6 @@ export default function App() {
     const map = new Map<string, Direction>();
     for (const train of trains) {
       map.set(pointKey(train.cell), directionBetween(train.cell, train.next));
-      // Pendant les images où l'interpolation affiche encore le train sur son
-      // segment d'approche, `train.cell` désigne la case précédente : la case
-      // vers laquelle il entre ne serait donc pas vue comme occupée et
-      // retomberait sur l'état d'aiguillage déjà incrémenté, faisant
-      // brièvement apparaître la branche du passage suivant. `renderFuture`
-      // porte la sortie réellement retenue : on marque la case d'arrivée avec.
-      if (train.renderFuture) {
-        map.set(pointKey(train.next), directionBetween(train.next, train.renderFuture));
-      }
     }
     return map;
   }, [trains]);
@@ -2397,7 +2316,7 @@ export default function App() {
                 </button>
               );
             })}
-            {trains.map((train) => <SteamLoco key={train.id} train={train} future={train.renderFuture ?? futurePointForTrain(train)} />)}
+            {trains.map((train) => <SteamLoco key={train.id} train={train} future={futurePointForTrain(train)} />)}
             {colorBursts.map((burst) => <div key={burst.id} className={`color-burst ${burst.kind}`} style={{ left: `${burst.x * 100 / GRID}%`, top: `${burst.y * 100 / GRID}%`, "--burst-color": COLOR_HEX[burst.color] } as React.CSSProperties}><i /><i /><i /><i /><span /></div>)}
             {explosions.map((blast) => <div key={blast.id} className="explosion" style={{ left: `${blast.x * 100 / GRID}%`, top: `${blast.y * 100 / GRID}%` }}><i /><i /><i /><i /><span>✹</span></div>)}
           </div>
