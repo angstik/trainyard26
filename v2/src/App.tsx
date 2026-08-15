@@ -519,14 +519,21 @@ function SteamLoco({ train, future }: { train: MovingTrain; future?: Point }) {
         {/* La couleur du train est posée en `color` : le SVG du skin la
             récupère par `currentColor` sur les parties à teinter. C'est le
             seul moyen de recolorer une zone désignée d'une illustration
-            fournie par un tiers. */}
-        <div className={mirrored ? "loco-mirror" : undefined}>
-          <div
-            className="loco-skinned"
-            style={{ transform: `rotate(${rotationAngle}deg)` }}
-          >
-            <SkinnedLocoBody svg={locoSvg} color={COLOR_HEX[train.color]} />
-          </div>
+            fournie par un tiers.
+            Miroir ET rotation sur CE MÊME élément, autour de son propre
+            centre (transform-origin:50% 50% déjà posé en CSS) : les
+            appliquer sur une boîte englobante plus grande — comme un
+            .loco-anchor qui fait toute la case — décale la position de la
+            loco au moment de la bascule, puisque .loco-skinned n'est pas
+            centrée dans cette boîte (elle est calée en haut à gauche, avec
+            une marge). Ordre vérifié par rendu : le miroir doit s'appliquer
+            après la rotation, donc à gauche dans la chaîne CSS (les
+            fonctions s'appliquent de droite à gauche). */}
+        <div
+          className="loco-skinned"
+          style={{ transform: `${mirrored ? "scaleX(-1) " : ""}rotate(${rotationAngle}deg)` }}
+        >
+          <SkinnedLocoBody svg={locoSvg} color={COLOR_HEX[train.color]} />
         </div>
       </div>
     );
@@ -1188,21 +1195,31 @@ export default function App() {
       switchCells: switchCells,
       timeMs: editingElapsedMs,
     };
-    const previousBest = levelProgress[activeLevel.id]?.best ?? null;
-    const isFirstSuccess = success && !previousBest;
-    // Amélioration = moins de cases que la meilleure enregistrée (le critère
-    // choisi, celui déjà affiché en CASES/CIBLE). Une égalité ne compte pas
-    // comme amélioration : la meilleure déjà enregistrée reste en place sans
-    // solliciter le joueur pour rien.
-    const isImprovement = success && previousBest != null && trackCells < previousBest.cells;
+    // La décision (première réussite ? amélioration ?) doit se baser sur
+    // l'état RÉELLEMENT à jour, pas sur `levelProgress` lu depuis la
+    // fermeture extérieure : cette fonction est appelée depuis la boucle de
+    // jeu (setInterval), dont la fermeture peut être plus ancienne que le
+    // dernier setLevelProgress. Tout se calcule donc à l'intérieur de
+    // l'updater, sur son paramètre `current` — seule source garantie à jour.
+    let pendingComparison: { levelId: string; previous: LevelConstruction; candidate: LevelConstruction } | null = null;
 
     setLevelProgress((current) => {
       const previous = current[activeLevel.id];
+      const previousBest = previous?.best ?? null;
+      const isFirstSuccess = success && !previousBest;
+      // Amélioration = moins de cases que la meilleure enregistrée (le
+      // critère choisi, celui déjà affiché en CASES/CIBLE). Une égalité ne
+      // compte pas comme amélioration : la meilleure déjà enregistrée reste
+      // en place sans solliciter le joueur pour rien.
+      const isImprovement = success && previousBest != null && construction.cells < previousBest.cells;
+      if (isImprovement && previousBest) {
+        pendingComparison = { levelId: activeLevel.id, previous: previousBest, candidate: construction };
+      }
       const nextEntry: LevelProgress = {
         completed: previous?.completed === true || success,
         thinkingMs: totalElapsedMs,
         last: construction,
-        best: isFirstSuccess ? construction : (previous?.best ?? null),
+        best: isFirstSuccess ? construction : previousBest,
       };
       const next = { ...current, [activeLevel.id]: nextEntry };
       window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(next));
@@ -1211,8 +1228,8 @@ export default function App() {
 
     // Une amélioration ne remplace jamais Meilleure en silence : le choix
     // revient au joueur (voir la carte de comparaison sur l'écran de succès).
-    if (isImprovement && previousBest) {
-      setBestComparison({ levelId: activeLevel.id, previous: previousBest, candidate: construction });
+    if (pendingComparison) {
+      setBestComparison(pendingComparison);
     }
   }
 
