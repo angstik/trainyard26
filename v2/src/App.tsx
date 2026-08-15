@@ -505,12 +505,24 @@ function SteamLoco({ train, future }: { train: MovingTrain; future?: Point }) {
   // dessin qui ne l'est plus), une simple rotation ne suffit pas au-delà de
   // 180° : le détail asymétrique se retrouve sous la coque plutôt qu'au-dessus
   // dès que le déplacement passe côté ouest — le résultat semble à l'envers.
-  // Vérifié par rendu : au-delà de 90° et en-deçà de 270°, on prend plutôt le
-  // symétrique de la case miroir, avec la rotation correspondante — jamais de
-  // bascule en cours de virage, puisque les courbes de ce jeu ne relient que
-  // des directions cardinales adjacentes et que ce seuil tombe pile sur
-  // Est/Ouest, aux points où les virages commencent ou finissent déjà.
-  const mirrored = normalizedAngle > 90 && normalizedAngle < 270;
+  // La DÉCISION de miroir se fonde sur la direction DISCRÈTE du segment
+  // (N/E/S/O, stable sur toute sa durée) plutôt que sur l'angle continu :
+  // deux raisons, chacune un bug distinct rencontré en pratique.
+  //  1. L'angle continu, utilisé aussi pour orienter le nez en avance dans
+  //     les virages, échantillonne parfois au-delà de la fin du segment en
+  //     cours — donc légèrement DANS le segment suivant. Si ce segment
+  //     suivant change de régime (miroir <-> rotation), la décision peut
+  //     basculer avant même que le segment courant ne soit terminé : d'où
+  //     le clignotement observé.
+  //  2. Un déplacement plein ouest donne un angle exactement égal à 270 (pas
+  //     approximativement : exactement, par construction du calcul) — la
+  //     borne stricte (angle<270) excluait donc ce cas nominal en
+  //     permanence, pas seulement un cas limite rare.
+  // La direction discrète n'a aucun de ces deux défauts : figée pour toute
+  // la traversée du segment (y compris en virage, où seule la sortie
+  // compte), sans ambiguïté de bord flottant.
+  const segmentDirection = directionBetween(train.cell, train.next);
+  const mirrored = segmentDirection === "S" || segmentDirection === "W";
   const rotationAngle = mirrored ? (360 - normalizedAngle) % 360 : normalizedAngle;
   const locoSvg = skinAsset("loco");
   if (locoSvg) {
