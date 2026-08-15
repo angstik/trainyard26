@@ -744,9 +744,13 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .completion-stat.ok { color:#53d98c; }.completion-stat.ko { color:#ff786e; }
 /* Étoile : charge "Meilleure" au clic, remplace le badge OK textuel pour un
    niveau réussi. border:0/background:none pour rester visuellement un badge
-   plutôt qu'un bouton, malgré son rôle interactif. */
+   plutôt qu'un bouton, malgré son rôle interactif.
+   Or = objectif du niveau atteint ou battu, argent sinon. */
 .completion-stat.star { border:0; background:none; font-size:13px; cursor:pointer; padding:0; line-height:1; }
-.completion-stat.star:hover, .completion-stat.star:focus-visible { color:#8fedb8; }
+.completion-stat.star.gold { color:#ffc964; }
+.completion-stat.star.silver { color:#c2ccd2; }
+.completion-stat.star.gold:hover, .completion-stat.star.gold:focus-visible { color:#ffdb96; }
+.completion-stat.star.silver:hover, .completion-stat.star.silver:focus-visible { color:#e4ebef; }
 .resume-board {
   min-width:0; padding:7px 4px; border:1px solid #37606a; background:#10242b; color:var(--cyan);
   font-size:7px; letter-spacing:.06em; cursor:pointer;

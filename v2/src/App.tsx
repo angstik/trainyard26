@@ -101,7 +101,12 @@ function migrateLegacyProgress(raw: unknown): Record<string, LevelProgress> {
       timeMs: typeof entry.lastTimeMs === "number" ? entry.lastTimeMs : 0,
     };
     const completed = entry.completed === true || entry.minimumRails != null;
-    const best: LevelConstruction | null = completed
+    // Un `best` SANS TRACÉ est pire que pas de best du tout : l'étoile
+    // mènerait à un plateau vide. L'ancien format ne conservait qu'un seul
+    // tracé, écrasé à chaque tentative — s'il a été vidé depuis, il n'y a
+    // plus rien à migrer comme meilleure solution, malgré des statistiques
+    // qui indiquent une réussite passée.
+    const best: LevelConstruction | null = completed && last.edges.length
       ? {
           ...last,
           rails: typeof entry.minimumRails === "number" ? entry.minimumRails : last.rails,
@@ -1209,7 +1214,9 @@ export default function App() {
   function loadBestSolution(level: LevelSource) {
     const saved = levelProgress[level.id];
     loadLevel(level);
-    if (!saved?.best) return;
+    // Garde de sécurité : un best sans tracé viderait le plateau au lieu de
+    // restaurer une solution. On laisse alors le niveau tel que chargé.
+    if (!saved?.best?.edges.length) return;
     setEdges(new Set(saved.best.edges));
     setJunctionModes(saved.best.junctionModes);
     setSwitchToes(saved.best.switchToes);
@@ -1244,7 +1251,13 @@ export default function App() {
 
     setLevelProgress((current) => {
       const previous = current[levelId];
-      const previousBest = previous?.best ?? null;
+      const storedBest = previous?.best ?? null;
+      // Un best SANS TRACÉ est inexploitable (l'étoile mènerait à un plateau
+      // vide) : on le traite comme absent. Une réussite l'adopte alors
+      // directement, sans passer par la comparaison — même si son score est
+      // moins bon que les statistiques enregistrées, mieux vaut une solution
+      // réellement rejouable qu'une référence creuse.
+      const previousBest = storedBest && storedBest.edges.length ? storedBest : null;
       const isFirstSuccess = success && !previousBest;
       // Amélioration = moins de cases que la meilleure enregistrée (le
       // critère choisi, celui déjà affiché en CASES/CIBLE). Une égalité ne
@@ -2678,7 +2691,14 @@ export default function App() {
                       <div className="library-levels">
                         {libraryFamily.levels.map((level) => {
                           const progress = levelProgress[level.id];
-                          const best = progress?.best ?? null;
+                          const storedBest = progress?.best ?? null;
+                          // Un best sans tracé n'est pas rejouable : pas
+                          // d'étoile, sinon elle mènerait à un plateau vide.
+                          const best = storedBest && storedBest.edges.length ? storedBest : null;
+                          // Or si le score atteint (ou bat) l'objectif du
+                          // niveau, argent sinon. Sans objectif connu, on
+                          // reste sur argent plutôt que de promettre l'or.
+                          const meetsTarget = best != null && level.optimalCells != null && best.cells <= level.optimalCells;
                           return (
                             <div key={level.id} className={`library-level-row ${activeLevel.id === level.id ? "current" : ""}`}>
                               <button className="library-level-open" onClick={() => { loadLevel(level); setEditorDialog(null); }}>
@@ -2690,8 +2710,8 @@ export default function App() {
                                 : <b className="difficulty-stat">—</b>}
                               {best ? (
                                 <button
-                                  className="completion-stat ok star"
-                                  title={`Charger la meilleure solution (${best.cells} cases, ${formatTime(best.timeMs)})`}
+                                  className={`completion-stat star ${meetsTarget ? "gold" : "silver"}`}
+                                  title={`Charger la meilleure solution (${best.cells} cases${level.optimalCells != null ? ` / objectif ${level.optimalCells}` : ""}, ${formatTime(best.timeMs)})`}
                                   onClick={() => { loadBestSolution(level); setEditorDialog(null); }}
                                 >★</button>
                               ) : (
