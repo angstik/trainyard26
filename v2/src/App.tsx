@@ -842,10 +842,17 @@ export default function App() {
   const [levelProgress, setLevelProgress] = useState<Record<string, LevelProgress>>({});
   /** Comparaison en attente : une réussite bat "Meilleure" en cases, le choix
    *  de la conserver revient au joueur (voir l'écran de succès). */
-  const [bestComparison, setBestComparison] = useState<{
-    levelId: string;
-    previous: LevelConstruction;
-    candidate: LevelConstruction;
+  /**
+   * Célébration d'un nouveau record, affichée à la place de l'ancien dialogue
+   * de comparaison : l'amélioration est désormais adoptée automatiquement,
+   * le joueur n'a plus de choix à faire — seulement une récompense à voir.
+   * `gained` = nombre de rails économisés par rapport au record précédent
+   * (0 pour un tout premier succès, où il n'y a rien à comparer).
+   * `perfect` = l'objectif du niveau est atteint ou battu.
+   */
+  const [bestCelebration, setBestCelebration] = useState<{
+    gained: number;
+    perfect: boolean;
   } | null>(null);
   const [editingElapsedMs, setEditingElapsedMs] = useState(0);
   const [totalElapsedMs, setTotalElapsedMs] = useState(0);
@@ -1157,6 +1164,9 @@ export default function App() {
   }
 
   function resetSimulation(initialSwitches: Record<string, number> = switchPositions) {
+    // La gomme est un mode transitoire : la laisser active au retour de
+    // simulation ferait effacer des rails au premier geste involontaire.
+    setEditorTool((tool) => (tool === "erase" ? "rail" : tool));
     setRunning(false);
     setPaused(false);
     pausedAtRef.current = null;
@@ -1170,12 +1180,11 @@ export default function App() {
     // curseur, pour que le réglage fin fait en cours de partie ne soit pas
     // perdu au retour au plan.
     setSpeed(nearestSpeedStep(liveSpeed));
-    // Pas de purge de `bestComparison` ici : resetSimulation est appelé
+    // Pas de purge de `bestCelebration` ici : resetSimulation est appelé
     // notamment par le bouton RETOUR AU PLAN de l'écran de succès, donc
-    // juste après qu'une amélioration ait pu créer une comparaison en
-    // attente — l'effacer ici la ferait disparaître avant tout choix du
-    // joueur. Les deux actions du dialogue (garder / adopter) la purgent
-    // déjà explicitement, et loadLevel la purge si elle vise un autre niveau.
+    // juste après qu'un record ait pu la déclencher — l'effacer ici la ferait
+    // disparaître avant d'avoir été vue. Elle se termine d'elle-même à la fin
+    // de son animation, et loadLevel la purge au changement de niveau.
     setDisplaySwitchPositions({ ...initialSwitches });
     const empty = createEmptySim(objects, initialSwitches);
     simRef.current = empty;
@@ -1183,37 +1192,12 @@ export default function App() {
     setReceived(empty.received);
   }
 
-  /** Le joueur garde la solution déjà enregistrée comme "Meilleure". */
-  function keepPreviousBest() {
-    setBestComparison(null);
-    resetSimulation();
-  }
-
-  /** Le joueur adopte la nouvelle réussite comme "Meilleure". */
-  function adoptNewBest() {
-    if (!bestComparison) return;
-    const { levelId, candidate } = bestComparison;
-    const previous = levelProgressRef.current[levelId];
-    if (previous) {
-      // Écriture directe plutôt qu'un updater : voir persistAttempt — un
-      // updater ne doit contenir aucun effet de bord (ici l'écriture dans
-      // localStorage), sous peine d'être exécuté deux fois en mode strict.
-      const next = { ...levelProgressRef.current, [levelId]: { ...previous, best: candidate } };
-      levelProgressRef.current = next;
-      window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(next));
-      setLevelProgress(next);
-    }
-    setBestComparison(null);
-    resetSimulation();
-  }
 
   function loadLevel(source: LevelSource) {
+    setEditorTool((tool) => (tool === "erase" ? "rail" : tool));
     const level = hydrateLevel(source);
     if (activeLevel.id !== level.id) persistAttempt(false);
-    // Ne purger que si la comparaison en attente concerne un AUTRE niveau :
-    // `persistAttempt` ci-dessus peut venir d'en créer une pour celui-ci, et
-    // un setBestComparison(null) inconditionnel l'effacerait aussitôt.
-    setBestComparison((current) => (current && current.levelId === level.id ? current : null));
+    setBestCelebration(null);
     setActiveLevel(level);
     setEdges(new Set(level.savedEdges ?? []));
     setJunctionModes(level.junctionModes ?? {});
@@ -1358,29 +1342,37 @@ export default function App() {
     const isFirstSuccess = success && !previousBest;
     // Amélioration = moins de cases que la meilleure enregistrée (le critère
     // choisi, celui déjà affiché en CASES/CIBLE). Une égalité ne compte pas
-    // comme amélioration : la meilleure déjà enregistrée reste en place sans
-    // solliciter le joueur pour rien.
+    // comme amélioration : le record déjà enregistré reste en place.
     const isImprovement = success && previousBest != null && construction.cells < previousBest.cells;
+    // Une meilleure solution remplace désormais l'ancienne AUTOMATIQUEMENT :
+    // elle est meilleure sur le critère retenu, il n'y a rien à arbitrer.
+    const keepsNew = isFirstSuccess || isImprovement;
 
     const nextEntry: LevelProgress = {
       completed: previous?.completed === true || success,
       thinkingMs: totalElapsedMsRef.current,
       last: construction,
-      best: isFirstSuccess ? construction : previousBest,
+      best: keepsNew ? construction : previousBest,
     };
     const next = { ...levelProgressRef.current, [levelId]: nextEntry };
     levelProgressRef.current = next;
     window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(next));
     setLevelProgress(next);
 
-    // Une amélioration ne remplace jamais Meilleure en silence : le choix
-    // revient au joueur (voir le dialogue de comparaison).
-    if (isImprovement && previousBest) {
-      setBestComparison({ levelId, previous: previousBest, candidate: construction });
+    if (keepsNew) {
+      // Écart de rails avec le record précédent (0 au tout premier succès :
+      // il n'y a alors rien à comparer, seulement une réussite à fêter).
+      const gained = previousBest ? previousBest.rails - construction.rails : 0;
+      // « Parfait » = l'objectif du niveau est atteint ou battu. Déclenche une
+      // célébration renforcée (trois étoiles d'or dans l'explosion).
+      const target = activeLevelRef.current.optimalCells;
+      const perfect = target != null && construction.cells <= target;
+      setBestCelebration({ gained, perfect });
     }
   }
 
   function changeMode(nextMode: "play" | "editor") {
+    setEditorTool((tool) => (tool === "erase" ? "rail" : tool));
     resetSimulation();
     setEditorDialog(null);
     setSelectedObject(null);
@@ -2147,8 +2139,14 @@ export default function App() {
     // reconstruire de jonction. On applique donc les suppressions et on
     // s'arrête là, sans passer par la logique de raccordement ci-dessous.
     if (editorTool === "erase") {
-      const erased = new Set(gestureStartEdges.current);
-      path.slice(1).forEach((cell, index) => erased.delete(edgeKey(path[index], cell)));
+      // Même règle qu'en cours de geste : chaque case parcourue est vidée de
+      // toutes ses arêtes. On ne repasse jamais par la logique de
+      // raccordement ci-dessous — la gomme ne reconstruit rien.
+      const erasedCells = new Set(path.map((cell) => pointKey(cell)));
+      const erased = new Set(
+        [...gestureStartEdges.current].filter((edge) =>
+          !edge.split("|").some((cellKey) => erasedCells.has(cellKey))),
+      );
       setEdges(erased);
       return;
     }
@@ -2284,13 +2282,17 @@ export default function App() {
     const previous = path[path.length - 1];
     if (previous && samePoint(previous, cell)) return;
     if (previous && Math.abs(previous[0] - cell[0]) + Math.abs(previous[1] - cell[1]) !== 1) return;
-    if (!previous && editorTool === "erase") {
+    if (editorTool === "erase") {
+      // La gomme efface la CASE survolée, entièrement : toutes les arêtes qui
+      // la touchent disparaissent, y compris celles la reliant à des voisines
+      // qu'on ne survole pas. Aucune autre modification — les rails restants
+      // gardent exactement leur forme, quitte à rester « en l'air ».
       setEdges((current) => new Set([...current].filter((edge) => !edge.split("|").includes(pointKey(cell)))));
     } else if (previous) {
       const key = edgeKey(previous, cell);
       setEdges((current) => {
         const next = new Set(current);
-        if (editorTool === "erase") next.delete(key); else next.add(key);
+        next.add(key);
         return next;
       });
     }
@@ -2745,44 +2747,31 @@ export default function App() {
         </div>
         </div>
 
-        {/* Dialogue autonome plutôt qu'imbriqué dans la petite carte de
-            résultat : celle-ci est trop étroite pour ce contenu plus riche
-            (tableau + deux actions) — sur mobile, elle se retrouvait
-            partiellement masquée par la barre de boutons du bas. Réutilise
-            le système de dialogue déjà éprouvé ailleurs dans l'app (hauteur
-            maximale + défilement gérés correctement en mobile). */}
-        {bestComparison && (
-          <div className="dialog-backdrop" role="presentation">
-            <section className="editor-dialog best-comparison-dialog" role="dialog" aria-modal="true" aria-labelledby="best-comparison-title">
-              <div className="dialog-heading">
-                <div>
-                  <small>NOUVELLE MEILLEURE SOLUTION POSSIBLE</small>
-                  <h2 id="best-comparison-title">MOINS DE CASES QU’AVANT</h2>
-                </div>
-              </div>
-              <div className="dialog-body">
-                <div className="best-comparison">
-                  <div className="best-comparison-col">
-                    <small>ANCIENNE</small>
-                    <span>{bestComparison.previous.cells} cases</span>
-                    <span>{bestComparison.previous.rails} rails</span>
-                    <span>{bestComparison.previous.switchCells} croisements</span>
-                    <span>{formatTime(bestComparison.previous.timeMs)}</span>
-                  </div>
-                  <div className="best-comparison-col new">
-                    <small>NOUVELLE</small>
-                    <span>{bestComparison.candidate.cells} cases</span>
-                    <span>{bestComparison.candidate.rails} rails</span>
-                    <span>{bestComparison.candidate.switchCells} croisements</span>
-                    <span>{formatTime(bestComparison.candidate.timeMs)}</span>
-                  </div>
-                </div>
-              </div>
-              <div className="dialog-footer best-comparison-actions">
-                <button onClick={keepPreviousBest}>GARDER L’ANCIENNE</button>
-                <button onClick={adoptNewBest}>ADOPTER LA NOUVELLE</button>
-              </div>
-            </section>
+        {/* Célébration d'un nouveau record : remplace l'ancien dialogue de
+            comparaison. L'amélioration étant désormais adoptée
+            automatiquement, il n'y a plus de choix à présenter — seulement
+            une récompense. Non modale et sans bouton : elle s'efface d'elle-
+            même, sans interrompre le retour au plateau. */}
+        {bestCelebration && (
+          <div
+            className={`best-celebration ${bestCelebration.perfect ? "perfect" : ""}`}
+            role="status"
+            onAnimationEnd={(event) => {
+              // Seule l'animation du conteneur clôt la célébration : celles
+              // des éclats internes se terminent bien avant.
+              if (event.target === event.currentTarget) setBestCelebration(null);
+            }}
+          >
+            <span className="burst" aria-hidden="true">
+              {Array.from({ length: 12 }, (_, index) => <i key={index} style={{ "--shard": index } as React.CSSProperties} />)}
+            </span>
+            {bestCelebration.perfect && (
+              <span className="gold-stars" aria-hidden="true"><b>★</b><b>★</b><b>★</b></span>
+            )}
+            <strong>
+              {bestCelebration.gained > 0 ? `− ${bestCelebration.gained} !!` : "RECORD !"}
+              <em>{bestCelebration.perfect ? "OBJECTIF ATTEINT — BRAVO !" : "BRAVO !"}</em>
+            </strong>
           </div>
         )}
 
@@ -3185,11 +3174,12 @@ export default function App() {
 
         {running ? (
           <label className="speed-slider" title={`Vitesse ×${liveSpeed.toFixed(1)}`}>
-            {/* Losange à l'extrémité basse : signale que le cran minimum est
-                un mode « pas à pas » (animation volontairement saccadée). */}
-            <i className="step-marker" aria-hidden="true">◆</i>
             <i aria-hidden="true">0</i>
             <span className="slider-track">
+              {/* Losange posé SUR l'extrémité gauche de la piste : signale que
+                  le cran minimum est un mode « pas à pas » (animation
+                  volontairement saccadée). */}
+              <i className="step-marker" aria-hidden="true">◆</i>
               {/* Graduations aux frontières des trois zones (voir
                   sliderPositionToSpeed) : chacune occupe un tiers exact. */}
               <span className="tick" style={{ left: "33.333%" }}><b>1</b></span>

@@ -528,14 +528,6 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
   background:rgba(4,10,13,.96); border:1px solid #53d98c; box-shadow:0 14px 42px #000,0 0 28px #174d35;
 }
 .result-card.failed { border-color:#ff584d; box-shadow:0 0 55px #6e1711; }
-.best-comparison { display:flex; gap:16px; }
-.best-comparison-col { display:flex; flex-direction:column; gap:2px; font-size:11px; color:var(--muted); min-width:110px; }
-.best-comparison-col small { color:#71838d; letter-spacing:.12em; font-size:9px; }
-.best-comparison-col.new { color:#eef7f8; }
-.best-comparison-col.new small { color:#53d98c; }
-.best-comparison-actions { display:flex; gap:10px; }
-.best-comparison-actions button { flex:1; padding:9px 8px; border:1px solid currentColor; background:#10261d; font-size:9px; letter-spacing:.04em; }
-.best-comparison-actions button:last-child { color:#53d98c; }
 .result-card small { color:#53d98c; letter-spacing:.22em; }.result-card.failed small { color:#ff766d; }
 .result-card b { max-width:420px; font-size:15px; letter-spacing:.08em; }
 .result-card button { justify-self:center; padding:10px 20px; border:1px solid currentColor; background:#10261d; }
@@ -806,13 +798,6 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .dialog-body .validate { width:100%; margin-top:18px; padding:12px; color:var(--cyan); border:1px solid #1e8ca0; background:#101b21; }
 .dialog-footer { display:flex; justify-content:flex-end; padding:12px 18px; border-top:1px solid #29414b; background:#070d11; }
 .dialog-footer button { min-width:128px; padding:10px 18px; border:1px solid #278fa0; background:#10242b; color:var(--cyan); }
-/* Les deux actions de la comparaison remplissent le pied plutôt que d'être
-   alignées à droite (comportement par défaut de .dialog-footer) — priment
-   sur les styles génériques ci-dessus grâce à la seconde classe. */
-.dialog-footer.best-comparison-actions { justify-content:stretch; gap:10px; }
-.dialog-footer.best-comparison-actions button { flex:1; min-width:0; border-color:#38505b; background:#10261d; color:inherit; }
-.dialog-footer.best-comparison-actions button:last-child { border-color:#1e8ca0; color:#53d98c; }
-.best-comparison-dialog .dialog-body { display:flex; justify-content:center; padding:22px 18px; }
 .editor-dialog .selected-properties { margin:0; padding:16px; }
 .editor-dialog .family-repo { max-height:180px; overflow:auto; padding-right:6px; }
 .empty-dialog { min-height:120px; display:grid; place-items:center; color:var(--muted); }
@@ -838,7 +823,13 @@ footer button.launch { color:var(--cyan); border-color:#2793a5; box-shadow:inset
 .speed-slider i { color:var(--muted); font-size:12px; font-style:normal; flex:0 0 auto; min-width:16px; text-align:center; }
 /* Losange du cran mini : marque le mode « pas à pas », où l'animation est
    volontairement saccadée pour montrer le déplacement case par case. */
-.speed-slider .step-marker { color:var(--cyan); font-size:9px; min-width:10px; }
+/* Losange du cran mini : posé sur l'extrémité gauche de la piste elle-même
+   (et non à côté), pour désigner sans ambiguïté la position « pas à pas ». */
+.speed-slider .step-marker {
+  position:absolute; left:0; top:50%; transform:translate(-50%,-50%);
+  color:var(--cyan); font-size:14px; line-height:1; pointer-events:none;
+  text-shadow:0 0 8px rgba(53,221,243,.6);
+}
 /* Piste : conteneur positionné, pour y ancrer les graduations. */
 .speed-slider .slider-track { position:relative; flex:1; min-width:0; display:flex; align-items:center; }
 .speed-slider .tick { position:absolute; top:50%; transform:translate(-50%,-50%); pointer-events:none;
@@ -1034,3 +1025,82 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
    prendrait donc la couleur du TEXTE, pas celle du train. D'où le carré qui
    restait doré. On la neutralise : le fond du bouton suffit. */
 .sequence-slots b.swatch { display:none; }
+
+/* ---- Célébration d'un nouveau record ---------------------------------- */
+/* Non modale et sans bouton : elle s'efface d'elle-même à la fin de son
+   animation (voir onAnimationEnd), sans interrompre le retour au plateau. */
+.best-celebration {
+  position:absolute; z-index:30; left:50%; top:42%; transform:translate(-50%,-50%);
+  display:grid; place-items:center; pointer-events:none;
+  animation:celebration-life 2.4s ease-out forwards;
+}
+@keyframes celebration-life {
+  0%   { opacity:0; transform:translate(-50%,-50%) scale(.7); }
+  12%  { opacity:1; transform:translate(-50%,-50%) scale(1.06); }
+  20%  { transform:translate(-50%,-50%) scale(1); }
+  75%  { opacity:1; }
+  100% { opacity:0; transform:translate(-50%,-58%) scale(1); }
+}
+.best-celebration strong {
+  grid-area:1/1; position:relative; z-index:2; text-align:center;
+  font-size:clamp(26px,7vw,44px); letter-spacing:.06em; color:#fff;
+  text-shadow:0 0 18px #35ddf3,0 0 42px #1b6f80,0 3px 0 #06232b;
+}
+.best-celebration strong em {
+  display:block; font-style:normal; margin-top:6px;
+  font-size:clamp(10px,2.6vw,14px); letter-spacing:.2em; color:var(--gold);
+  text-shadow:0 0 12px #6b5220;
+}
+/* Explosion multicolore : chaque éclat part du centre vers sa propre
+   direction (--shard donne son index, converti en angle). */
+.best-celebration .burst { grid-area:1/1; position:relative; width:2px; height:2px; }
+.best-celebration .burst i {
+  position:absolute; left:0; top:0; width:13px; height:13px; border-radius:50%;
+  margin:-6px 0 0 -6px;
+  animation:celebration-shard 1.1s cubic-bezier(.2,.7,.3,1) both;
+  transform-origin:50% 50%;
+}
+@keyframes celebration-shard {
+  0%   { opacity:0; transform:rotate(var(--angle)) translateX(0) scale(.4); }
+  15%  { opacity:1; }
+  100% { opacity:0; transform:rotate(var(--angle)) translateX(var(--reach)) scale(.9); }
+}
+.best-celebration .burst i:nth-child(1) { --angle:0deg;   --reach:120px; background:var(--red); }
+.best-celebration .burst i:nth-child(2) { --angle:30deg;  --reach:150px; background:var(--orange); }
+.best-celebration .burst i:nth-child(3) { --angle:60deg;  --reach:110px; background:var(--yellow); }
+.best-celebration .burst i:nth-child(4) { --angle:90deg;  --reach:145px; background:var(--green); }
+.best-celebration .burst i:nth-child(5) { --angle:120deg; --reach:118px; background:var(--cyan); }
+.best-celebration .burst i:nth-child(6) { --angle:150deg; --reach:152px; background:var(--blue); }
+.best-celebration .burst i:nth-child(7) { --angle:180deg; --reach:124px; background:var(--purple); }
+.best-celebration .burst i:nth-child(8) { --angle:210deg; --reach:140px; background:var(--pink); }
+.best-celebration .burst i:nth-child(9) { --angle:240deg; --reach:112px; background:var(--red); }
+.best-celebration .burst i:nth-child(10){ --angle:270deg; --reach:148px; background:var(--green); }
+.best-celebration .burst i:nth-child(11){ --angle:300deg; --reach:126px; background:var(--cyan); }
+.best-celebration .burst i:nth-child(12){ --angle:330deg; --reach:138px; background:var(--yellow); }
+/* Objectif atteint : explosion plus ample, plus lumineuse. */
+.best-celebration.perfect .burst i { width:17px; height:17px; margin:-8px 0 0 -8px;
+  box-shadow:0 0 16px currentColor; animation-duration:1.5s; }
+.best-celebration.perfect .burst i:nth-child(odd) { --reach:190px; }
+.best-celebration.perfect .burst i:nth-child(even) { --reach:165px; }
+/* Trois étoiles d'or, réservées à l'objectif atteint. */
+.best-celebration .gold-stars { grid-area:1/1; position:relative; z-index:3; display:flex; gap:14px; }
+.best-celebration .gold-stars b {
+  font-size:clamp(22px,5.5vw,34px); color:#ffc964; font-weight:normal;
+  text-shadow:0 0 14px #ffb347,0 0 30px #a86b12;
+  animation:celebration-star 1.6s cubic-bezier(.2,.7,.3,1) both;
+}
+.best-celebration .gold-stars b:nth-child(1) { animation-delay:.10s; }
+.best-celebration .gold-stars b:nth-child(2) { animation-delay:.22s; }
+.best-celebration .gold-stars b:nth-child(3) { animation-delay:.34s; }
+@keyframes celebration-star {
+  0%   { opacity:0; transform:scale(.2) rotate(-40deg); }
+  40%  { opacity:1; transform:scale(1.25) rotate(6deg); }
+  60%  { transform:scale(1) rotate(0deg); }
+  100% { opacity:0; transform:scale(1) translateY(-34px) rotate(0deg); }
+}
+@media (prefers-reduced-motion:reduce) {
+  .best-celebration, .best-celebration .burst i, .best-celebration .gold-stars b {
+    animation-duration:.01s; animation-iteration-count:1;
+  }
+  .best-celebration { animation:celebration-life 2.4s step-end forwards; }
+}
