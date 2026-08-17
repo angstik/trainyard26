@@ -833,7 +833,9 @@ footer button.launch { color:var(--cyan); border-color:#2793a5; box-shadow:inset
    il reprend le rôle). */
 .speed-slider { flex:5 1 0; min-width:0; height:58px; display:flex; align-items:center; gap:9px;
   padding:0 13px; border:1px solid #394851; background:linear-gradient(#172127,#0b1115); }
-.speed-slider i { color:var(--muted); font-size:14px; font-style:normal; letter-spacing:-1px; flex:0 0 auto; }
+/* Repères numériques (0 et 10) plutôt que des chevrons : la borne exacte se
+   lit d'un coup d'œil, ce que « › » et « ›››› » ne donnaient pas. */
+.speed-slider i { color:var(--muted); font-size:12px; font-style:normal; flex:0 0 auto; min-width:16px; text-align:center; }
 .speed-slider input[type=range] { flex:1; min-width:0; height:4px; -webkit-appearance:none; appearance:none;
   background:#2c414b; border-radius:2px; outline:none; }
 .speed-slider input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; appearance:none;

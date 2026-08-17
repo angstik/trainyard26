@@ -84,6 +84,32 @@ function nearestSpeedStep(value: number): number {
   return SPEED_STEPS.reduce((best, step) =>
     Math.abs(step - value) < Math.abs(best - value) ? step : best);
 }
+
+/**
+ * Échelle du curseur de vitesse : trois zones de LARGEUR ÉGALE à l'écran,
+ * mais couvrant des plages de vitesse très différentes — [0.2, 1], [1, 4]
+ * et [4, 10]. Une échelle linéaire donnerait 90 % de la course aux vitesses
+ * rapides, rendant les réglages lents (les plus utiles pour observer un
+ * croisement) impossibles à viser au doigt.
+ * La position va de 0 à 3 ; chaque unité correspond à une zone.
+ */
+const SPEED_ZONES = [SPEED_MIN, 1, 4, SPEED_MAX] as const;
+
+function sliderPositionToSpeed(position: number): number {
+  const clamped = Math.min(3, Math.max(0, position));
+  const zone = Math.min(2, Math.floor(clamped));
+  const ratio = clamped - zone;
+  const speed = SPEED_ZONES[zone] + (SPEED_ZONES[zone + 1] - SPEED_ZONES[zone]) * ratio;
+  return Math.round(speed * 10) / 10;
+}
+
+function speedToSliderPosition(speed: number): number {
+  for (let zone = 0; zone < 3; zone++) {
+    const low = SPEED_ZONES[zone], high = SPEED_ZONES[zone + 1];
+    if (speed <= high) return zone + (speed - low) / (high - low);
+  }
+  return 3;
+}
 const APP_VERSION = versionFile.trim();
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
@@ -1924,11 +1950,19 @@ export default function App() {
       sim.trains = sim.failed ? [] : resolved;
       nextTrainsRef.current = [...sim.trains];
       const nowMs = Date.now();
-      // Durée réelle du pas : setInterval dérive (charge, throttling
+      // Durée réelle du pas : la planification dérive (charge, throttling
       // navigateur). Supposer la durée nominale fait saturer l'interpolation
-      // avant l'arrivée du pas suivant. Bornée pour absorber les pauses
-      // longues (onglet en arrière-plan) sans étirer l'interpolation.
-      tickIntervalRef.current = Math.min(2000, Math.max(40, nowMs - tickTimeRef.current));
+      // avant l'arrivée du pas suivant.
+      // Le plafond suit la durée nominale du pas au lieu d'être fixe : un
+      // plafond fixe (2 s) tronquait l'animation dès que le pas durait plus
+      // longtemps — le train parcourait sa case puis attendait, immobile.
+      // Exception assumée au cran le plus lent : la saccade y est conservée,
+      // elle illustre justement le fonctionnement pas à pas du moteur.
+      const nominalStepMs = BASE_STEP_MS / liveSpeedRef.current;
+      const interpolationCap = liveSpeedRef.current <= SPEED_MIN
+        ? 2000                          // cran le plus lent : saccade voulue
+        : Math.max(2000, nominalStepMs * 1.5);
+      tickIntervalRef.current = Math.min(interpolationCap, Math.max(40, nowMs - tickTimeRef.current));
       tickTimeRef.current = nowMs;
       nextSwitchesRef.current = { ...sim.switches };
       setSimSteps(simStepsRef.current);
@@ -3151,17 +3185,18 @@ export default function App() {
 
         {running ? (
           <label className="speed-slider" title={`Vitesse ×${liveSpeed.toFixed(1)}`}>
-            <i aria-hidden="true">›</i>
+            <i aria-hidden="true">0</i>
             <input
               type="range"
-              min={SPEED_MIN}
-              max={SPEED_MAX}
-              step={0.1}
-              value={liveSpeed}
+              min={0}
+              max={3}
+              step={0.01}
+              value={speedToSliderPosition(liveSpeed)}
               aria-label={`Vitesse de simulation : ×${liveSpeed.toFixed(1)}`}
-              onChange={(event) => setLiveSpeed(Number(event.target.value))}
+              aria-valuetext={`×${liveSpeed.toFixed(1)}`}
+              onChange={(event) => setLiveSpeed(sliderPositionToSpeed(Number(event.target.value)))}
             />
-            <i aria-hidden="true">››››</i>
+            <i aria-hidden="true">10</i>
           </label>
         ) : (
           <>
