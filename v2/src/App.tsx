@@ -3185,17 +3185,26 @@ export default function App() {
 
         {running ? (
           <label className="speed-slider" title={`Vitesse ×${liveSpeed.toFixed(1)}`}>
+            {/* Losange à l'extrémité basse : signale que le cran minimum est
+                un mode « pas à pas » (animation volontairement saccadée). */}
+            <i className="step-marker" aria-hidden="true">◆</i>
             <i aria-hidden="true">0</i>
-            <input
-              type="range"
-              min={0}
-              max={3}
-              step={0.01}
-              value={speedToSliderPosition(liveSpeed)}
-              aria-label={`Vitesse de simulation : ×${liveSpeed.toFixed(1)}`}
-              aria-valuetext={`×${liveSpeed.toFixed(1)}`}
-              onChange={(event) => setLiveSpeed(sliderPositionToSpeed(Number(event.target.value)))}
-            />
+            <span className="slider-track">
+              {/* Graduations aux frontières des trois zones (voir
+                  sliderPositionToSpeed) : chacune occupe un tiers exact. */}
+              <span className="tick" style={{ left: "33.333%" }}><b>1</b></span>
+              <span className="tick" style={{ left: "66.667%" }}><b>4</b></span>
+              <input
+                type="range"
+                min={0}
+                max={3}
+                step={0.01}
+                value={speedToSliderPosition(liveSpeed)}
+                aria-label={`Vitesse de simulation : ×${liveSpeed.toFixed(1)}`}
+                aria-valuetext={`×${liveSpeed.toFixed(1)}`}
+                onChange={(event) => setLiveSpeed(sliderPositionToSpeed(Number(event.target.value)))}
+              />
+            </span>
             <i aria-hidden="true">10</i>
           </label>
         ) : (

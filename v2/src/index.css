@@ -836,8 +836,19 @@ footer button.launch { color:var(--cyan); border-color:#2793a5; box-shadow:inset
 /* Repères numériques (0 et 10) plutôt que des chevrons : la borne exacte se
    lit d'un coup d'œil, ce que « › » et « ›››› » ne donnaient pas. */
 .speed-slider i { color:var(--muted); font-size:12px; font-style:normal; flex:0 0 auto; min-width:16px; text-align:center; }
+/* Losange du cran mini : marque le mode « pas à pas », où l'animation est
+   volontairement saccadée pour montrer le déplacement case par case. */
+.speed-slider .step-marker { color:var(--cyan); font-size:9px; min-width:10px; }
+/* Piste : conteneur positionné, pour y ancrer les graduations. */
+.speed-slider .slider-track { position:relative; flex:1; min-width:0; display:flex; align-items:center; }
+.speed-slider .tick { position:absolute; top:50%; transform:translate(-50%,-50%); pointer-events:none;
+  width:1px; height:9px; background:#46606c; }
+/* Chiffre sous la graduation : marge calculée pour rester dans les 58 px du
+   pied, pouce du curseur (22 px) compris. */
+.speed-slider .tick b { position:absolute; left:50%; top:9px; transform:translateX(-50%);
+  font-size:8px; line-height:1; font-weight:normal; color:var(--muted); }
 .speed-slider input[type=range] { flex:1; min-width:0; height:4px; -webkit-appearance:none; appearance:none;
-  background:#2c414b; border-radius:2px; outline:none; }
+  background:#2c414b; border-radius:2px; outline:none; position:relative; z-index:1; }
 .speed-slider input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; appearance:none;
   width:22px; height:22px; border-radius:50%; background:var(--cyan); border:2px solid #0a161a;
   box-shadow:0 0 10px #0d5260; cursor:pointer; }
@@ -1015,4 +1026,11 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
 
 /* Pastilles de couleur des sélecteurs de l'éditeur : aplat plein, sans
    symbole superposé (il nuisait à la lecture de la teinte elle-même). */
-.sequence-slots b.swatch, .color-picker b.swatch { display:block; width:100%; height:100%; min-height:16px; border-radius:3px; background:currentColor; }
+/* Palette : le bouton a un fond neutre, la pastille porte la couleur.
+   `currentColor` y vaut la couleur du train (voir .color-picker .red etc.). */
+.color-picker b.swatch { display:block; width:100%; height:100%; min-height:16px; border-radius:3px; background:currentColor; }
+/* Séquence : le bouton est DÉJÀ entièrement coloré (background ci-dessus) et
+   sa `color` sert au contraste du numéro — une pastille en currentColor y
+   prendrait donc la couleur du TEXTE, pas celle du train. D'où le carré qui
+   restait doré. On la neutralise : le fond du bouton suffit. */
+.sequence-slots b.swatch { display:none; }
