@@ -1817,6 +1817,51 @@ export default function App() {
         for (const [cellKey, indices] of byCell) {
           if (indices.length < 2 || exemptCells.has(cellKey)) continue;
 
+          // EXCEPTION : jonction à 4 directions en mode « deux virages ».
+          // Les deux routes sont alors deux arcs qui passent de part et
+          // d'autre du centre sans jamais se toucher (contrairement au mode
+          // « cross », deux droites réellement sécantes). C'est le seul cas
+          // où deux trains partageant une case ne mélangent pas leurs
+          // couleurs. Chaque train reste sur son arc : ils empruntent des
+          // paires entrée/sortie distinctes, donc ne se croisent pas.
+          const [jx, jy] = cellKey.split(",").map(Number) as [number, number];
+          const cellDirections = directionsForCell(jx, jy);
+          const junctionMode = junctionModes[cellKey] ?? "cross";
+          if (cellDirections.length === 4 && junctionMode !== "cross") {
+            // Deux trains ne se rencontrent que s'ils suivent le MÊME arc :
+            // même paire (entrée, sortie). Sinon chacun suit le sien, sans
+            // contact — pas d'interaction du tout.
+            const byArc = new Map<string, number[]>();
+            for (const index of indices) {
+              const train = advanced[index];
+              // `previous` est toujours défini pour les trains d'`advanced` :
+              // seuls les trains fraîchement émis par une remise n'en ont
+              // pas, et ceux-ci sont ajoutés à `resolved` APRÈS ce bloc — ils
+              // n'atteignent donc jamais cette boucle. Le repli n'est là que
+              // pour satisfaire le typage.
+              const arc = `${pointKey(train.previous ?? train.cell)}>${pointKey(train.next)}`;
+              const list = byArc.get(arc) ?? [];
+              list.push(index);
+              byArc.set(arc, list);
+            }
+            for (const [, sameArc] of byArc) {
+              if (sameArc.length < 2) continue;
+              const arcParticipants = sameArc.filter((index) =>
+                sameArc.some((other) => other !== index && !areSplitterSiblings(advanced[index], advanced[other])),
+              );
+              if (arcParticipants.length < 2) continue;
+              const arcColor = arcParticipants
+                .map((index) => advanced[index].color)
+                .reduce((acc, color) => mixColors(acc, color));
+              addColorBurst(jx, jy, arcColor, "mix");
+              playEffect("pass");
+              const [keep, ...absorbed] = arcParticipants;
+              advanced[keep] = { ...advanced[keep], color: arcColor };
+              for (const index of absorbed) consumed.add(index);
+            }
+            continue;
+          }
+
           // Groupe les occupants de la case par côté de sortie.
           const bySide = new Map<string, number[]>();
           for (const index of indices) {
