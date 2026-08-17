@@ -682,13 +682,14 @@ function ToolIcon({ tool }: { tool: EditorTool }) {
     return (
       <span className="tool-preview pencil-preview">
         <svg viewBox="0 0 100 100" aria-hidden="true">
-          <g transform="rotate(-38 50 50)">
-            <rect x="42" y="14" width="16" height="16" rx="3" fill="#e8798f" stroke="#7a2836" stroke-width="2.5"/>
-            <rect x="42" y="28" width="16" height="5" fill="#d7d9da" stroke="#8d9194" stroke-width="2"/>
-            <rect x="42" y="32" width="16" height="38" fill="#e8b64c" stroke="#8a6b2a" stroke-width="2.5"/>
-            <line x1="50" y1="34" x2="50" y2="68" stroke="#c9922f" stroke-width="1.6"/>
-            <path d="M42 70 L58 70 L50 86 Z" fill="#f0d9a8" stroke="#8a6b2a" stroke-width="2.5" stroke-linejoin="round"/>
-            <path d="M46 79 L54 79 L50 86 Z" fill="#2c2f31"/>
+          {/* Seul le HAUT du crayon : la gomme et un tiers de sa hauteur en
+              corps. Agrandi et recentré en conséquence — à taille d'icône,
+              la gomme rose et sa virole métallique suffisent à identifier
+              l'outil, le corps et la pointe n'apportaient rien. */}
+          <g transform="rotate(-38 50 50) translate(50,50) scale(2.6) translate(-50,-25.6)">
+            <rect x="42" y="14" width="16" height="16" rx="3" fill="#e8798f" stroke="#7a2836" stroke-width="1.6"/>
+            <rect x="42" y="28" width="16" height="5" fill="#d7d9da" stroke="#8d9194" stroke-width="1.3"/>
+            <rect x="42" y="32" width="16" height="5.3" fill="#e8b64c" stroke="#8a6b2a" stroke-width="1.6"/>
           </g>
         </svg>
       </span>
@@ -776,6 +777,11 @@ export default function App() {
    * proche de la valeur atteinte au curseur (voir resetSimulation).
    */
   const [liveSpeed, setLiveSpeed] = useState(1);
+  /** Miroir de `liveSpeed`, lu par la boucle de jeu au moment de planifier
+   *  le pas suivant — permet de changer la vitesse en cours de simulation
+   *  sans reconstruire l'effet (voir la boucle). */
+  const liveSpeedRef = useRef(1);
+  useEffect(() => { liveSpeedRef.current = liveSpeed; }, [liveSpeed]);
   const [muted, setMuted] = useState(true);
   const [running, setRunning] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -1495,8 +1501,11 @@ export default function App() {
       return;
     }
     persistAttempt(false);
-    // Le curseur démarre sur le cran choisi au bouton.
+    // Le curseur démarre sur le cran choisi au bouton. La ref est mise à jour
+    // dans la foulée : l'effet de synchronisation n'interviendrait qu'après
+    // le rendu, donc trop tard pour la planification du premier pas.
     setLiveSpeed(speed);
+    liveSpeedRef.current = speed;
     const clean = createEmptySim(objects, switchPositions);
     simRef.current = clean;
     nextTrainsRef.current = [];
@@ -1544,9 +1553,23 @@ export default function App() {
     // les trains) : choisie pour retrouver la cadence déjà éprouvée avant ce
     // modèle discret. La vitesse ne fait plus que diviser cette durée.
     const BASE_STEP_MS = 900;
-    const timer = window.setInterval(() => {
+    // setTimeout replanifié à chaque pas plutôt que setInterval à cadence
+    // fixe : la vitesse est relue via une ref au moment de planifier le pas
+    // SUIVANT, donc un changement au curseur prend effet immédiatement sans
+    // que `liveSpeed` figure dans les dépendances de l'effet. Sinon chaque
+    // micro-mouvement du doigt recréerait l'intervalle et remettrait le
+    // compte à rebours à zéro — en glissant lentement, la simulation se
+    // figerait sans jamais atteindre le pas suivant.
+    let timer = 0;
+    const step = () => {
       const sim = simRef.current;
-      if (sim.failed) return;
+      // Un `return` sec ici arrêterait la boucle DÉFINITIVEMENT (plus aucune
+      // replanification), contrairement à setInterval qui reprenait au tick
+      // suivant. On replanifie donc explicitement avant de sortir.
+      if (sim.failed) {
+        timer = window.setTimeout(step, BASE_STEP_MS / liveSpeedRef.current);
+        return;
+      }
 
       // ----------------------------------------------------------------
       // Modèle DISCRET PAR CASE : un pas de jeu = tous les trains en piste
@@ -1886,11 +1909,15 @@ export default function App() {
           setStatus("GARES EN ATTENTE — NIVEAU PERDU");
         }
       }
-    }, BASE_STEP_MS / liveSpeed);
-    return () => window.clearInterval(timer);
+      timer = window.setTimeout(step, BASE_STEP_MS / liveSpeedRef.current);
+    };
+    timer = window.setTimeout(step, BASE_STEP_MS / liveSpeedRef.current);
+    return () => window.clearTimeout(timer);
   // The interval deliberately restarts when the editable topology changes.
+  // `liveSpeed` en est volontairement absent : il est lu via liveSpeedRef à
+  // chaque replanification (voir ci-dessus).
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [running, paused, liveSpeed, outlets, stations, objects, edges, junctionModes, switchToes]);
+  }, [running, paused, outlets, stations, objects, edges, junctionModes, switchToes]);
 
   // Rendu interpolé indépendant du tick physique (25ms / ~40 im/s) : chaque
   // image recalcule, par la même formule pour tous les trains, une position
