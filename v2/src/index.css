@@ -7,14 +7,14 @@
   --border: #34414a;
   --rail: #cbd1d3;
   --cyan: #35ddf3;
-  --red: #e92f45;
+  --red: #f8244f;
   --blue: #258cff;
   --yellow: #f2ec1d;
   --orange: #ff941f;
-  --green: #35c978;
-  --purple: #a65be2;
+  --green: #35c954;
+  --purple: #7a4ae0;
   --brown: #875431;
-  --pink: #ff52bb;
+  --pink: #f83ce0;
   --white: #eef7f8;
   --text: #dce8ed;
   --muted: #71838d;
@@ -513,7 +513,7 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .color-burst span { position:absolute; inset:20%; border-radius:50%; background:var(--burst-color); filter:blur(8px); opacity:.75; animation:paint-cloud .5s ease-out both; }
 .color-burst i { position:absolute; left:46%; top:46%; width:10px; height:10px; border-radius:50%; background:var(--burst-color); box-shadow:0 0 12px var(--burst-color); animation:paint-drop .45s ease-out both; }
 .color-burst i:nth-child(1){--bx:-38px;--by:-22px}.color-burst i:nth-child(2){--bx:36px;--by:-28px}.color-burst i:nth-child(3){--bx:-24px;--by:35px}.color-burst i:nth-child(4){--bx:34px;--by:30px}
-.color-burst.split span { filter:blur(5px); background:conic-gradient(#f04444,#f2ec1d,#35c978,#258cff,#a65be2,#f04444); }
+.color-burst.split span { filter:blur(5px); background:conic-gradient(#f04444,#f2ec1d,#35c954,#258cff,#7a4ae0,#f04444); }
 .color-burst.mix span { box-shadow:0 0 22px var(--burst-color); }
 .color-burst.cross span { background:transparent; border:5px solid var(--burst-color); filter:blur(2px); animation:cross-wave .7s ease-out both; }
 .color-burst.cross i { width:16px; height:3px; border-radius:50%; filter:blur(1px); animation:cross-streak .65s ease-out both; }
@@ -666,16 +666,16 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 }
 .sequence-slots.tactile button small { position:absolute; left:4px; top:2px; font-size:8px; opacity:.7; }
 .sequence-slots.tactile button b { font-size:23px; line-height:1; }
-.sequence-slots.tactile button.red { color:#fff; background:color-mix(in srgb,var(--red) 72%,#101820); border-color:var(--red); }
-.sequence-slots.tactile button.blue { color:#fff; background:color-mix(in srgb,var(--blue) 72%,#101820); border-color:var(--blue); }
-.sequence-slots.tactile button.yellow { color:#191202; background:color-mix(in srgb,var(--yellow) 82%,#101820); border-color:var(--yellow); }
-.sequence-slots.tactile button.green { color:#fff; background:color-mix(in srgb,var(--green) 72%,#101820); border-color:var(--green); }
-.sequence-slots.tactile button.orange { color:#fff; background:color-mix(in srgb,var(--orange) 76%,#101820); border-color:var(--orange); }
-.sequence-slots.tactile button.purple { color:#fff; background:color-mix(in srgb,var(--purple) 74%,#101820); border-color:var(--purple); }
-.sequence-slots.tactile button.brown { color:#fff; background:color-mix(in srgb,var(--brown) 78%,#101820); border-color:var(--brown); }
-.sequence-slots.tactile button.pink { color:#321025; background:color-mix(in srgb,var(--pink) 80%,#101820); border-color:var(--pink); }
-.sequence-slots.tactile button.cyan { color:#06242b; background:color-mix(in srgb,var(--cyan) 80%,#101820); border-color:var(--cyan); }
-.sequence-slots.tactile button.white { color:#172126; background:color-mix(in srgb,var(--white) 88%,#101820); border-color:var(--white); }
+.sequence-slots.tactile button.red { color:#0d1418; background:var(--red); border-color:var(--red); }
+.sequence-slots.tactile button.blue { color:#0d1418; background:var(--blue); border-color:var(--blue); }
+.sequence-slots.tactile button.yellow { color:#0d1418; background:var(--yellow); border-color:var(--yellow); }
+.sequence-slots.tactile button.green { color:#0d1418; background:var(--green); border-color:var(--green); }
+.sequence-slots.tactile button.orange { color:#0d1418; background:var(--orange); border-color:var(--orange); }
+.sequence-slots.tactile button.purple { color:#fff; background:var(--purple); border-color:var(--purple); }
+.sequence-slots.tactile button.brown { color:#fff; background:var(--brown); border-color:var(--brown); }
+.sequence-slots.tactile button.pink { color:#0d1418; background:var(--pink); border-color:var(--pink); }
+.sequence-slots.tactile button.cyan { color:#0d1418; background:var(--cyan); border-color:var(--cyan); }
+.sequence-slots.tactile button.white { color:#0d1418; background:var(--white); border-color:var(--white); }
 .sequence-slots.tactile button.active { outline:2px solid var(--cyan); outline-offset:3px; box-shadow:0 0 15px rgba(53,221,243,.55); }
 .color-picker { display:grid; grid-template-columns:repeat(5,1fr); gap:7px; padding-top:13px; border-top:1px solid #293b44; }
 .color-picker button { min-width:0; min-height:64px; display:grid; place-items:center; gap:3px; border:1px solid; background:#10191f; cursor:pointer; }

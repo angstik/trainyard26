@@ -164,8 +164,8 @@ const COLOR_LABELS: Record<TrainColor, string> = {
   purple: "Violet", brown: "Marron", pink: "Rose", cyan: "Cyan", white: "Blanc",
 };
 const COLOR_HEX: Record<TrainColor, string> = {
-  red: "#e92f45", blue: "#258cff", yellow: "#f2ec1d", orange: "#ff941f", green: "#35c978",
-  purple: "#a65be2", brown: "#875431", pink: "#ff52bb", cyan: "#35ddf3", white: "#eef7f8",
+  red: "#f8244f", blue: "#258cff", yellow: "#f2ec1d", orange: "#ff941f", green: "#35c954",
+  purple: "#7a4ae0", brown: "#875431", pink: "#f83ce0", cyan: "#35ddf3", white: "#eef7f8",
 };
 const PRIMARIES: TrainColor[] = ["red", "blue", "yellow"];
 /** Mélanges nommés. Toute paire absente retombe sur la règle générale (marron). */
