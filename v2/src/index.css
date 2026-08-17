@@ -557,9 +557,10 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .tool-preview.terminal-preview { transform:scale(.92); }
 .tool-preview .terminal-dots { display:none; }
 .tool-preview.rock-preview { width:72%; height:72%; background:linear-gradient(135deg,var(--skin-rock-light),var(--skin-rock-dark)); clip-path:polygon(21% 2%,78% 8%,98% 49%,72% 96%,17% 84%,2% 32%); }
-.tool-preview.eraser-preview { position:relative; width:70%; height:52%; transform:rotate(-18deg); }
-.eraser-body { position:absolute; inset:0; background:linear-gradient(180deg,#e8798f,#c2495f); border:1px solid #7a2836; border-radius:5px 5px 8px 8px; box-shadow:inset 0 -6px 0 #a8384c; }
-.eraser-band { position:absolute; left:0; right:0; top:0; height:38%; background:#d7d9da; border:1px solid #8d9194; border-bottom:none; border-radius:5px 5px 0 0; }
+/* Crayon-gomme : SVG plutôt que des div empilés — une forme composée
+   (corps + virole + pointe + gomme) se décrit mieux en tracés qu'en boîtes. */
+.tool-preview.pencil-preview { width:78%; height:78%; }
+.tool-preview.pencil-preview svg { width:100%; height:100%; display:block; }
 .tool-preview.select-preview { position:relative; width:100%; height:100%; }
 .select-hub { position:absolute; left:50%; top:50%; width:20%; height:20%; transform:translate(-50%,-50%); border-radius:2px; background:#35ddf3; box-shadow:0 0 6px rgba(53,221,243,.7); }
 .select-arrow { position:absolute; width:0; height:0; }
@@ -817,9 +818,29 @@ nav button:disabled { opacity:.3; cursor:not-allowed; }
 .empty-dialog { min-height:120px; display:grid; place-items:center; color:var(--muted); }
 
 footer { display:flex; justify-content:center; gap:10px; align-items:center; padding-bottom: env(safe-area-inset-bottom, 0px); border-top:1px solid #26343d; background:#070c10; }
-footer button { min-width:112px; height:58px; background:linear-gradient(#172127,#0b1115); border:1px solid #394851; font-size:24px; cursor:pointer; }
-footer button span { display:block; color:var(--muted); font-size:9px; letter-spacing:.13em; margin-top:3px; }
-footer button.launch { min-width:170px; color:var(--cyan); border-color:#2793a5; box-shadow:inset 0 0 0 3px #0a161a,0 0 18px #0d5260; }
+/* Boutons sans libellé : les icônes se suffisent, et la largeur libérée
+   profite au curseur de vitesse. Le nom reste porté par title + aria-label
+   (infobulle au survol, et lecteurs d'écran). */
+footer button { flex:1 1 0; min-width:0; max-width:132px; height:58px; display:grid; place-items:center;
+  background:linear-gradient(#172127,#0b1115); border:1px solid #394851; font-size:24px; cursor:pointer; }
+footer button.launch { color:var(--cyan); border-color:#2793a5; box-shadow:inset 0 0 0 3px #0a161a,0 0 18px #0d5260; }
+/* Vitesse : « cran actuel, cran suivant » — deux valeurs, donc plus petit
+   que les glyphes des autres boutons. */
+.speed-label { font-size:13px; letter-spacing:.06em; color:var(--gold); font-weight:normal; white-space:nowrap; }
+
+/* Curseur de vitesse : occupe la place des cinq boutons de droite pendant la
+   simulation (tous inopérants à ce moment, y compris le bouton vitesse dont
+   il reprend le rôle). */
+.speed-slider { flex:5 1 0; min-width:0; height:58px; display:flex; align-items:center; gap:9px;
+  padding:0 13px; border:1px solid #394851; background:linear-gradient(#172127,#0b1115); }
+.speed-slider i { color:var(--muted); font-size:14px; font-style:normal; letter-spacing:-1px; flex:0 0 auto; }
+.speed-slider input[type=range] { flex:1; min-width:0; height:4px; -webkit-appearance:none; appearance:none;
+  background:#2c414b; border-radius:2px; outline:none; }
+.speed-slider input[type=range]::-webkit-slider-thumb { -webkit-appearance:none; appearance:none;
+  width:22px; height:22px; border-radius:50%; background:var(--cyan); border:2px solid #0a161a;
+  box-shadow:0 0 10px #0d5260; cursor:pointer; }
+.speed-slider input[type=range]::-moz-range-thumb { width:22px; height:22px; border-radius:50%;
+  background:var(--cyan); border:2px solid #0a161a; box-shadow:0 0 10px #0d5260; cursor:pointer; }
 footer button.tool-active { color:#ff8d68; border-color:#a34e37; box-shadow:inset 0 0 18px #3c1710; }
 footer button:disabled { opacity:.35; cursor:not-allowed; }
 
@@ -867,8 +888,11 @@ footer button:disabled { opacity:.35; cursor:not-allowed; }
   .dialog-heading { min-height:62px; padding:10px 12px; }
   .dialog-body { padding:12px; }
   footer { width:100%; min-width:0; gap:2px; padding:0 3px; overflow:hidden; }
-  footer button, footer button.launch { flex:1 1 0; min-width:0; padding:0 2px; border-radius:0; }
-  footer button span { font-size:7px; }
+  footer button, footer button.launch { flex:1 1 0; min-width:0; max-width:none; padding:0 2px; border-radius:0; }
+  /* Le curseur reste prioritaire sur la largeur en écran étroit. */
+  .speed-slider { padding:0 8px; gap:6px; }
+  .speed-slider i { font-size:11px; }
+  .speed-label { font-size:11px; }
   .sequence-slots.tactile { gap:5px; }
   .sequence-slots.tactile button b { font-size:19px; }
   .color-picker { grid-template-columns:repeat(5,1fr); gap:4px; }

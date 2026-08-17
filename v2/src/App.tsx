@@ -68,6 +68,22 @@ type SimData = {
 };
 
 const GRID = 7;
+/** Crans du bouton vitesse (cycle) et bornes du curseur continu. */
+const SPEED_STEPS = [1, 2, 4, 8] as const;
+const SPEED_MIN = 0.2;
+const SPEED_MAX = 10;
+
+/** Cran suivant dans le cycle du bouton, en boucle. */
+function nextSpeedStep(current: number): number {
+  const index = SPEED_STEPS.indexOf(current as (typeof SPEED_STEPS)[number]);
+  return SPEED_STEPS[(index + 1) % SPEED_STEPS.length];
+}
+
+/** Cran le plus proche d'une vitesse continue (reprise après curseur). */
+function nearestSpeedStep(value: number): number {
+  return SPEED_STEPS.reduce((best, step) =>
+    Math.abs(step - value) < Math.abs(best - value) ? step : best);
+}
 const APP_VERSION = versionFile.trim();
 const DIR_DELTA: Record<Direction, Point> = { N: [0, -1], E: [1, 0], S: [0, 1], W: [-1, 0] };
 const DIR_ANGLE: Record<Direction, number> = { N: 0, E: 90, S: 180, W: 270 };
@@ -660,7 +676,24 @@ function ToolIcon({ tool }: { tool: EditorTool }) {
     return <span className="tool-preview rock-preview" />;
   }
   if (tool === "select") return <span className="tool-preview select-preview"><span className="select-arrow n" /><span className="select-arrow e" /><span className="select-arrow s" /><span className="select-arrow w" /><span className="select-hub" /></span>;
-  if (tool === "delete" || tool === "erase") return <span className="tool-preview eraser-preview"><span className="eraser-body" /><span className="eraser-band" /></span>;
+  if (tool === "delete" || tool === "erase") {
+    // Crayon vu de trois-quarts, gomme rose au bout : plus explicite que la
+    // gomme seule, qui se lisait mal une fois réduite à la taille d'icône.
+    return (
+      <span className="tool-preview pencil-preview">
+        <svg viewBox="0 0 100 100" aria-hidden="true">
+          <g transform="rotate(-38 50 50)">
+            <rect x="42" y="14" width="16" height="16" rx="3" fill="#e8798f" stroke="#7a2836" stroke-width="2.5"/>
+            <rect x="42" y="28" width="16" height="5" fill="#d7d9da" stroke="#8d9194" stroke-width="2"/>
+            <rect x="42" y="32" width="16" height="38" fill="#e8b64c" stroke="#8a6b2a" stroke-width="2.5"/>
+            <line x1="50" y1="34" x2="50" y2="68" stroke="#c9922f" stroke-width="1.6"/>
+            <path d="M42 70 L58 70 L50 86 Z" fill="#f0d9a8" stroke="#8a6b2a" stroke-width="2.5" stroke-linejoin="round"/>
+            <path d="M46 79 L54 79 L50 86 Z" fill="#2c2f31"/>
+          </g>
+        </svg>
+      </span>
+    );
+  }
   return <span className="tool-glyph">×</span>;
 }
 
@@ -736,6 +769,13 @@ export default function App() {
   const [families, setFamilies] = useState<LevelFamily[]>(LEVEL_FAMILIES);
   const [activeLevel, setActiveLevel] = useState<LevelDefinition>(DEFAULT_LEVEL);
   const [speed, setSpeed] = useState(1);
+  /**
+   * Vitesse réellement appliquée pendant une simulation, réglable au curseur
+   * de façon continue. Distincte de `speed`, qui reste le cran choisi au
+   * bouton : à l'arrêt de la simulation, `speed` reprend le cran le plus
+   * proche de la valeur atteinte au curseur (voir resetSimulation).
+   */
+  const [liveSpeed, setLiveSpeed] = useState(1);
   const [muted, setMuted] = useState(true);
   const [running, setRunning] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -1094,6 +1134,10 @@ export default function App() {
     setColorBursts([]);
     setResult("idle");
     setStatus("PRÊT À LANCER");
+    // Le bouton reprend le cran le plus proche de la vitesse atteinte au
+    // curseur, pour que le réglage fin fait en cours de partie ne soit pas
+    // perdu au retour au plan.
+    setSpeed(nearestSpeedStep(liveSpeed));
     // Pas de purge de `bestComparison` ici : resetSimulation est appelé
     // notamment par le bouton RETOUR AU PLAN de l'écran de succès, donc
     // juste après qu'une amélioration ait pu créer une comparaison en
@@ -1451,6 +1495,8 @@ export default function App() {
       return;
     }
     persistAttempt(false);
+    // Le curseur démarre sur le cran choisi au bouton.
+    setLiveSpeed(speed);
     const clean = createEmptySim(objects, switchPositions);
     simRef.current = clean;
     nextTrainsRef.current = [];
@@ -1840,11 +1886,11 @@ export default function App() {
           setStatus("GARES EN ATTENTE — NIVEAU PERDU");
         }
       }
-    }, BASE_STEP_MS / speed);
+    }, BASE_STEP_MS / liveSpeed);
     return () => window.clearInterval(timer);
   // The interval deliberately restarts when the editable topology changes.
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [running, paused, speed, outlets, stations, objects, edges, junctionModes, switchToes]);
+  }, [running, paused, liveSpeed, outlets, stations, objects, edges, junctionModes, switchToes]);
 
   // Rendu interpolé indépendant du tick physique (25ms / ~40 im/s) : chaque
   // image recalcule, par la même formule pour tous les trains, une position
@@ -3013,18 +3059,56 @@ export default function App() {
       </section>
 
       {mode === "play" && <footer>
-        <button className={editorTool === "erase" ? "tool-active" : ""} disabled={running} onClick={() => setEditorTool((tool) => tool === "erase" ? "rail" : "erase")}><ToolIcon tool="erase" /><span>EFFACER</span></button>
-        <button disabled={running || !history.length} onClick={undoTrack}>↶<span>ANNULER</span></button>
-        <button onClick={clearTracks} disabled={running}>×<span>VIDER</span></button>
-        {running || result !== "idle" ? (
-          <button className={running ? "tool-active" : ""} onClick={() => resetSimulation()}>■<span>MODIF</span></button>
+        {/* Ordre : stop, play, vitesse, annuler, refaire, effacer, vider.
+            Pendant la simulation, les cinq boutons de droite (vitesse inclus)
+            laissent place au curseur : ils sont tous inopérants à ce
+            moment-là, et le curseur reprend le rôle du bouton vitesse. */}
+        <button
+          className={running ? "tool-active" : ""}
+          disabled={!running && result === "idle"}
+          onClick={() => resetSimulation()}
+          aria-label="Arrêter et revenir au plan"
+          title="Arrêter"
+        >■</button>
+        <button
+          className="launch"
+          onClick={launch}
+          aria-label={running ? (paused ? "Reprendre" : "Pause") : "Lancer"}
+          title={running ? (paused ? "Reprendre" : "Pause") : "Lancer"}
+        >{running ? (paused ? "▶" : "Ⅱ") : "▶"}</button>
+
+        {running ? (
+          <label className="speed-slider" title={`Vitesse ×${liveSpeed.toFixed(1)}`}>
+            <i aria-hidden="true">›</i>
+            <input
+              type="range"
+              min={SPEED_MIN}
+              max={SPEED_MAX}
+              step={0.1}
+              value={liveSpeed}
+              aria-label={`Vitesse de simulation : ×${liveSpeed.toFixed(1)}`}
+              onChange={(event) => setLiveSpeed(Number(event.target.value))}
+            />
+            <i aria-hidden="true">››››</i>
+          </label>
         ) : (
-          /* Hors simulation, la même place sert au « refaire » : les deux
-             fonctions ne sont jamais disponibles en même temps. */
-          <button disabled={!redoStack.length} onClick={redoTrack}>↷<span>REFAIRE</span></button>
+          <>
+            <button
+              onClick={() => setSpeed((value) => nextSpeedStep(value))}
+              aria-label={`Vitesse ×${speed}, appuyer pour passer à ×${nextSpeedStep(speed)}`}
+              title={`Vitesse ×${speed} → ×${nextSpeedStep(speed)}`}
+            ><b className="speed-label">×{speed} ×{nextSpeedStep(speed)}</b></button>
+            <button disabled={!history.length} onClick={undoTrack} aria-label="Annuler" title="Annuler">↶</button>
+            <button disabled={!redoStack.length} onClick={redoTrack} aria-label="Refaire" title="Refaire">↷</button>
+            <button
+              className={editorTool === "erase" ? "tool-active" : ""}
+              onClick={() => setEditorTool((tool) => tool === "erase" ? "rail" : "erase")}
+              aria-label="Effacer des rails"
+              title="Effacer"
+            ><ToolIcon tool="erase" /></button>
+            <button onClick={clearTracks} aria-label="Vider tous les rails" title="Vider">×</button>
+          </>
         )}
-        <button className="launch" onClick={launch}>{running ? (paused ? "▶" : "Ⅱ") : "▶"}<span>{running ? (paused ? "REPRENDRE" : "PAUSE") : "LANCER"}</span></button>
-        <button onClick={() => setSpeed((value) => value === 4 ? 1 : value * 2)}>»<span>VITESSE ×{speed}</span></button>
       </footer>}
     </main>
   );
