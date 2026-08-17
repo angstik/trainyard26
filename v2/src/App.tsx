@@ -808,6 +808,17 @@ export default function App() {
   const activeLevelRef = useRef(activeLevel);
   const editingElapsedMsRef = useRef(0);
   const totalElapsedMsRef = useRef(0);
+  /**
+   * Miroir toujours à jour de `levelProgress`. Permet à persistAttempt de
+   * DÉCIDER (première réussite ? amélioration ?) avant d'écrire, sans placer
+   * cette décision dans l'updater de setState : en mode strict, React
+   * invoque les updaters deux fois pour révéler les effets de bord — une
+   * variable renseignée depuis l'intérieur d'un updater n'est donc pas
+   * fiable. Mis à jour au moment même de chaque écriture (et non via un
+   * effet, qui interviendrait après le rendu, trop tard si deux
+   * sauvegardes s'enchaînent).
+   */
+  const levelProgressRef = useRef<Record<string, LevelProgress>>({});
   /** `switchPositions` n'est pas non plus dans les dépendances de l'effet du
    *  tick : même risque que ci-dessus si le joueur ajuste un aiguillage sans
    *  toucher au reste du tracé. */
@@ -922,11 +933,14 @@ export default function App() {
         }
         const storedProgress = window.localStorage.getItem(PROGRESS_STORAGE_KEY);
         if (storedProgress) {
-          setLevelProgress(JSON.parse(storedProgress) as Record<string, LevelProgress>);
+          const parsed = JSON.parse(storedProgress) as Record<string, LevelProgress>;
+          levelProgressRef.current = parsed;
+          setLevelProgress(parsed);
         } else {
           const legacy = window.localStorage.getItem(LEGACY_PROGRESS_STORAGE_KEY);
           if (legacy) {
             const migrated = migrateLegacyProgress(JSON.parse(legacy));
+            levelProgressRef.current = migrated;
             setLevelProgress(migrated);
             window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(migrated));
           }
@@ -1080,7 +1094,12 @@ export default function App() {
     setColorBursts([]);
     setResult("idle");
     setStatus("PRÊT À LANCER");
-    setBestComparison(null);
+    // Pas de purge de `bestComparison` ici : resetSimulation est appelé
+    // notamment par le bouton RETOUR AU PLAN de l'écran de succès, donc
+    // juste après qu'une amélioration ait pu créer une comparaison en
+    // attente — l'effacer ici la ferait disparaître avant tout choix du
+    // joueur. Les deux actions du dialogue (garder / adopter) la purgent
+    // déjà explicitement, et loadLevel la purge si elle vise un autre niveau.
     setDisplaySwitchPositions({ ...initialSwitches });
     const empty = createEmptySim(objects, initialSwitches);
     simRef.current = empty;
@@ -1098,13 +1117,16 @@ export default function App() {
   function adoptNewBest() {
     if (!bestComparison) return;
     const { levelId, candidate } = bestComparison;
-    setLevelProgress((current) => {
-      const previous = current[levelId];
-      if (!previous) return current;
-      const next = { ...current, [levelId]: { ...previous, best: candidate } };
+    const previous = levelProgressRef.current[levelId];
+    if (previous) {
+      // Écriture directe plutôt qu'un updater : voir persistAttempt — un
+      // updater ne doit contenir aucun effet de bord (ici l'écriture dans
+      // localStorage), sous peine d'être exécuté deux fois en mode strict.
+      const next = { ...levelProgressRef.current, [levelId]: { ...previous, best: candidate } };
+      levelProgressRef.current = next;
       window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(next));
-      return next;
-    });
+      setLevelProgress(next);
+    }
     setBestComparison(null);
     resetSimulation();
   }
@@ -1112,7 +1134,10 @@ export default function App() {
   function loadLevel(source: LevelSource) {
     const level = hydrateLevel(source);
     if (activeLevel.id !== level.id) persistAttempt(false);
-    setBestComparison(null);
+    // Ne purger que si la comparaison en attente concerne un AUTRE niveau :
+    // `persistAttempt` ci-dessus peut venir d'en créer une pour celui-ci, et
+    // un setBestComparison(null) inconditionnel l'effacerait aussitôt.
+    setBestComparison((current) => (current && current.levelId === level.id ? current : null));
     setActiveLevel(level);
     setEdges(new Set(level.savedEdges ?? []));
     setJunctionModes(level.junctionModes ?? {});
@@ -1237,51 +1262,45 @@ export default function App() {
       switchCells: switchCells,
       timeMs: editingElapsedMsRef.current,
     };
-    // La décision (première réussite ? amélioration ?) doit se baser sur
-    // l'état RÉELLEMENT à jour, pas sur `levelProgress` lu depuis la
-    // fermeture extérieure : cette fonction est appelée depuis la boucle de
-    // jeu (setInterval), dont la fermeture peut être plus ancienne que le
-    // dernier setLevelProgress. Tout se calcule donc à l'intérieur de
-    // l'updater, sur son paramètre `current` — seule source garantie à jour.
-    // Même raisonnement pour `levelId` et le temps ci-dessus : lus via des
-    // refs tenues à jour à chaque rendu (voir activeLevelRef), jamais depuis
-    // la fermeture — `activeLevel` n'entre pas dans les dépendances de
-    // l'effet du tick, donc rien ne garantit qu'il y soit à jour.
-    let pendingComparison: { levelId: string; previous: LevelConstruction; candidate: LevelConstruction } | null = null;
 
-    setLevelProgress((current) => {
-      const previous = current[levelId];
-      const storedBest = previous?.best ?? null;
-      // Un best SANS TRACÉ est inexploitable (l'étoile mènerait à un plateau
-      // vide) : on le traite comme absent. Une réussite l'adopte alors
-      // directement, sans passer par la comparaison — même si son score est
-      // moins bon que les statistiques enregistrées, mieux vaut une solution
-      // réellement rejouable qu'une référence creuse.
-      const previousBest = storedBest && storedBest.edges.length ? storedBest : null;
-      const isFirstSuccess = success && !previousBest;
-      // Amélioration = moins de cases que la meilleure enregistrée (le
-      // critère choisi, celui déjà affiché en CASES/CIBLE). Une égalité ne
-      // compte pas comme amélioration : la meilleure déjà enregistrée reste
-      // en place sans solliciter le joueur pour rien.
-      const isImprovement = success && previousBest != null && construction.cells < previousBest.cells;
-      if (isImprovement && previousBest) {
-        pendingComparison = { levelId, previous: previousBest, candidate: construction };
-      }
-      const nextEntry: LevelProgress = {
-        completed: previous?.completed === true || success,
-        thinkingMs: totalElapsedMsRef.current,
-        last: construction,
-        best: isFirstSuccess ? construction : previousBest,
-      };
-      const next = { ...current, [levelId]: nextEntry };
-      window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(next));
-      return next;
-    });
+    // DÉCISION D'ABORD, écriture ensuite — jamais l'inverse.
+    // Cette fonction est appelée depuis la boucle de jeu (setInterval), dont
+    // la fermeture peut être plus ancienne que le dernier setLevelProgress :
+    // on lit donc l'état via `levelProgressRef`, tenue à jour à chaque
+    // écriture. Placer cette décision DANS l'updater de setState serait un
+    // effet de bord — en mode strict, React invoque les updaters deux fois
+    // pour révéler exactement ce genre de code, et la valeur calculée n'y
+    // survit pas de façon fiable.
+    const previous = levelProgressRef.current[levelId];
+    const storedBest = previous?.best ?? null;
+    // Un best SANS TRACÉ est inexploitable (l'étoile mènerait à un plateau
+    // vide) : on le traite comme absent. Une réussite l'adopte alors
+    // directement, sans passer par la comparaison — même si son score est
+    // moins bon que les statistiques enregistrées, mieux vaut une solution
+    // réellement rejouable qu'une référence creuse.
+    const previousBest = storedBest && storedBest.edges.length ? storedBest : null;
+    const isFirstSuccess = success && !previousBest;
+    // Amélioration = moins de cases que la meilleure enregistrée (le critère
+    // choisi, celui déjà affiché en CASES/CIBLE). Une égalité ne compte pas
+    // comme amélioration : la meilleure déjà enregistrée reste en place sans
+    // solliciter le joueur pour rien.
+    const isImprovement = success && previousBest != null && construction.cells < previousBest.cells;
+
+    const nextEntry: LevelProgress = {
+      completed: previous?.completed === true || success,
+      thinkingMs: totalElapsedMsRef.current,
+      last: construction,
+      best: isFirstSuccess ? construction : previousBest,
+    };
+    const next = { ...levelProgressRef.current, [levelId]: nextEntry };
+    levelProgressRef.current = next;
+    window.localStorage.setItem(PROGRESS_STORAGE_KEY, JSON.stringify(next));
+    setLevelProgress(next);
 
     // Une amélioration ne remplace jamais Meilleure en silence : le choix
-    // revient au joueur (voir la carte de comparaison sur l'écran de succès).
-    if (pendingComparison) {
-      setBestComparison(pendingComparison);
+    // revient au joueur (voir le dialogue de comparaison).
+    if (isImprovement && previousBest) {
+      setBestComparison({ levelId, previous: previousBest, candidate: construction });
     }
   }
 
@@ -2687,7 +2706,7 @@ export default function App() {
                           onClick={() => selectLibraryFamily(visibleFamilies[visibleFamilies.findIndex((f) => f.id === libraryFamily.id) + 1]?.id ?? null)}
                         >→</button>
                       </div>
-                      <div className="library-progress-heading"><span>Niveau</span><span>Diff.</span><span>★</span><span>Mini/Opt.</span><span>Aig./Cible</span><span>Tableau</span></div>
+                      <div className="library-progress-heading"><span>Niveau</span><span>Diff.</span><span>★</span><span>Cases/Cible</span><span>Aig./Cible</span><span>Tableau</span></div>
                       <div className="library-levels">
                         {libraryFamily.levels.map((level) => {
                           const progress = levelProgress[level.id];
@@ -2719,9 +2738,9 @@ export default function App() {
                               )}
                               <b
                                 className="rail-stat"
-                                style={best != null && level.optimalRails ? { color: metricColor(best.rails, level.optimalRails) } : undefined}
+                                style={best != null && level.optimalCells != null ? { color: metricColor(best.cells, level.optimalCells) } : undefined}
                               >
-                                {best?.rails ?? "—"}{level.optimalRails ? `/${level.optimalRails}` : ""}
+                                {best?.cells ?? "—"}{level.optimalCells != null ? `/${level.optimalCells}` : ""}
                               </b>
                               <b
                                 className="rail-stat"
