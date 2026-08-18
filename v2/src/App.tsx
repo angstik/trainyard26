@@ -2747,23 +2747,32 @@ export default function App() {
         </div>
         </div>
 
-        {/* Célébration d'un nouveau record : remplace l'ancien dialogue de
-            comparaison. L'amélioration étant désormais adoptée
-            automatiquement, il n'y a plus de choix à présenter — seulement
-            une récompense. Non modale et sans bouton : elle s'efface d'elle-
-            même, sans interrompre le retour au plateau. */}
+        {/* Célébration d'un nouveau record : plein écran, persistante
+            jusqu'au clic. L'amélioration étant adoptée automatiquement, il
+            n'y a plus de choix à présenter — seulement une récompense, qu'on
+            laisse le temps de savourer plutôt que de l'escamoter. */}
         {bestCelebration && (
           <div
             className={`best-celebration ${bestCelebration.perfect ? "perfect" : ""}`}
             role="status"
-            onAnimationEnd={(event) => {
-              // Seule l'animation du conteneur clôt la célébration : celles
-              // des éclats internes se terminent bien avant.
-              if (event.target === event.currentTarget) setBestCelebration(null);
-            }}
+            onPointerDown={() => setBestCelebration(null)}
           >
+            {/* Scintillement de fond : entretenu en boucle tant que l'écran
+                reste affiché. */}
+            <span className="sparkles" aria-hidden="true">
+              {Array.from({ length: 28 }, (_, index) => (
+                <i
+                  key={index}
+                  style={{
+                    left: `${(index * 37) % 100}%`,
+                    top: `${(index * 61) % 100}%`,
+                    animationDelay: `${(index % 9) * 0.32}s`,
+                  }}
+                />
+              ))}
+            </span>
             <span className="burst" aria-hidden="true">
-              {Array.from({ length: 12 }, (_, index) => <i key={index} style={{ "--shard": index } as React.CSSProperties} />)}
+              {Array.from({ length: 24 }, (_, index) => <i key={index} />)}
             </span>
             {bestCelebration.perfect && (
               <span className="gold-stars" aria-hidden="true"><b>★</b><b>★</b><b>★</b></span>
@@ -2772,6 +2781,7 @@ export default function App() {
               {bestCelebration.gained > 0 ? `− ${bestCelebration.gained} !!` : "RECORD !"}
               <em>{bestCelebration.perfect ? "OBJECTIF ATTEINT — BRAVO !" : "BRAVO !"}</em>
             </strong>
+            <small className="dismiss-hint">TOUCHEZ POUR CONTINUER</small>
           </div>
         )}
 
